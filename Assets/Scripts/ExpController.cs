@@ -16,11 +16,13 @@ public class ExpController : MonoBehaviour
     [SerializeField]
     private Realtime m_Realtime;
     [SerializeField]
-    private Image m_UIPanel;
+    private Camera m_PlayerCamera;
     [SerializeField]
-    private Camera m_Camera;
+    private float m_BlankTimeLimit = 10.0f;
     [SerializeField]
-    private float m_PanelTimeLimit = 10.0f;
+    private Transform m_ExpSetUp;
+    [SerializeField]
+    private Transform m_SortingCube;
     [SerializeField]
     private Transform m_ShapeSpawn;
     /// <summary>
@@ -44,6 +46,7 @@ public class ExpController : MonoBehaviour
     private InputAction smallerButton;
     [SerializeField]
     private InputAction resetButton;
+    [Header("-----------")]
 
     private List<string> _order;
     private int _cTrialNumber = -1;
@@ -65,6 +68,8 @@ public class ExpController : MonoBehaviour
     private float _blankTimer = 0;
     private bool _blankLoading = false;
 
+    private Dictionary<string, Vector3> _shapeToBoxRotation = new Dictionary<string, Vector3>();
+
     void OnEnable()
     {
         largerButton.Enable(); largerButton.performed += SaveLargerResponse;
@@ -75,6 +80,23 @@ public class ExpController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Add the shape to rotation
+        _shapeToBoxRotation.Add("Trapezoid", new Vector3(0, 0, 0));
+        _shapeToBoxRotation.Add("Oval", new Vector3(0, 0, 0));
+        _shapeToBoxRotation.Add("Rhombus", new Vector3(0, 0, 0));
+
+        _shapeToBoxRotation.Add("Quaterfoil-Separated", new Vector3 (90, -90, 0));
+        _shapeToBoxRotation.Add("Square", new Vector3 (90, -90, 0));
+        _shapeToBoxRotation.Add("Triangle", new Vector3 (90, -90, 0));
+
+        _shapeToBoxRotation.Add("Octagon", new Vector3 (0, 90, 0));
+        _shapeToBoxRotation.Add("Parallelogram", new Vector3 (0, 90, 0));
+        _shapeToBoxRotation.Add("Star-Separated", new Vector3 (0, 90, 0));
+
+        _shapeToBoxRotation.Add("Hexagon", new Vector3(0, 180, 0));
+        _shapeToBoxRotation.Add("Rectangle", new Vector3(0, 180, 0));
+        _shapeToBoxRotation.Add("Pentagon", new Vector3(0, 180, 0));
+
         if (m_Realtime == null)
         {
             Debug.Log("Realtime not specified");
@@ -87,10 +109,10 @@ public class ExpController : MonoBehaviour
     {
         if (!_blankLoading) return;
         _blankTimer += Time.deltaTime;
-        if(_blankTimer > m_PanelTimeLimit)
+        if(_blankTimer > m_BlankTimeLimit)
         {
             //see everything
-            m_Camera.cullingMask = -1;
+            m_PlayerCamera.cullingMask = -1;
             _blankTimer = 0;
             _blankLoading = false;
         }
@@ -100,7 +122,10 @@ public class ExpController : MonoBehaviour
     {
         if(!ToRun) return;
 
-        //Set up sexperiment order
+        //don't do anything if it isn't the first user....
+        if (m_Realtime.clientID != 0) return;
+
+        //Set up experiment order
         CreateExpOrder();
         ShuffleOrder();
 
@@ -108,7 +133,16 @@ public class ExpController : MonoBehaviour
         CreateExpFile();
 
         //Start exp
-        NextTrial();
+        //NextTrial();
+    }
+
+    private void SetUpNextLevel()
+    {
+        float diff = m_PlayerCamera.transform.position.y - m_ExpSetUp.transform.position.y;
+        m_ExpSetUp.Translate(new Vector3(0, diff, 0));
+
+        string shape = GetNextTrial().Split('|')[0];
+        m_SortingCube.eulerAngles = _shapeToBoxRotation[shape];
     }
 
     private bool CreateExpOrder()
@@ -116,7 +150,7 @@ public class ExpController : MonoBehaviour
         if (_order != null) return true;
 
         _order = new List<string>();
-        string entry = "";
+        string entry;
         int s = 0;
 
         //for every shape
@@ -125,15 +159,12 @@ public class ExpController : MonoBehaviour
             //for every repeat for each shape
             for (int r = 0; r < m_Repeats; r++)
             {
-                //mid size
-                s = UnityEngine.Random.Range(0, m_Shapes.Length);
-                entry = $"{shape}|{1}";//scale 1
+                entry = $"{shape}|{1}";//mid scale
                 _order.Add(entry);
 
                 //smaller sizes
                 for (int zS = 1; zS <= m_NumberSmaller; zS++)
                 {
-                    s = UnityEngine.Random.Range(0, m_Shapes.Length);
                     entry = $"{shape}|{1 - (diff * zS)}";//smaller scales
                     _order.Add(entry);
                 }
@@ -141,7 +172,6 @@ public class ExpController : MonoBehaviour
                 //larger sizes
                 for (int zL = 1; zL <= m_NumberLarger; zL++)
                 {
-                    s = UnityEngine.Random.Range(0, m_Shapes.Length);
                     entry = $"{shape}|{1 + (diff * zL)}";//larger scales
                     _order.Add(entry);
                 }
@@ -193,15 +223,15 @@ public class ExpController : MonoBehaviour
 
     private void SaveLargerResponse(InputAction.CallbackContext obj)
     {
-        if(!ToRun) return;
-        SaveCurrentEntry(LARGER_RESPONSE);
+        if (!ToRun) return;
+        if (spawn) SaveCurrentEntry(LARGER_RESPONSE);
         NextTrial();
     }
 
     private void SaveSmallerResponse(InputAction.CallbackContext obj)
     {
         if (!ToRun) return;
-        SaveCurrentEntry(SMALLER_RESPONSE);
+        if (spawn) SaveCurrentEntry(SMALLER_RESPONSE);
         NextTrial();
     }
 
@@ -243,10 +273,7 @@ public class ExpController : MonoBehaviour
     {
         if (!ToRun || _nextLoading || _blankLoading) return;
 
-        _nextLoading = true;
-        if(spawn != null) Realtime.Destroy(spawn);
-        //Debug.Log($"trail number: {_cTrialNumber} vs order count: {_order.Count}");
-        if (_cTrialNumber >= _order.Count-1)
+        if (_cTrialNumber >= _order.Count - 1)
         {
             SaveFile();
 
@@ -255,11 +282,18 @@ public class ExpController : MonoBehaviour
             {
                 UnityEditor.EditorApplication.isPlaying = false;
                 return;
-            }  
+            }
 #endif
             Application.Quit();
             return;
         }
+
+        _nextLoading = true;
+
+        //Set up experiment env
+        SetUpNextLevel();
+
+        if (spawn != null) Realtime.Destroy(spawn);
 
         string trial = GetNextTrial();
 
@@ -273,12 +307,14 @@ public class ExpController : MonoBehaviour
             destroyWhenLastClientLeaves = true,
             useInstance = m_Realtime,
         });
-        spawn.transform.localScale = new Vector3(size, 1, size);
+        spawn.transform.localScale = new Vector3(spawn.transform.localScale.x * size,
+            spawn.transform.localScale.x * 1,
+            spawn.transform.localScale.x * size);
         
         _cTrialNumber++;
-        
+
         //see blank/nothing
-        m_Camera.cullingMask = 0;
+        m_PlayerCamera.cullingMask = 0;
         //start waiting for blank to finish showing
         _blankLoading = true;
 
