@@ -812,8 +812,8 @@ MonoBehaviour:
   - {fileID: 2467407417521903611}
   - {fileID: 6331691451330317621}
   - {fileID: 6161607416525533703}
-  originalColor: {r: 0.85, g: 0.0040049935, b: 0.0040049935, a: 1}
-  holdingColor: {r: 1, g: 0, b: 0, a: 1}
+  originalColor: {r: 1, g: 0, b: 0, a: 1}
+  holdingColor: {r: 1, g: 0.2783019, b: 0.2783019, a: 1}
   dM: {fileID: 0}
 --- !u!114 &6660301314775599266
 MonoBehaviour:
