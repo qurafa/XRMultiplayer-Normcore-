@@ -1193,13 +1193,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 213492967}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -0.05009997, y: 0.00999999, z: -0.099999905}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.05009997, y: 0.0152, z: -0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 687863474}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &213492969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3129,7 +3129,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 484951892}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 8d4478450e760e14b832361ce159d447, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3202,7 +3202,7 @@ Transform:
   m_GameObject: {fileID: 484951892}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.29999995, z: 0.099999905}
+  m_LocalPosition: {x: 0, y: -0.29999995, z: 0.1}
   m_LocalScale: {x: 0.16, y: 0.45, z: 0.16}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7379,7 +7379,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 904558927}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 8d4478450e760e14b832361ce159d447, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -7452,8 +7452,8 @@ Transform:
   m_GameObject: {fileID: 904558927}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.241, z: -0.099999905}
-  m_LocalScale: {x: 0.16, y: 0.45, z: 0.16}
+  m_LocalPosition: {x: 0, y: -0.288, z: -0.1}
+  m_LocalScale: {x: 0.16, y: 0.545625, z: 0.16}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 687863474}
@@ -26131,7 +26131,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 742073818717700446, guid: e5f0230a19de8bd44b7dcac6ac89f0fd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.09949994
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 742073818717700446, guid: e5f0230a19de8bd44b7dcac6ac89f0fd, type: 3}
       propertyPath: m_LocalRotation.w

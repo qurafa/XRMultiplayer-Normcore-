@@ -169,8 +169,10 @@ public class ExpController : MonoBehaviour
 
     private void SetUpNextLevel()
     {
-        float diff = m_PlayerCamera.transform.position.y - m_ExpSetUp.transform.position.y;
-        m_ExpSetUp.Translate(new Vector3(0, diff, 0));
+        float xDiff = m_PlayerCamera.transform.position.x - m_ExpSetUp.transform.position.x;
+        float yDiff = m_PlayerCamera.transform.position.y - m_ExpSetUp.transform.position.y;
+        float zDiff = m_PlayerCamera.transform.position.z - m_ExpSetUp.transform.position.z;
+        m_ExpSetUp.Translate(new Vector3(0, yDiff, zDiff));
 
         string shape = GetNextTrial().Split('|')[0];
         m_SortingCube.eulerAngles = _shapeToBoxRotation[shape];
@@ -345,9 +347,9 @@ public class ExpController : MonoBehaviour
             destroyWhenLastClientLeaves = true,
             useInstance = m_Realtime,
         });
-        spawn.transform.localScale = new Vector3(spawn.transform.localScale.x * size,
-            spawn.transform.localScale.x * 1,
-            spawn.transform.localScale.x * size);
+        spawn.transform.localScale = new Vector3(spawn.transform.localScale.x * 1,
+            spawn.transform.localScale.y * size,
+            spawn.transform.localScale.z * size);
         
         _nTrialNumber++;
         
