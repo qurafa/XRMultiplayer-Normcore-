@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Lobby.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/Scenes/MainRoom.unity
+    path: Assets/Scenes/ExpRoom.unity
     guid: 6afdbccb6ea235247946d07e69f3da86
   m_configObjects:
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: d70f1d5f9ab9b3d45ae74c65999ce502, type: 2}

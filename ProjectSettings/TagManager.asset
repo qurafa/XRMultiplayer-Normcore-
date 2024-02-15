@@ -8,6 +8,7 @@ TagManager:
   - Bottom
   - Box
   - Shape
+  - spawn
   layers:
   - Default
   - TransparentFX

@@ -3,31 +3,44 @@ using Normal.Realtime;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Text;
+using UnityEngine.UIElements.Experimental;
 
 public class DataManager : MonoBehaviour
 {
     [SerializeField]
     HashSet<GameObject> _toTrack = new HashSet<GameObject>();
     [SerializeField]
-    private bool _canTrack;
+    private bool _canTrackPlayer;
+    [SerializeField]
+    private bool _canTrackObjects;
     [SerializeField]
     private Realtime _realTime;
     /// <summary>
-    /// How often should data be read to the output files in seconds
+    /// How often should data be read to the output files in seconds when specified
     /// </summary>
     [SerializeField]
     private float _timeInterval;
 
-    private string _objectHeader = "Object,Owner,Time,XPos,Ypos,ZPos,XRot,YRot,ZRot,Status\n";
-    private string _playerHeader = "Bone,Time,XPos,YPos,ZPos,XRot,YRot,ZRot\n";
-    string filePath;
+    //heading for csv's
+    private string OBJECT_HEADING = "Object,Owner,Time,XPos,Ypos,ZPos,XRot,YRot,ZRot,Status\n";
+    private string PLAYER_HEADING = "Bone,Time,XPos,YPos,ZPos,XRot,YRot,ZRot\n";
+    private string EXP_HEADING = "Trial,Shape,Size,Response";
     private int id = 0;
-    private bool fileCreated = false;
+    private bool objfileCreated = false;
 
     private float timeCounter = 0;
 
-    //list of player IDs and the path to their data file
-    private Dictionary<int, string> _playerFile;
+
+    //all file paths
+    private Dictionary<int, string> PLAYER_FILE_PATH;
+    private string OBJECT_FILE_PATH = "";
+    private string EXP_FILE_PATH = "";
+    //temporary file informations
+    private static Dictionary<int, StringBuilder> PLAYER_FILE_TEMP;
+    private static StringBuilder OBJECT_FILE_TEMP;
+    private static StringBuilder EXP_FILE_TEMP;
+    private static string SEPARATOR = ",";
 
     // Start is called before the first frame update
     void Start()
@@ -47,41 +60,6 @@ public class DataManager : MonoBehaviour
 
         timeCounter += Time.deltaTime;
     }
-    
-    private void CreateObjectsFile()
-    {
-        if (!_canTrack) return;
-
-        filePath += $"{Application.persistentDataPath}/objectsData_{System.DateTime.Now.ToString("yyyy-MM-dd-HH_mm_ss")}.csv";//something to identify the participant
-
-        File.WriteAllText(filePath, _objectHeader);
-
-        Debug.Log($"File Path is: {filePath}");
-
-        fileCreated = true;
-    }
-
-    private void UpdateObjectFile()
-    {
-        if(!_canTrack) return;
-
-        if (!fileCreated) return;
-
-        if(_toTrack.Count <= 0) return;
-
-        string update = "";
-        int ownerID = -1;
-        foreach (GameObject track in _toTrack)
-        {
-            ownerID = track.TryGetComponent<RealtimeView>(out RealtimeView rV)? rV.ownerIDInHierarchy : ownerID;
-            string status = (track.TryGetComponent<NomcoreObject>(out NomcoreObject nO)) ? nO.GetStatus() : track.name;
-            update += $"{track.name},{ownerID},{DateTime.Now.TimeOfDay}," +
-                $"{track.transform.position.x},{track.transform.position.y},{track.transform.position.z}," +
-                $"{track.transform.eulerAngles.x},{track.transform.eulerAngles.y},{track.transform.eulerAngles.z}," +
-                $"{status}\n";
-        }
-        File.AppendAllText(filePath, update);
-    }
 
     public void SetID(int id)
     {
@@ -99,41 +77,168 @@ public class DataManager : MonoBehaviour
         _toTrack.Remove(g);
     }
 
-    //create a file to store skeleton data for each player
-    public void CreatePlayerFile(int playerID)
+    private void CreateObjectsFile()
     {
-        if (_playerFile == null)
-            _playerFile = new Dictionary<int, string>();
+        if (!_canTrackObjects) return;
 
-        string playerFilePath = $"{Application.persistentDataPath}/p{playerID}_skeletonData_{System.DateTime.Now.ToString("yyyy-MM-dd-HH_mm_ss")}.csv";
+        OBJECT_FILE_PATH = $"{Application.persistentDataPath}/objectsData_{System.DateTime.Now.ToString("yyyy-MM-dd-HH_mm_ss")}.csv";//something to identify the participant
 
-        File.WriteAllText(playerFilePath, _playerHeader);
-        _playerFile.Add(playerID, playerFilePath);
+        OBJECT_FILE_TEMP = new StringBuilder();
+        OBJECT_FILE_TEMP.AppendLine(string.Join(SEPARATOR, OBJECT_HEADING));
+        //File.WriteAllText(OBJECT_FILE_PATH, _objectHeader);
+
+        Debug.Log($"Object File Path is: {OBJECT_FILE_PATH}");
+
+        objfileCreated = true;
     }
 
-    public void UpdatePlayerFile(int playerID, Transform trans)
+    private void UpdateObjectFile()
     {
+        if (!_canTrackObjects) return;
+
+        if (!objfileCreated) return;
+
+        if (_toTrack.Count <= 0) return;
+
+        string update = "";
+        int ownerID = -1;
+        foreach (GameObject track in _toTrack)
+        {
+            ownerID = track.TryGetComponent<RealtimeView>(out RealtimeView rV) ? rV.ownerIDInHierarchy : ownerID;
+            string status = (track.TryGetComponent<NomcoreObject>(out NomcoreObject nO)) ? nO.GetStatus() : track.name;
+            update += $"{track.name},{ownerID},{DateTime.Now.TimeOfDay}," +
+                $"{track.transform.position.x},{track.transform.position.y},{track.transform.position.z}," +
+                $"{track.transform.eulerAngles.x},{track.transform.eulerAngles.y},{track.transform.eulerAngles.z}," +
+                $"{status}";
+            OBJECT_FILE_TEMP.AppendLine(string.Join(SEPARATOR, update));
+        }
+        //File.AppendAllText(OBJECT_FILE_PATH, update);
+    }
+
+    private void SaveObjectsFile()
+    {
+        if (!_canTrackObjects) return;
+
+        if (!objfileCreated) return;
+
+        if (_toTrack.Count <= 0) return;
+
+        try
+        {
+            File.WriteAllText(OBJECT_FILE_PATH, OBJECT_FILE_TEMP.ToString());
+            OBJECT_FILE_TEMP.Clear();
+            Debug.Log($"Objects file saved to {OBJECT_FILE_PATH}");
+        }
+        catch (Exception e)
+        {
+            Debug.Log($"Objects data could not be written to csv file due to exception: {e}");
+            return;
+        }
+    }
+
+    //create a file to store skeleton data for each player
+    public void CreatePlayerFile(int pID)
+    {
+        if (!_canTrackPlayer) return;
+
+        if (PLAYER_FILE_PATH == null)
+            PLAYER_FILE_PATH = new Dictionary<int, string>();
+
+        string playerFilePath = $"{Application.persistentDataPath}/p{pID}_skeletonData_{System.DateTime.Now.ToString("yyyy-MM-dd-HH_mm_ss")}.csv";
+
+        if(PLAYER_FILE_TEMP == null)
+            PLAYER_FILE_TEMP = new Dictionary<int, StringBuilder>();
+
+        PLAYER_FILE_TEMP[pID] = new StringBuilder();
+        PLAYER_FILE_TEMP[pID].AppendLine(string.Join(SEPARATOR, PLAYER_HEADING));
+
+        //File.WriteAllText(playerFilePath, _playerHeader);
+        PLAYER_FILE_PATH.Add(pID, playerFilePath);
+    }
+
+    public void UpdatePlayerFile(int pID, Transform trans)
+    {
+        if (!_canTrackPlayer || !PLAYER_FILE_PATH.ContainsKey(pID)) return;
+
         string update = $"{trans.name},{DateTime.Now.TimeOfDay}," +
             $"{trans.position.x},{trans.position.y},{trans.position.z}," +
-            $"{trans.eulerAngles.x},{trans.eulerAngles.y},{trans.eulerAngles.z}\n";
+            $"{trans.eulerAngles.x},{trans.eulerAngles.y},{trans.eulerAngles.z}";
 
-        string path = _playerFile[playerID];
-        File.AppendAllText(path, update);
+        PLAYER_FILE_TEMP[pID].AppendLine(string.Join(SEPARATOR, update));
+
+        //string path = PLAYER_FILE_PATH[playerID];
+        //File.AppendAllText(path, update);
     }
 
-    public void UpdatePlayerFile(int playerID, Pose pose, string name)
+    public void UpdatePlayerFile(int pID, Pose pose, string name)
     {
+        if (!_canTrackPlayer || !PLAYER_FILE_PATH.ContainsKey(pID)) return;
+
         string update = $"{name},{DateTime.Now.TimeOfDay}," +
             $"{pose.position.x},{pose.position.y},{pose.position.z}," +
             $"{pose.rotation.eulerAngles.x},{pose.rotation.eulerAngles.y},{pose.rotation.eulerAngles.z}\n";
 
-        string path = _playerFile[playerID];
-        File.AppendAllText(path, update);
+        PLAYER_FILE_TEMP[pID].AppendLine(string.Join(SEPARATOR, update));
+
+        //string path = PLAYER_FILE_PATH[playerID];
+        //File.AppendAllText(path, update);
     }
 
-    private void SavePlayerFile()
+    public void SavePlayerFile(int pID)
     {
+        if (!_canTrackPlayer) return;
 
+        if (!PLAYER_FILE_PATH.ContainsKey(pID)) return;
+
+        try
+        {
+            File.WriteAllText(PLAYER_FILE_PATH[pID], PLAYER_FILE_TEMP[pID].ToString());
+            PLAYER_FILE_TEMP.Clear();
+            Debug.Log($"Player {pID} file saved to {PLAYER_FILE_PATH[pID]}");
+        }
+        catch (Exception e)
+        {
+            Debug.Log($"Player {pID} data could not be written to file due to exception: {e}");
+            return;
+        }
+    }
+
+    public void CreateExpFile()
+    {
+        EXP_FILE_PATH = $"{Application.persistentDataPath}/ExpEntry_{System.DateTime.Now:yyyy-MM-dd-HH_mm_ss}.csv";
+        Debug.Log($"EXP FILE PATH IS: {EXP_FILE_PATH}");
+
+        EXP_FILE_TEMP = new StringBuilder();
+        EXP_FILE_TEMP.AppendLine(string.Join(SEPARATOR, EXP_HEADING));
+    }
+
+    public void UpdateExpFile(int trial, string shape, float size, string response)
+    {
+        string entry = $"{trial},{shape}, {size}, {response}";
+        EXP_FILE_TEMP.AppendLine(string.Join(SEPARATOR, entry));
+    }
+
+    public void SaveExpFile()
+    {
+        try
+        {
+            File.AppendAllText(EXP_FILE_PATH, EXP_FILE_TEMP.ToString());
+            Debug.Log($"Exp file saved to {EXP_FILE_PATH}");
+            EXP_FILE_TEMP.Clear();
+        }
+        catch (Exception e)
+        {
+            Debug.Log($"Exp data could not be written to file due to exception: {e}");
+            return;
+        }
+    }
+
+    public void SaveAllFiles()
+    {
+        SaveExpFile();
+        SaveObjectsFile();
+        foreach(int pID in PLAYER_FILE_PATH.Keys)
+            SavePlayerFile(pID);
     }
 }
 

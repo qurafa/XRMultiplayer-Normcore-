@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -17,11 +18,15 @@ public class ExpController : MonoBehaviour
     [SerializeField]
     private Realtime m_Realtime;
     [SerializeField]
+    private DataManager m_DataManager;
+    [SerializeField]
     private Camera m_PlayerCamera;
     [SerializeField]
     private Transform m_ExpSetUp;
     [SerializeField]
     private Transform m_SortingCube;
+    [SerializeField]
+    private Transform m_CubeSpawn;
     [SerializeField]
     private Transform m_ShapeSpawn;
     /// <summary>
@@ -30,7 +35,9 @@ public class ExpController : MonoBehaviour
     [SerializeField]
     private string[] m_Shapes = new string[] { };
     [SerializeField]
-    private float m_BlankTimeLimit = 1.0f;
+    private float m_MinBlankTimeLimit = 1.0f;
+    [SerializeField]
+    private float m_MaxBlankTimeLimit = 1.0f;
     [SerializeField]
     private float m_TrialTimeLimit = 2.0f;
     [SerializeField]
@@ -57,6 +64,9 @@ public class ExpController : MonoBehaviour
     /// </summary>
     private int _nTrialNumber = 0;
 
+    /// <summary>
+    /// to keep track of the objects being spawned
+    /// </summary>
     private GameObject spawn = null;
 
     //important variables
@@ -68,18 +78,24 @@ public class ExpController : MonoBehaviour
     private static string SEPARATOR = ",";
     private static string[] HEADING = {"Trial","Shape", "Size", "Response"};
 
+    //soooo namy flags.........lol
+    //when we're ready to start
+    private bool _ready = false;
+
     //next trial loading flag
     private bool _nextLoading = false;
 
     //blank timer and flags
     private float _blankTimer = 0;
-    private bool _blankLoading = false;
+    private bool _minBlankLoading = false;
+    private bool _maxBlankLoading = false;
 
     //trial timer and flags
     private float _trialTimer = 0;
     private bool _trialLoading = false;
 
     private bool _savingEntry = false;
+    private bool _savedEntry = false;
 
     private Dictionary<string, Vector3> _shapeToBoxRotation = new Dictionary<string, Vector3>();
 
@@ -110,6 +126,9 @@ public class ExpController : MonoBehaviour
         _shapeToBoxRotation.Add("Rectangle", new Vector3(0, 180, 0));
         _shapeToBoxRotation.Add("Pentagon", new Vector3(0, 180, 0));
 
+        //see nothing when you join
+        //m_PlayerCamera.cullingMask = 0;
+
         if (m_Realtime == null)
         {
             Debug.Log("Realtime not specified");
@@ -120,33 +139,41 @@ public class ExpController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (_blankLoading)
+        if (_trialLoading)
         {
-            _blankTimer += Time.deltaTime;
-            if (_blankTimer > m_BlankTimeLimit)
+            _trialTimer += Time.deltaTime;
+            if (_trialTimer > m_TrialTimeLimit)
             {
-                //see everything
-                m_PlayerCamera.cullingMask = -1;
-                _blankTimer = 0;
-                _blankLoading = false;
                 _trialTimer = 0;
-                _trialLoading = true;//so we can start tracking the loading trial...
+                _trialLoading = false;
+
+                //see blank/nothing
+                m_PlayerCamera.cullingMask = 0;
+                _blankTimer = 0;
+                _minBlankLoading = true;
+                _maxBlankLoading = true;
             }
         }
 
-        if(_trialLoading)
+        if (_minBlankLoading || _maxBlankLoading)
         {
-            _trialTimer += Time.deltaTime;
-            if(_trialTimer > m_TrialTimeLimit)
+            _blankTimer += Time.deltaTime;
+            if (_blankTimer > m_MinBlankTimeLimit)
             {
-                //save no entry and go to the next trial
-                _trialTimer = 0;
-                _trialLoading = false;
-                SaveCurrentEntry(NO_RESPONSE);
+                _minBlankLoading = false;
+                if(_savedEntry) NextTrial();
+            }
+
+            if(_blankTimer > m_MaxBlankTimeLimit)
+            {
+                _blankTimer = 0;
+                _minBlankLoading = false;
+                _maxBlankLoading = false;
+
+                SaveEntry(NO_RESPONSE);
                 NextTrial();
             }
         }
-
     }
 
     private void DidConnectToRoom(Realtime realtime)
@@ -163,6 +190,8 @@ public class ExpController : MonoBehaviour
         //Create file path to store entries 
         CreateExpFile();
 
+        _ready = true;
+
         //Start exp
         //NextTrial();
     }
@@ -175,6 +204,7 @@ public class ExpController : MonoBehaviour
         m_ExpSetUp.Translate(new Vector3(0, yDiff, zDiff));
 
         string shape = GetNextTrial().Split('|')[0];
+        m_SortingCube.position = m_CubeSpawn.position;
         m_SortingCube.eulerAngles = _shapeToBoxRotation[shape];
     }
 
@@ -256,28 +286,29 @@ public class ExpController : MonoBehaviour
 
     private void SaveLargerResponse(InputAction.CallbackContext obj)
     {
-        if (spawn != null) SaveCurrentEntry(LARGER_RESPONSE);
+        if (spawn != null) SaveEntry(LARGER_RESPONSE);
         NextTrial();
     }
 
     private void SaveSmallerResponse(InputAction.CallbackContext obj)
     {
-        if (spawn != null) SaveCurrentEntry(SMALLER_RESPONSE);
+        if (spawn != null) SaveEntry(SMALLER_RESPONSE);
         NextTrial();
     }
 
     private void CreateExpFile()
     {
-        FILE_PATH = $"{Application.persistentDataPath}/ExpEntry_{System.DateTime.Now:yyyy-MM-dd-HH_mm_ss}.csv";
+        m_DataManager.CreateExpFile();
+        /*FILE_PATH = $"{Application.persistentDataPath}/ExpEntry_{System.DateTime.Now:yyyy-MM-dd-HH_mm_ss}.csv";
         Debug.Log("fILE PATH IS: " + FILE_PATH);
 
         FILE_TEMP = new StringBuilder();
-        FILE_TEMP.AppendLine(string.Join(SEPARATOR, HEADING));
+        FILE_TEMP.AppendLine(string.Join(SEPARATOR, HEADING));*/
     }
 
-    private void SaveCurrentEntry(string response)
+    private void SaveEntry(string response)
     {
-        if (_savingEntry || Wait()) return;
+        if (SaveWait()) return;
 
         _savingEntry = true;
         Debug.Log($"Saving entry {response}");
@@ -285,29 +316,39 @@ public class ExpController : MonoBehaviour
         string shape = trial.Split('|')[0];
         float size = float.Parse(trial.Split('|')[1]);
 
-        string entry = $"{_nTrialNumber},{shape}, {size}, {response}";
-        FILE_TEMP.AppendLine(string.Join(SEPARATOR, entry));
+        m_DataManager.UpdateExpFile(_nTrialNumber, shape, size, response);
 
+        /*string entry = $"{_nTrialNumber},{shape}, {size}, {response}";
+        FILE_TEMP.AppendLine(string.Join(SEPARATOR, entry));*/
+        _savedEntry = true;
         _savingEntry = false;
     }
 
     private void SaveFile()
     {
-        try
+        
+        m_DataManager.SaveExpFile();
+        /*try
         {
             File.AppendAllText(FILE_PATH, FILE_TEMP.ToString());
             Debug.Log($"File saved to {FILE_PATH}");
         }
         catch (Exception e)
         {
-            Debug.Log($"Data could not be written to csv file due to exception: {e.ToString()}");
+            Debug.Log($"Data could not be written to csv file due to exception: {e}");
             return;
-        }
+        }*/
+    }
+
+    private void SaveAllFiles()
+    {
+        //here we can set to save all the files currently buffered in the DataManager
+        m_DataManager.SaveAllFiles();
     }
 
     public void NextTrial()
     {
-        if (Wait()) return;
+        if (NextWait()) return;
 
         if (_nTrialNumber >= _order.Count)
         {
@@ -324,8 +365,16 @@ public class ExpController : MonoBehaviour
             return;
         }
         Debug.Log($"Loading trial number {_nTrialNumber}");
+        //set all related flags
         _nextLoading = true;
-        
+
+        _minBlankLoading = false;
+        _maxBlankLoading = false;
+
+        _trialLoading = false;
+
+        _savedEntry = false;
+
         //Set up experiment env
         SetUpNextLevel();
 
@@ -352,19 +401,26 @@ public class ExpController : MonoBehaviour
             spawn.transform.localScale.z * size);
         
         _nTrialNumber++;
-        
-        //see blank/nothing
-        m_PlayerCamera.cullingMask = 0;
-        //start waiting for blank to finish showing
-        _blankLoading = true;
+
+        //see everything after setting up
+        m_PlayerCamera.cullingMask = -1;
+        //reset trial timer to go up to the set limit
+        _trialTimer = 0;
+        //start counting trial loading
+        _trialLoading = true;
 
         //next trial done loading
         _nextLoading = false;
     }
 
-    private bool Wait()
+    private bool NextWait()
     {
-        return (!ToRun || _nextLoading || _blankLoading);
+        return (!ToRun || !_ready || _nextLoading || _minBlankLoading || _trialLoading);
+    }
+
+    private bool SaveWait()
+    {
+        return (!_ready || _savedEntry || _savingEntry || !ToRun || _nextLoading || _trialLoading);
     }
 
     /// <summary>

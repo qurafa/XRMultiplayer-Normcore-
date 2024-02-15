@@ -134,7 +134,7 @@ public class CallibrateRoom : MonoBehaviour
     [SerializeField]
     private float direction = 0.0f;
     public readonly float rotFactor = 0.05f;
-    public readonly float posFactor = 0.0125f;
+    public readonly float posFactor = 0.00625f;
 
     [SerializeField]
     Mode mode
@@ -178,6 +178,7 @@ public class CallibrateRoom : MonoBehaviour
 
         _roomRB = _room.GetComponent<Rigidbody>();
         mode = Mode.Standby;
+        vision = Vision.Normal;
 
         //saving the starting transform
         _send = new MyTransform(transform.position, transform.eulerAngles);
@@ -428,7 +429,10 @@ public class CallibrateRoom : MonoBehaviour
         }
             
         if ((int)mode < _modes.Length)
+        {
             _modes[(int)mode].color = UI_SELECTED;
+        }
+            
     }
 
     private void OnDisable()

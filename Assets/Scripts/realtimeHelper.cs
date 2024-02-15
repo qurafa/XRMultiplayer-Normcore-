@@ -102,7 +102,7 @@ public class realtimeHelper : MonoBehaviour
         AdditiveSceneLoader aSL = FindObjectOfType<AdditiveSceneLoader>();
 
         //take us back the lobby when we disconnect
-        aSL.LoadScene(0);
+        if(aSL) aSL.LoadScene(0);
     }
 
     private void RequestOwnerShip(GameObject o)

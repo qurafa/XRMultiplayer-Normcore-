@@ -76,8 +76,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3306911443878545693}
   serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
+  m_Mass: 1e+9
+  m_Drag: 1e+24
   m_AngularDrag: 1e+24
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -282,8 +282,8 @@ MonoBehaviour:
   - {fileID: 1583108337027863333}
   - {fileID: 7802531850222668171}
   - {fileID: 2082371401003406250}
-  originalColor: {r: 0, g: 1, b: 0, a: 1}
-  holdingColor: {r: 0, g: 0.85, b: 0, a: 1}
+  originalColor: {r: 0.38039216, g: 0.59607846, b: 1, a: 1}
+  holdingColor: {r: 0.38039216, g: 0.48235294, b: 1, a: 1}
   dM: {fileID: 0}
 --- !u!114 &4118223344450735130
 MonoBehaviour:
