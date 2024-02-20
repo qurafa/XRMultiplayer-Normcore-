@@ -25,7 +25,7 @@ public class DataManager : MonoBehaviour
     //heading for csv's
     private string OBJECT_HEADING = "Object,Owner,Time,XPos,Ypos,ZPos,XRot,YRot,ZRot,Status\n";
     private string PLAYER_HEADING = "Bone,Time,XPos,YPos,ZPos,XRot,YRot,ZRot\n";
-    private string EXP_HEADING = "Trial,Shape,Size,Response";
+    private string EXP_HEADING = "Trial,Shape,Size,Response,ResponseTime,Time";
     private int id = 0;
     private bool objfileCreated = false;
 
@@ -205,6 +205,12 @@ public class DataManager : MonoBehaviour
 
     public void CreateExpFile()
     {
+        if(EXP_FILE_PATH != "")
+        {
+            Debug.LogError("Exp File already created");
+            return;
+        }
+
         EXP_FILE_PATH = $"{Application.persistentDataPath}/ExpEntry_{System.DateTime.Now:yyyy-MM-dd-HH_mm_ss}.csv";
         Debug.Log($"EXP FILE PATH IS: {EXP_FILE_PATH}");
 
@@ -212,9 +218,25 @@ public class DataManager : MonoBehaviour
         EXP_FILE_TEMP.AppendLine(string.Join(SEPARATOR, EXP_HEADING));
     }
 
-    public void UpdateExpFile(int trial, string shape, float size, string response)
+    public void CreateExpFile(string extraInfo)
     {
-        string entry = $"{trial},{shape}, {size}, {response}";
+        if (EXP_FILE_PATH != "")
+        {
+            Debug.LogError("Exp File already created");
+            return;
+        }
+
+        EXP_FILE_PATH = $"{Application.persistentDataPath}/ExpEntry_{extraInfo}_{System.DateTime.Now:yyyy-MM-dd-HH_mm_ss}.csv";
+        Debug.Log($"EXP FILE PATH IS: {EXP_FILE_PATH}");
+
+        EXP_FILE_TEMP = new StringBuilder();
+        EXP_FILE_TEMP.AppendLine(string.Join(SEPARATOR, EXP_HEADING));
+    }
+
+    public void UpdateExpFile(int trial, string shape, float size, string response, string responseTime, string time)
+    {
+        string entry = $"{trial},{shape}, {size}, {response}, {responseTime}, {time}";
+        Debug.Log($"Updating Entry: {entry}");
         EXP_FILE_TEMP.AppendLine(string.Join(SEPARATOR, entry));
     }
 

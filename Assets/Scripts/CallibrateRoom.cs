@@ -106,9 +106,6 @@ public class CallibrateRoom : MonoBehaviour
     [SerializeField]
     private InputAction rightJS;
 
-    private UnityEngine.XR.InputDevice leftHandInput;
-    private UnityEngine.XR.InputDevice rightHandInput;
-
     /// <summary>
     /// What we send to the SceneLoader as we move to the next scene
     /// </summary>
@@ -163,11 +160,11 @@ public class CallibrateRoom : MonoBehaviour
     void OnEnable()
     {
         menuButton.Enable(); menuButton.performed += DoneAction;
-        leftHandPB.Enable(); leftHandPB.performed += VisionToggleAction;
-        leftHandSB.Enable(); leftHandSB.performed += LeftRotateAction;
+        //leftHandPB.Enable(); leftHandPB.performed += VisionToggleAction;
+        //leftHandSB.Enable(); leftHandSB.performed += LeftRotateAction;
         leftJS.Enable(); leftJS.performed += VPositioningAction;
-        rightHandPB.Enable(); rightHandPB.performed += PositionToggleAction;
-        rightHandSB.Enable(); rightHandSB.performed += RightRotateAction;
+        //rightHandPB.Enable(); rightHandPB.performed += PositionToggleAction;
+        //rightHandSB.Enable(); rightHandSB.performed += RightRotateAction;
         rightJS.Enable(); rightJS.performed += HPositioningAction;
     }
 
@@ -177,8 +174,8 @@ public class CallibrateRoom : MonoBehaviour
             _rotationReference = GameObject.FindWithTag("MainCamera");
 
         _roomRB = _room.GetComponent<Rigidbody>();
-        mode = Mode.Standby;
-        vision = Vision.Normal;
+        mode = Mode.CalibratingPos;
+        vision = Vision.Passthrough;
 
         //saving the starting transform
         _send = new MyTransform(transform.position, transform.eulerAngles);
@@ -222,8 +219,7 @@ public class CallibrateRoom : MonoBehaviour
     
     private void VPositioningAction(InputAction.CallbackContext obj)
     {
-        if(mode == Mode.CalibratingPos)
-        {
+        if(mode == Mode.CalibratingPos) {
             Vector2 val = leftJS.ReadValue<Vector2>();
 
             _rotRef.transform.eulerAngles = new Vector3(0, _rotationReference.transform.eulerAngles.y, 0);
@@ -233,8 +229,7 @@ public class CallibrateRoom : MonoBehaviour
 
     private void HPositioningAction(InputAction.CallbackContext obj)
     {
-        if (mode == Mode.CalibratingPos)
-        {
+        if (mode == Mode.CalibratingPos) {
             Vector2 val = rightJS.ReadValue<Vector2>();
 
             _rotRef.transform.eulerAngles = new Vector3(0, _rotationReference.transform.eulerAngles.y, 0);
@@ -302,7 +297,7 @@ public class CallibrateRoom : MonoBehaviour
         else if (mode == Mode.CalibratingPos)
         {
             //only freeze the room rotating
-            _roomRB.constraints = RigidbodyConstraints.FreezeRotation;
+            _roomRB.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         }
         else if (mode == Mode.CalibratingRot)
         {

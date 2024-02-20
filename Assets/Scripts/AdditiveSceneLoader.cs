@@ -3,13 +3,19 @@ using Unity.XR.CoreUtils;
 using UnityEngine;
 //using Normal.Realtime;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class AdditiveSceneLoader : MonoBehaviour
 {
-    /*[SerializeField]
-    private Realtime _realTime;*/
     [SerializeField]
     private int currentSceneIndex;
+    [Header("EXPERIMENT VARIABLES")]
+    [SerializeField]
+    private bool m_RunExp;
+    [SerializeField]
+    private Dropdown m_ExpModeDropdown;
+    [SerializeField]
+    private Dropdown m_ExpRangeDropdown;
 
     private bool isLoading;
 
@@ -85,6 +91,17 @@ public class AdditiveSceneLoader : MonoBehaviour
         var loadAsync = SceneManager.LoadSceneAsync(id);
 
         while (!loadAsync.isDone) yield return null;
+
+        if (m_RunExp)
+        {
+            ExpController expCont = FindObjectOfType<ExpController>();
+
+            if (m_ExpModeDropdown.value == 0) expCont.SetRepeats(1);
+            else expCont.SetRepeats(3);
+
+            float range = float.Parse(m_ExpRangeDropdown.options[m_ExpRangeDropdown.value].text);
+            expCont.SetScaleDiff(range);
+        }
 
         Debug.Log("getting realtime helper");
         realtimeHelper helper = FindObjectOfType<realtimeHelper>();
