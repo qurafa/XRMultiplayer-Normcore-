@@ -24,7 +24,7 @@ public class realtimeHelper : MonoBehaviour
     [SerializeField]
     private string roomName;
     [SerializeField]
-    private GameObject room;
+    private GameObject room; //Percept lab in the second scene
     [SerializeField]
     private RawImage _connectionStatus;
     [SerializeField]
@@ -52,7 +52,7 @@ public class realtimeHelper : MonoBehaviour
 
     private void Update()
     {
-        if (_Realtime.connected) return;
+        if (_Realtime.connected) return; // R: no logic here
     }
 
     //Realtime Event when Connecting to a Room
@@ -67,7 +67,7 @@ public class realtimeHelper : MonoBehaviour
             Debug.Log("Setting spawnTransform.....");
             //if not then get from one of the default positions
             spawnTransform = _localPlayer.transform;//either its current position
-
+            //R: if you put gameobjects with tag "spawn" in the scene with names 1, 2, ..., the players are going to be spawned at those specific positions
             foreach (GameObject g in GameObject.FindGameObjectsWithTag("spawn"))
             {
                 if (g.name.Equals(id.ToString()))
@@ -80,6 +80,7 @@ public class realtimeHelper : MonoBehaviour
 
         _localPlayer.transform.SetPositionAndRotation(spawnTransform.position, spawnTransform.rotation);
 
+        // R: To show the other person where I am (this prefab is just to share my head and hands and render them for others) Check the prefab and see how to adapt to HL2
         GameObject newPlayer = Realtime.Instantiate(playerPrefabName, spawnTransform.position, spawnTransform.rotation, new Realtime.InstantiateOptions
         {
             ownedByClient = true,
@@ -184,8 +185,8 @@ public class realtimeHelper : MonoBehaviour
     public void JoinMainRoom(MyTransform transform)
     {
         spawnTransform = new GameObject().transform;
-        spawnTransform.position = room.transform.position + transform.position;
-        spawnTransform.eulerAngles = transform.eulerAngles;
+        spawnTransform.position = room.transform.position + transform.position;//player related to the room's position
+        spawnTransform.eulerAngles = transform.eulerAngles; //tansform is the player's transform exactly where it was in the previous scene
         spawnTransform.RotateAround(room.transform.position, Vector3.up, -transform.rotAbt.y);
         Debug.Log($"PlayerCenterReference {spawnTransform.transform.position.ToString()} Room {room.transform.position}");
 

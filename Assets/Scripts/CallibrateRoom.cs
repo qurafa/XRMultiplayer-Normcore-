@@ -312,9 +312,11 @@ public class CallibrateRoom : MonoBehaviour
         else if (mode == Mode.Done)
         {
             //done, so send the player's information wrt to the room to the next scene
+            // R: where the player is relative to the room's centre (which is not 0 anymore),
+            // how much the player is rotated relatvie to Quaternion.Identity
+            // how much the room is rotated relative to Quaternion.Identity
             _send = new MyTransform(_playerCenterReference.transform.position - _room.transform.position,
             _playerCenterReference.transform.eulerAngles, _room.transform.eulerAngles);
-
             vision = Vision.Normal;
 
             if (_doneEvent != null)
@@ -403,23 +405,23 @@ public class CallibrateRoom : MonoBehaviour
             }  
         }*/
 
-    private void GetChildRecursive(Transform obj)
-    {
-        if (null == obj)
-            return;
+    //private void GetChildRecursive(Transform obj)
+    //{
+    //    if (null == obj)
+    //        return;
 
-        foreach (Transform child in obj)
-        {
-            if (null == child)
-                continue;
+    //    foreach (Transform child in obj)
+    //    {
+    //        if (null == child)
+    //            continue;
 
-            if (child != obj)
-            {
-                _listOfChildren.Add(child);
-            }
-            GetChildRecursive(child);
-        }
-    }
+    //        if (child != obj)
+    //        {
+    //            _listOfChildren.Add(child);
+    //        }
+    //        GetChildRecursive(child);
+    //    }
+    //}
 
     private void ToggleModeUI()
     {

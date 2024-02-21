@@ -48,7 +48,7 @@ public class AdditiveSceneLoader : MonoBehaviour
 
         isLoading = true;
 
-        StartCoroutine(LoadSceneAdditive(playerTransform, id));
+        StartCoroutine(LoadSceneAdditive(playerTransform, id));// calls the coroutine once every frame till it finishes
     }
 
     /// <summary>
