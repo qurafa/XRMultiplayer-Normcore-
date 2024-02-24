@@ -228,7 +228,6 @@ public class ExpController : MonoBehaviour
 
         _order = new List<string>();
         string entry;
-        int s = 0;
 
         //for every shape
         foreach (string shape in m_Shapes)
@@ -254,29 +253,6 @@ public class ExpController : MonoBehaviour
                 }
             }
         }
-        /*        for (int r = 0; r < m_Repeats; r++)
-                {
-                    s = UnityEngine.Random.Range(0, m_Shapes.Length);
-                    entry = $"{m_Shapes[s]}|{1}";//scale 1
-                    _order.Add(entry);
-
-                    for (int zS = 1; zS <= m_NumberSmaller; zS++)
-                    {
-                        s = UnityEngine.Random.Range(0, m_Shapes.Length);
-                        entry = $"{m_Shapes[s]}|{1 - (diff * zS)}";//smaller scales
-                        _order.Add(entry);
-                    }
-
-                    for (int zL = 1; zL <= m_NumberLarger; zL++)
-                    {
-                        s = UnityEngine.Random.Range(0, m_Shapes.Length);
-                        entry = $"{m_Shapes[s]}|{1 + (diff * zL)}";//larger scales
-                        _order.Add(entry);
-                    }
-                }*/
-        
-        /*for(int s = 0; s < m_Shapes.Length; s++)
-        {}*/
 
         return true;
     }

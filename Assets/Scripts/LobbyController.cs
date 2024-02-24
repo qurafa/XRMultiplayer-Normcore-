@@ -5,11 +5,15 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class AdditiveSceneLoader : MonoBehaviour
+public class LobbyController : MonoBehaviour
 {
     [SerializeField]
     private int currentSceneIndex;
-    [Header("EXPERIMENT VARIABLES")]
+    [SerializeField]
+    private XROrigin m_XROrigin;
+    [SerializeField]
+    private Transform m_playerSpawn;
+    [Header("EXPERIMENT")]
     [SerializeField]
     private bool m_RunExp;
     [SerializeField]
@@ -22,6 +26,11 @@ public class AdditiveSceneLoader : MonoBehaviour
     private void Awake()
     {
         DontDestroyOnLoad(this);
+    }
+
+    private void Start()
+    {
+        m_XROrigin.MoveCameraToWorldLocation(m_playerSpawn.transform.position);
     }
 
     /// <summary>
@@ -99,7 +108,7 @@ public class AdditiveSceneLoader : MonoBehaviour
             if (m_ExpModeDropdown.value == 0) expCont.SetRepeats(1);
             else expCont.SetRepeats(3);
 
-            float range = float.Parse(m_ExpRangeDropdown.options[m_ExpRangeDropdown.value].text);
+            float range = float.Parse(m_ExpRangeDropdown.options[m_ExpRangeDropdown.value].text)/100.0f;
             expCont.SetScaleDiff(range);
         }
 
