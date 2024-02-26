@@ -9,10 +9,6 @@ public class LobbyController : MonoBehaviour
 {
     [SerializeField]
     private int currentSceneIndex;
-    [SerializeField]
-    private XROrigin m_XROrigin;
-    [SerializeField]
-    private Transform m_playerSpawn;
     [Header("EXPERIMENT")]
     [SerializeField]
     private bool m_RunExp;
@@ -30,7 +26,6 @@ public class LobbyController : MonoBehaviour
 
     private void Start()
     {
-        m_XROrigin.MoveCameraToWorldLocation(m_playerSpawn.transform.position);
     }
 
     /// <summary>

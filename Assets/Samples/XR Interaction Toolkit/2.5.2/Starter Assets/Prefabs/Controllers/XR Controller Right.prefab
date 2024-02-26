@@ -214,6 +214,7 @@ GameObject:
   - component: {fileID: 7655812912622807707}
   - component: {fileID: 3957922077215375144}
   - component: {fileID: 1211106532664706651}
+  - component: {fileID: 8762726554602220547}
   m_Layer: 0
   m_Name: Controller_Base
   m_TagString: Untagged
@@ -335,6 +336,25 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 2
+--- !u!114 &8762726554602220547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3641317572183526692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83b9f53de669250428868588ae502bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trackedTransform: {fileID: 3475118261464492563}
+  body: {fileID: 1211106532664706651}
+  positionStrength: 20
+  positionThreshold: 0.0001
+  maxDistance: 0.5
+  rotationStrength: 30
+  rotationThreshold: 5
 --- !u!1 &4022625689426332818
 GameObject:
   m_ObjectHideFlags: 0

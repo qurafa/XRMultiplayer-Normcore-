@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -16,6 +17,10 @@ public class CallibrateRoom : MonoBehaviour
     /// </summary>
     [SerializeField]
     private GameObject _room;
+    [SerializeField]
+    private XROrigin _player;
+    [SerializeField]
+    private Transform _playerSpawn;
     /// <summary>
     /// What the room shouuld rotate about
     /// </summary>
@@ -119,7 +124,7 @@ public class CallibrateRoom : MonoBehaviour
     }
     private Vision _vision;
 
-    enum Mode
+    public enum Mode
     {
         Standby,
         CalibratingPos,
@@ -163,7 +168,7 @@ public class CallibrateRoom : MonoBehaviour
         //leftHandPB.Enable(); leftHandPB.performed += VisionToggleAction;
         //leftHandSB.Enable(); leftHandSB.performed += LeftRotateAction;
         leftJS.Enable(); leftJS.performed += VPositioningAction;
-        //rightHandPB.Enable(); rightHandPB.performed += PositionToggleAction;
+        rightHandPB.Enable(); rightHandPB.performed += TeleportAction;
         //rightHandSB.Enable(); rightHandSB.performed += RightRotateAction;
         rightJS.Enable(); rightJS.performed += HPositioningAction;
     }
@@ -199,6 +204,23 @@ public class CallibrateRoom : MonoBehaviour
             if (mode == Mode.CalibratingRot)
                 _roomRB.transform.RotateAround(_rotationReference.transform.position, Vector3.up, rotFactor * direction);
         }
+    }
+
+    public void SetMode(Mode m)
+    {
+        mode = m;
+    }
+
+    public void SetMode(int m)
+    {
+        mode = (Mode)m;
+    }
+
+    private void TeleportAction(InputAction.CallbackContext obj)
+    {
+        float yPos = _player.transform.position.y + _player.CameraInOriginSpaceHeight;
+        _player.MoveCameraToWorldLocation(new Vector3(_playerSpawn.position.x, yPos, _playerSpawn.position.z));
+        _player.MatchOriginUpCameraForward(_playerSpawn.up, _playerSpawn.forward);
     }
 
     private void PositionToggleAction(InputAction.CallbackContext obj)
@@ -297,7 +319,7 @@ public class CallibrateRoom : MonoBehaviour
         else if (mode == Mode.CalibratingPos)
         {
             //only freeze the room rotating
-            _roomRB.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            _roomRB.constraints = RigidbodyConstraints.FreezeRotation;// | RigidbodyConstraints.FreezeRotationZ;
         }
         else if (mode == Mode.CalibratingRot)
         {
