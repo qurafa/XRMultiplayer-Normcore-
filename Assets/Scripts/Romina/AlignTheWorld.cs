@@ -5,6 +5,7 @@ using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.XR.ARFoundation;
 
 namespace com.perceptlab.armultiplayer
 {
@@ -16,7 +17,7 @@ namespace com.perceptlab.armultiplayer
             public string name;
             public UnityEvent onPressed;
         }
-
+        private ARSession _ARSession;
         [SerializeField]
         GameObject room;
         [SerializeField, Tooltip("The topmost game object in hierarchy that is holding the player in the game (MRTK XR Rig in AR)")]
@@ -64,7 +65,16 @@ namespace com.perceptlab.armultiplayer
         //            RLogger.Log("Axis: " + name + " is: " + Input.GetAxis(name).ToString());
         //    }
         //}
-        
+
+        private void Start()
+        {
+            _ARSession = GetComponent<ARSession>();
+            if (_ARSession != null)
+            {
+                _ARSession.enabled = true;
+            }
+        }
+
         // Moves the player instead of the world. Player is in the same real position, thus, the virtual world is being moved!
         void Update()
         {
@@ -76,6 +86,10 @@ namespace com.perceptlab.armultiplayer
             {
                 RLogger.Log("BeginEndAlign was pressed");
                 active = !active;
+                if (_ARSession != null) {
+                    _ARSession.enabled = !_ARSession.enabled;
+                }
+
             }
             if (Input.GetButtonDown("DoneAlign") && !done)
             {
@@ -83,6 +97,14 @@ namespace com.perceptlab.armultiplayer
                 active = false;
                 done = true;
                 onDoneAlign?.Invoke();
+                if (_ARSession != null)
+                {
+                    _ARSession.enabled = false;
+                    // revert the changes caused by _ARSession.MatchFrameRate = True
+                    Application.targetFrameRate = 0;
+                    QualitySettings.vSyncCount = 1;
+                }
+
             }
             if (active)
             {

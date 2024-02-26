@@ -14,11 +14,8 @@ namespace com.perceptlab.armultiplayer
         private static Queue<int> nextLineIdx = new Queue<int>();
         private static int lastIdx = 0;
 
-        [SerializeField] 
         private static int maxLines = 5;
-        [SerializeField]
-        private static bool showOnUnityConsole = false;
-        [SerializeField]
+        private static bool showOnUnityConsole = true;
         private static bool showOnAppGui = true; 
 
         private void setInstance()
