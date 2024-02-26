@@ -3,19 +3,34 @@ using Unity.XR.CoreUtils;
 using UnityEngine;
 //using Normal.Realtime;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class AdditiveSceneLoader : MonoBehaviour
+public class LobbyController : MonoBehaviour
 {
-    /*[SerializeField]
-    private Realtime _realTime;*/
     [SerializeField]
     private int currentSceneIndex;
+    [SerializeField]
+    private XROrigin m_XROrigin;
+    [SerializeField]
+    private Transform m_playerSpawn;
+    [Header("EXPERIMENT")]
+    [SerializeField]
+    private bool m_RunExp;
+    [SerializeField]
+    private Dropdown m_ExpModeDropdown;
+    [SerializeField]
+    private Dropdown m_ExpRangeDropdown;
 
     private bool isLoading;
 
     private void Awake()
     {
         DontDestroyOnLoad(this);
+    }
+
+    private void Start()
+    {
+        m_XROrigin.MoveCameraToWorldLocation(m_playerSpawn.transform.position);
     }
 
     /// <summary>
@@ -85,6 +100,17 @@ public class AdditiveSceneLoader : MonoBehaviour
         var loadAsync = SceneManager.LoadSceneAsync(id);
 
         while (!loadAsync.isDone) yield return null;
+
+        if (m_RunExp)
+        {
+            ExpController expCont = FindObjectOfType<ExpController>();
+
+            if (m_ExpModeDropdown.value == 0) expCont.SetRepeats(1);
+            else expCont.SetRepeats(3);
+
+            float range = float.Parse(m_ExpRangeDropdown.options[m_ExpRangeDropdown.value].text)/100.0f;
+            expCont.SetScaleDiff(range);
+        }
 
         Debug.Log("getting realtime helper");
         realtimeHelper helper = FindObjectOfType<realtimeHelper>();

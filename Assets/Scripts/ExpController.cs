@@ -29,6 +29,9 @@ public class ExpController : MonoBehaviour
     private Transform m_CubeSpawn;
     [SerializeField]
     private Transform m_ShapeSpawn;
+    [SerializeField]
+    private AudioSource m_SaveAudio;
+    [Header("EXPERIMENT VARIABLES")]
     /// <summary>
     /// Name of the shapes we'll be using, ensure they're in the Resource folder
     /// </summary>
@@ -47,7 +50,7 @@ public class ExpController : MonoBehaviour
     [SerializeField]
     private int m_Repeats = 0;
     [SerializeField]
-    private float diff = 0.1f;
+    private float m_ScaleDiff = 0.025f;
 
     [Header("INPUT ACTIONS")]
     [SerializeField]
@@ -69,14 +72,13 @@ public class ExpController : MonoBehaviour
     /// </summary>
     private GameObject spawn = null;
 
+    private DateTime _dispTime = DateTime.Now;
+    private DateTime _entryTime = DateTime.Now;
+
     //important variables
     private readonly static string LARGER_RESPONSE = "1";
     private readonly static string SMALLER_RESPONSE = "0";
     private readonly static string NO_RESPONSE = "-1";
-    private static string FILE_PATH = "";
-    private static StringBuilder FILE_TEMP;
-    private static string SEPARATOR = ",";
-    private static string[] HEADING = {"Trial","Shape", "Size", "Response"};
 
     //soooo namy flags.........lol
     //when we're ready to start
@@ -92,7 +94,7 @@ public class ExpController : MonoBehaviour
 
     //trial timer and flags
     private float _trialTimer = 0;
-    private bool _trialLoading = false;
+    private bool _trialLoading = true;
 
     private bool _savingEntry = false;
     private bool _savedEntry = false;
@@ -196,7 +198,7 @@ public class ExpController : MonoBehaviour
         //NextTrial();
     }
 
-    private void SetUpNextLevel()
+    private void SetEyeLevel()
     {
         float xDiff = m_PlayerCamera.transform.position.x - m_ExpSetUp.transform.position.x;
         float yDiff = m_PlayerCamera.transform.position.y - m_ExpSetUp.transform.position.y;
@@ -208,13 +210,24 @@ public class ExpController : MonoBehaviour
         m_SortingCube.eulerAngles = _shapeToBoxRotation[shape];
     }
 
+    public void SetRepeats(int repeats)
+    {
+        Debug.Log($"Setting repeats {repeats}");
+        m_Repeats = repeats;
+    }
+
+    public void SetScaleDiff(float diff)
+    {
+        Debug.Log($"Setting scale diff {diff}");
+        m_ScaleDiff = diff;
+    }
+
     private bool CreateExpOrder()
     {
         if (_order != null) return true;
 
         _order = new List<string>();
         string entry;
-        int s = 0;
 
         //for every shape
         foreach (string shape in m_Shapes)
@@ -228,41 +241,18 @@ public class ExpController : MonoBehaviour
                 //smaller sizes
                 for (int zS = 1; zS <= m_NumberSmaller; zS++)
                 {
-                    entry = $"{shape}|{1 - (diff * zS)}";//smaller scales
+                    entry = $"{shape}|{1 - (m_ScaleDiff * zS)}";//smaller scales
                     _order.Add(entry);
                 }
 
                 //larger sizes
                 for (int zL = 1; zL <= m_NumberLarger; zL++)
                 {
-                    entry = $"{shape}|{1 + (diff * zL)}";//larger scales
+                    entry = $"{shape}|{1 + (m_ScaleDiff * zL)}";//larger scales
                     _order.Add(entry);
                 }
             }
         }
-        /*        for (int r = 0; r < m_Repeats; r++)
-                {
-                    s = UnityEngine.Random.Range(0, m_Shapes.Length);
-                    entry = $"{m_Shapes[s]}|{1}";//scale 1
-                    _order.Add(entry);
-
-                    for (int zS = 1; zS <= m_NumberSmaller; zS++)
-                    {
-                        s = UnityEngine.Random.Range(0, m_Shapes.Length);
-                        entry = $"{m_Shapes[s]}|{1 - (diff * zS)}";//smaller scales
-                        _order.Add(entry);
-                    }
-
-                    for (int zL = 1; zL <= m_NumberLarger; zL++)
-                    {
-                        s = UnityEngine.Random.Range(0, m_Shapes.Length);
-                        entry = $"{m_Shapes[s]}|{1 + (diff * zL)}";//larger scales
-                        _order.Add(entry);
-                    }
-                }*/
-        
-        /*for(int s = 0; s < m_Shapes.Length; s++)
-        {}*/
 
         return true;
     }
@@ -298,8 +288,8 @@ public class ExpController : MonoBehaviour
 
     private void CreateExpFile()
     {
-        m_DataManager.CreateExpFile();
-        /*FILE_PATH = $"{Application.persistentDataPath}/ExpEntry_{System.DateTime.Now:yyyy-MM-dd-HH_mm_ss}.csv";
+        m_DataManager.CreateExpFile($"{m_Repeats}Reps_{m_ScaleDiff}Range");
+/*        FILE_PATH = $"{Application.persistentDataPath}/ExpEntry_{System.DateTime.Now:yyyy-MM-dd-HH_mm_ss}.csv";
         Debug.Log("fILE PATH IS: " + FILE_PATH);
 
         FILE_TEMP = new StringBuilder();
@@ -311,12 +301,15 @@ public class ExpController : MonoBehaviour
         if (SaveWait()) return;
 
         _savingEntry = true;
+        m_SaveAudio.Play();
         Debug.Log($"Saving entry {response}");
         string trial = GetCurTrial();
         string shape = trial.Split('|')[0];
         float size = float.Parse(trial.Split('|')[1]);
 
-        m_DataManager.UpdateExpFile(_nTrialNumber, shape, size, response);
+        _entryTime= DateTime.Now;
+
+        m_DataManager.UpdateExpFile(_nTrialNumber, shape, size, response, (_entryTime - _dispTime).ToString() , _entryTime.ToString("HH_mm_ss"));
 
         /*string entry = $"{_nTrialNumber},{shape}, {size}, {response}";
         FILE_TEMP.AppendLine(string.Join(SEPARATOR, entry));*/
@@ -365,6 +358,7 @@ public class ExpController : MonoBehaviour
             return;
         }
         Debug.Log($"Loading trial number {_nTrialNumber}");
+
         //set all related flags
         _nextLoading = true;
 
@@ -376,7 +370,7 @@ public class ExpController : MonoBehaviour
         _savedEntry = false;
 
         //Set up experiment env
-        SetUpNextLevel();
+        SetEyeLevel();
 
         if (spawn != null)
         {
@@ -400,6 +394,8 @@ public class ExpController : MonoBehaviour
             spawn.transform.localScale.y * size,
             spawn.transform.localScale.z * size);
         
+        _dispTime = DateTime.Now;
+        
         _nTrialNumber++;
 
         //see everything after setting up
@@ -420,7 +416,7 @@ public class ExpController : MonoBehaviour
 
     private bool SaveWait()
     {
-        return (!_ready || _savedEntry || _savingEntry || !ToRun || _nextLoading || _trialLoading);
+        return (!_ready || _savedEntry || _savingEntry || !ToRun || _nextLoading /*|| _trialLoading*/);
     }
 
     /// <summary>

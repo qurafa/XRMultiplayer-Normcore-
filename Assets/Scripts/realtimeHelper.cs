@@ -100,10 +100,10 @@ public class realtimeHelper : MonoBehaviour
 
     private void _Realtime_didDisconnectFromRoom(Realtime realtime)
     {
-        AdditiveSceneLoader aSL = FindObjectOfType<AdditiveSceneLoader>();
+        LobbyController lCont = FindObjectOfType<LobbyController>();
 
         //take us back the lobby when we disconnect
-        if(aSL) aSL.LoadScene(0);
+        if(lCont) lCont.LoadScene(0);
     }
 
     private void RequestOwnerShip(GameObject o)
