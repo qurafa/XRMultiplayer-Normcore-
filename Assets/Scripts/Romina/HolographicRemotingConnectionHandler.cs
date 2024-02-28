@@ -43,7 +43,6 @@ namespace com.perceptlab.armultiplayer
             RLogger.Log("HolographicRemoting: Blocking connect started");
             while (AppRemoting.IsReadyToStart == false) { RLogger.Log("Waiting for HolographicRemoting to be ready to start"); }
             RLogger.Log("HolographicRemoting: Ready to start, trying to connect");
-            RLogger.Log("HolographicRemoting: Ready to start, before trying to connect, hostname is "+ remotingConfiguration.RemoteHostName);
             AppRemoting.StartConnectingToPlayer(remotingConfiguration);
         }
 
