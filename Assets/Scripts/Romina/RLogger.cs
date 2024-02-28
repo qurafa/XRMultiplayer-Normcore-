@@ -15,8 +15,10 @@ namespace com.perceptlab.armultiplayer
         private static int lastIdx = 0;
 
         private static int maxLines = 5;
-        private static bool showOnUnityConsole = true;
-        private static bool showOnAppGui = true; 
+        [SerializeField]
+        private bool showOnUnityConsole = true;
+        [SerializeField]
+        private bool showOnAppGui = true; 
 
         private void setInstance()
         {
@@ -33,12 +35,11 @@ namespace com.perceptlab.armultiplayer
         void Awake()
         {
             setInstance();
-
         }
 
         public static void Log(string message)
         {
-            if (showOnUnityConsole)
+            if (instance == null || instance?.showOnUnityConsole == true)
             {
                 Debug.Log(message);
             }
