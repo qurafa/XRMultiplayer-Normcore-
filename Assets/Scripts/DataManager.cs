@@ -128,7 +128,7 @@ public class DataManager : MonoBehaviour
 
     /// <summary>
     /// Call to save the file containing information about objects in the room
-    /// <para>NOTE: ALL FILES MONITORED BY THE DATAMANAGER ARE ALREADY SET TO SAVE WHEN THE APPLICATION QUITS</para>
+    /// <para>NOTE: ALL FILES MONITORED BY THE DATAMANAGER ARE ALREADY SET TO SAVE WHEN THE APPLICATION QUITS OR PAUSES</para>
     /// </summary>
     private void SaveObjectsFile()
     {
@@ -140,6 +140,12 @@ public class DataManager : MonoBehaviour
 
         try
         {
+            //OVERWRITE EXISTING FILE
+            if (File.Exists(OBJECT_FILE_PATH))
+            {
+                File.Create(OBJECT_FILE_PATH);
+            }
+
             File.WriteAllText(OBJECT_FILE_PATH, OBJECT_FILE_TEMP.ToString());
             OBJECT_FILE_TEMP.Clear();
             Debug.Log($"Objects file saved to {OBJECT_FILE_PATH}");
@@ -158,10 +164,10 @@ public class DataManager : MonoBehaviour
     {
         if (!_canTrackPlayer) return;
 
-        if (PLAYER_FILE_PATH.ContainsKey(pID)) return;
-
         if (PLAYER_FILE_PATH == null)
             PLAYER_FILE_PATH = new Dictionary<int, string>();
+
+        if (PLAYER_FILE_PATH.ContainsKey(pID)) return;
 
         string playerFilePath = $"{Application.persistentDataPath}/p{pID}_skeletonData_{System.DateTime.Now.ToString("yyyy-MM-dd-HH_mm_ss")}.csv";
 
@@ -199,7 +205,7 @@ public class DataManager : MonoBehaviour
 
     /// <summary>
     /// Call to save the file related to a specific player "pID"
-    /// <para>NOTE: ALL FILES MONITORED BY THE DATAMANAGER ARE ALREADY SET TO SAVE WHEN THE APPLICATION QUITS</para>
+    /// <para>NOTE: ALL FILES MONITORED BY THE DATAMANAGER ARE ALREADY SET TO SAVE WHEN THE APPLICATION QUITS OR PAUSES</para>
     /// </summary>
     /// <param name="pID"></param>
     public void SavePlayerFile(int pID)
@@ -210,6 +216,12 @@ public class DataManager : MonoBehaviour
 
         try
         {
+            //OVERWRITE EXISTING FILE
+            if (File.Exists(PLAYER_FILE_PATH[pID]))
+            {
+                File.Create(PLAYER_FILE_PATH[pID]);
+            }
+
             File.WriteAllText(PLAYER_FILE_PATH[pID], PLAYER_FILE_TEMP[pID].ToString());
             PLAYER_FILE_TEMP.Clear();
             Debug.Log($"Player {pID} file saved to {PLAYER_FILE_PATH[pID]}");
@@ -280,12 +292,18 @@ public class DataManager : MonoBehaviour
 
     /// <summary>
     /// Call to save the experiment file
-    /// <para>NOTE: ALL FILES MONITORED BY THE DATAMANAGER ARE ALREADY SET TO SAVE WHEN THE APPLICATION QUITS</para>
+    /// <para>NOTE: ALL FILES MONITORED BY THE DATAMANAGER ARE ALREADY SET TO SAVE WHEN THE APPLICATION QUITS OR PAUSES</para>
     /// </summary>
     public void SaveExpFile()
     {
         try
         {
+            //OVERWRITE EXISTING FILE
+            if (File.Exists(EXP_FILE_PATH))
+            {
+                File.Create(EXP_FILE_PATH);
+            }
+
             File.AppendAllText(EXP_FILE_PATH, EXP_FILE_TEMP.ToString());
             Debug.Log($"Exp file saved to {EXP_FILE_PATH}");
             EXP_FILE_TEMP.Clear();
@@ -299,7 +317,7 @@ public class DataManager : MonoBehaviour
 
     /// <summary>
     /// Call to save all the files monitored by the DataManager
-    /// <para>NOTE: ALL FILES MONITORED BY THE DATAMANAGER ARE ALREADY SET TO SAVE WHEN THE APPLICATION QUITS</para>
+    /// <para>NOTE: ALL FILES MONITORED BY THE DATAMANAGER ARE ALREADY SET TO SAVE WHEN THE APPLICATION QUITS OR PAUSES</para>
     /// </summary>
     public void SaveAllFiles()
     {
@@ -312,6 +330,14 @@ public class DataManager : MonoBehaviour
     private void OnApplicationQuit()
     {
         SaveAllFiles();
+    }
+
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+        {
+            SaveAllFiles();
+        }
     }
 }
 

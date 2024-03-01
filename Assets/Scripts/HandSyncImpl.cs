@@ -384,11 +384,11 @@ public class HandSyncImpl : MonoBehaviour
             controller.eulerAngles = new Vector3(float.Parse(netHandDataArr[4]),
                 float.Parse(netHandDataArr[5]),
                 float.Parse(netHandDataArr[6]));
-            if (_controllerAnim != null)
+            /*if (_controllerAnim != null)
             {
                 _controllerAnim.SetFloat("Trigger", float.Parse(netHandDataArr[7]));
                 _controllerAnim.SetFloat("Grip", float.Parse(netHandDataArr[8]));
-            }
+            }*/
             _dataManager.UpdatePlayerFile(_rtView.ownerIDSelf, controller.transform);
         }
         else

@@ -5055,7 +5055,7 @@ MonoBehaviour:
   m_NumberSmaller: 3
   m_NumberLarger: 3
   m_Repeats: 1
-  scaleDiff: 0.025
+  m_ScaleDiff: 0.025
   largerButton:
     m_Name: Larger Button
     m_Type: 0
@@ -10863,7 +10863,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 257f325d36eeec34594e3f9e4661b758, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _canTrackPlayer: 0
+  _canTrackPlayer: 1
   _canTrackObjects: 0
   _realTime: {fileID: 437273665631284249}
   _timeInterval: 0.1
