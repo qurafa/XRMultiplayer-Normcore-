@@ -317,26 +317,9 @@ public class ExpController : MonoBehaviour
         _savingEntry = false;
     }
 
-    private void SaveFile()
-    {
-        
+    private void SaveExpFile()
+    {   
         m_DataManager.SaveExpFile();
-        /*try
-        {
-            File.AppendAllText(FILE_PATH, FILE_TEMP.ToString());
-            Debug.Log($"File saved to {FILE_PATH}");
-        }
-        catch (Exception e)
-        {
-            Debug.Log($"Data could not be written to csv file due to exception: {e}");
-            return;
-        }*/
-    }
-
-    private void SaveAllFiles()
-    {
-        //here we can set to save all the files currently buffered in the DataManager
-        m_DataManager.SaveAllFiles();
     }
 
     public void NextTrial()
@@ -345,8 +328,6 @@ public class ExpController : MonoBehaviour
 
         if (_nTrialNumber >= _order.Count)
         {
-            SaveFile();
-
 #if UNITY_EDITOR
             if (EditorApplication.isPlaying)
             {

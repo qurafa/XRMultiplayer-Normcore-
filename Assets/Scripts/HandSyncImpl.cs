@@ -292,7 +292,7 @@ public class HandSyncImpl : MonoBehaviour
                 
                 dataToSend += $"{jointPose.position.x}|{jointPose.position.y}|{jointPose.position.z}|{jointPose.rotation.eulerAngles.x}|{jointPose.rotation.eulerAngles.y}|{jointPose.rotation.eulerAngles.z}|";
 
-                _dataManager.UpdatePlayerFile(_rtView.ownerIDSelf, jointPose, (XRHandJointID)(j + 1) + "");
+                _dataManager.UpdatePlayerFile(_rtView.ownerIDSelf, jointPose, string.Concat((XRHandJointID)(j + 1)));
             }
         }
         else if(_controllerTrackingAcquired)
@@ -368,7 +368,7 @@ public class HandSyncImpl : MonoBehaviour
                         float.Parse(netHandDataArr[jTmp + 5]),
                         float.Parse(netHandDataArr[jTmp + 6]));
 
-                _dataManager.UpdatePlayerFile(_rtView.ownerIDSelf, _joints[j].GetWorldPose(), (XRHandJointID)(j + 1) + "");
+                _dataManager.UpdatePlayerFile(_rtView.ownerIDSelf, _joints[j].GetWorldPose(), string.Concat((XRHandJointID)(j + 1)));
             }
         }
         else if(netHandDataArr[0] == "2")
@@ -384,11 +384,11 @@ public class HandSyncImpl : MonoBehaviour
             controller.eulerAngles = new Vector3(float.Parse(netHandDataArr[4]),
                 float.Parse(netHandDataArr[5]),
                 float.Parse(netHandDataArr[6]));
-            if (_controllerAnim != null)
+            /*if (_controllerAnim != null)
             {
                 _controllerAnim.SetFloat("Trigger", float.Parse(netHandDataArr[7]));
                 _controllerAnim.SetFloat("Grip", float.Parse(netHandDataArr[8]));
-            }
+            }*/
             _dataManager.UpdatePlayerFile(_rtView.ownerIDSelf, controller.transform);
         }
         else

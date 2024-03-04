@@ -64,7 +64,6 @@ public class DataManager : MonoBehaviour
     public void SetID(int id)
     {
         this.id = id;
-        CreateObjectsFile();
     }
 
     public void AddObjectTrack(GameObject g)
@@ -81,6 +80,8 @@ public class DataManager : MonoBehaviour
     {
         if (!_canTrackObjects) return;
 
+        if (OBJECT_FILE_PATH != "") return;
+
         OBJECT_FILE_PATH = $"{Application.persistentDataPath}/objectsData_{System.DateTime.Now.ToString("yyyy-MM-dd-HH_mm_ss")}.csv";//something to identify the participant
 
         OBJECT_FILE_TEMP = new StringBuilder();
@@ -92,7 +93,7 @@ public class DataManager : MonoBehaviour
         objfileCreated = true;
     }
 
-    private void UpdateObjectFile()
+    public void UpdateObjectFile()
     {
         if (!_canTrackObjects) return;
 
@@ -115,6 +116,20 @@ public class DataManager : MonoBehaviour
         //File.AppendAllText(OBJECT_FILE_PATH, update);
     }
 
+    public bool ObjectFileExists()
+    {
+        return OBJECT_FILE_PATH != "";
+    }
+
+    public string GetObjectFilePath()
+    {
+        return OBJECT_FILE_PATH;
+    }
+
+    /// <summary>
+    /// Call to save the file containing information about objects in the room
+    /// <para>NOTE: ALL FILES MONITORED BY THE DATAMANAGER ARE ALREADY SET TO SAVE WHEN THE APPLICATION QUITS OR PAUSES</para>
+    /// </summary>
     private void SaveObjectsFile()
     {
         if (!_canTrackObjects) return;
@@ -125,6 +140,12 @@ public class DataManager : MonoBehaviour
 
         try
         {
+            //OVERWRITE EXISTING FILE
+            if (File.Exists(OBJECT_FILE_PATH))
+            {
+                File.Create(OBJECT_FILE_PATH);
+            }
+
             File.WriteAllText(OBJECT_FILE_PATH, OBJECT_FILE_TEMP.ToString());
             OBJECT_FILE_TEMP.Clear();
             Debug.Log($"Objects file saved to {OBJECT_FILE_PATH}");
@@ -136,13 +157,17 @@ public class DataManager : MonoBehaviour
         }
     }
 
-    //create a file to store skeleton data for each player
+    /// <summary>
+    /// Create a file to store skeleton data for player pID
+    /// </summary>
     public void CreatePlayerFile(int pID)
     {
         if (!_canTrackPlayer) return;
 
         if (PLAYER_FILE_PATH == null)
             PLAYER_FILE_PATH = new Dictionary<int, string>();
+
+        if (PLAYER_FILE_PATH.ContainsKey(pID)) return;
 
         string playerFilePath = $"{Application.persistentDataPath}/p{pID}_skeletonData_{System.DateTime.Now.ToString("yyyy-MM-dd-HH_mm_ss")}.csv";
 
@@ -156,34 +181,33 @@ public class DataManager : MonoBehaviour
         PLAYER_FILE_PATH.Add(pID, playerFilePath);
     }
 
-    public void UpdatePlayerFile(int pID, Transform trans)
+    public void UpdatePlayerFile(int pID, Transform transform)
     {
         if (!_canTrackPlayer || !PLAYER_FILE_PATH.ContainsKey(pID)) return;
 
-        string update = $"{trans.name},{DateTime.Now.TimeOfDay}," +
-            $"{trans.position.x},{trans.position.y},{trans.position.z}," +
-            $"{trans.eulerAngles.x},{trans.eulerAngles.y},{trans.eulerAngles.z}";
+        string update = $"{transform.name},{DateTime.Now.TimeOfDay}," +
+            $"{transform.position.x},{transform.position.y},{transform.position.z}," +
+            $"{transform.eulerAngles.x},{transform.eulerAngles.y},{transform.eulerAngles.z}";
 
         PLAYER_FILE_TEMP[pID].AppendLine(string.Join(SEPARATOR, update));
-
-        //string path = PLAYER_FILE_PATH[playerID];
-        //File.AppendAllText(path, update);
     }
 
     public void UpdatePlayerFile(int pID, Pose pose, string name)
     {
         if (!_canTrackPlayer || !PLAYER_FILE_PATH.ContainsKey(pID)) return;
-
+        
         string update = $"{name},{DateTime.Now.TimeOfDay}," +
             $"{pose.position.x},{pose.position.y},{pose.position.z}," +
-            $"{pose.rotation.eulerAngles.x},{pose.rotation.eulerAngles.y},{pose.rotation.eulerAngles.z}\n";
+            $"{pose.rotation.eulerAngles.x},{pose.rotation.eulerAngles.y},{pose.rotation.eulerAngles.z}";
 
         PLAYER_FILE_TEMP[pID].AppendLine(string.Join(SEPARATOR, update));
-
-        //string path = PLAYER_FILE_PATH[playerID];
-        //File.AppendAllText(path, update);
     }
 
+    /// <summary>
+    /// Call to save the file related to a specific player "pID"
+    /// <para>NOTE: ALL FILES MONITORED BY THE DATAMANAGER ARE ALREADY SET TO SAVE WHEN THE APPLICATION QUITS OR PAUSES</para>
+    /// </summary>
+    /// <param name="pID"></param>
     public void SavePlayerFile(int pID)
     {
         if (!_canTrackPlayer) return;
@@ -192,6 +216,12 @@ public class DataManager : MonoBehaviour
 
         try
         {
+            //OVERWRITE EXISTING FILE
+            if (File.Exists(PLAYER_FILE_PATH[pID]))
+            {
+                File.Create(PLAYER_FILE_PATH[pID]);
+            }
+
             File.WriteAllText(PLAYER_FILE_PATH[pID], PLAYER_FILE_TEMP[pID].ToString());
             PLAYER_FILE_TEMP.Clear();
             Debug.Log($"Player {pID} file saved to {PLAYER_FILE_PATH[pID]}");
@@ -201,6 +231,16 @@ public class DataManager : MonoBehaviour
             Debug.Log($"Player {pID} data could not be written to file due to exception: {e}");
             return;
         }
+    }
+
+    public bool PlayerFileExists(int pID)
+    {
+        return PLAYER_FILE_PATH.ContainsKey(pID);
+    }
+
+    public string GetPlayerFilePath(int pID)
+    {
+        return PLAYER_FILE_PATH[pID];
     }
 
     public void CreateExpFile()
@@ -240,10 +280,30 @@ public class DataManager : MonoBehaviour
         EXP_FILE_TEMP.AppendLine(string.Join(SEPARATOR, entry));
     }
 
+    public bool ExpFileExists()
+    {
+        return EXP_FILE_PATH != "";
+    }
+
+    public string GetExpFilePath()
+    {
+        return EXP_FILE_PATH;
+    }
+
+    /// <summary>
+    /// Call to save the experiment file
+    /// <para>NOTE: ALL FILES MONITORED BY THE DATAMANAGER ARE ALREADY SET TO SAVE WHEN THE APPLICATION QUITS OR PAUSES</para>
+    /// </summary>
     public void SaveExpFile()
     {
         try
         {
+            //OVERWRITE EXISTING FILE
+            if (File.Exists(EXP_FILE_PATH))
+            {
+                File.Create(EXP_FILE_PATH);
+            }
+
             File.AppendAllText(EXP_FILE_PATH, EXP_FILE_TEMP.ToString());
             Debug.Log($"Exp file saved to {EXP_FILE_PATH}");
             EXP_FILE_TEMP.Clear();
@@ -255,12 +315,29 @@ public class DataManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Call to save all the files monitored by the DataManager
+    /// <para>NOTE: ALL FILES MONITORED BY THE DATAMANAGER ARE ALREADY SET TO SAVE WHEN THE APPLICATION QUITS OR PAUSES</para>
+    /// </summary>
     public void SaveAllFiles()
     {
         SaveExpFile();
         SaveObjectsFile();
         foreach(int pID in PLAYER_FILE_PATH.Keys)
             SavePlayerFile(pID);
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveAllFiles();
+    }
+
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+        {
+            SaveAllFiles();
+        }
     }
 }
 
