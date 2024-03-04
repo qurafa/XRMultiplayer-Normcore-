@@ -378,11 +378,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.0076587247, y: 0.015299997, z: 0.0072999983}
   m_Center: {x: 0.0006171345, y: 0.0027949514, z: -0.0015480035}
---- !u!1 &363730465 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2351505566771328562, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
-  m_PrefabInstance: {fileID: 1417148833}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &764639274
 GameObject:
   m_ObjectHideFlags: 0
@@ -418,6 +413,7 @@ MonoBehaviour:
   onDisconnectedFromDevice:
     m_PersistentCalls:
       m_Calls: []
+  drawGUI: 0
 --- !u!4 &764639276
 Transform:
   m_ObjectHideFlags: 0
@@ -474,30 +470,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1156848454}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01c7225d37345624ca810d0735b86028, type: 3}
+  m_Script: {fileID: 11500000, guid: 408e2a88d8fb07449bc574b9dd516e4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   room: {fileID: 205605689}
   player: {fileID: 1417148834}
-  player_camera: {fileID: 363730465}
+  player_camera: {fileID: 1417148835}
+  actions: {fileID: -944628639613478452, guid: a7b624942bc99cb42a85cbba1340da85, type: 3}
   move_speed: 0.003
   rotatoin_speed: 0.1
   onDoneAlign:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 546984970637287104}
-        m_TargetAssemblyTypeName: com.perceptlab.armultiplayer.NetworkManager, Assembly-CSharp
-        m_MethodName: Connect
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OptionalButtons: []
+      m_Calls: []
 --- !u!1001 &1365689594
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -607,6 +591,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: MRTK XR Rig
       objectReference: {fileID: 0}
+    - target: {fileID: 5334666798807300184, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5727148872130156896, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5870931076040997458, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6056176063914695530, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -615,6 +615,11 @@ PrefabInstance:
 --- !u!1 &1417148834 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2351505567455720334, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+  m_PrefabInstance: {fileID: 1417148833}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1417148835 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2351505566903569413, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
   m_PrefabInstance: {fileID: 1417148833}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1427442807
@@ -646,6 +651,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 665c5c7e00a22e946920e5b17c485409, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showOnUnityConsole: 1
+  showOnAppGui: 1
 --- !u!4 &1427442809
 Transform:
   m_ObjectHideFlags: 0
@@ -696,7 +703,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   remotingHandler: {fileID: 764639275}
-  align: {fileID: 1156848456}
+  align: {fileID: 0}
   IP: 192.168.0.103
 --- !u!4 &1936076429
 Transform:

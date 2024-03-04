@@ -739,7 +739,15 @@ PrefabInstance:
       propertyPath: prioritizedInteractionModes.Array.data[4].associatedTypes.Array.data[3].reference
       value: MixedReality.Toolkit.Input.PokeInteractor, MixedReality.Toolkit.Input
       objectReference: {fileID: 0}
+    - target: {fileID: 5334666798807300184, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5727148872130156896, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5870931076040997458, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}

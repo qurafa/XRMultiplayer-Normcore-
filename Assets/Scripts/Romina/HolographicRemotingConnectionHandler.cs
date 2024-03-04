@@ -42,7 +42,7 @@ namespace com.perceptlab.armultiplayer
             }
             if (AppRemoting.IsReadyToStart == false) 
             { 
-                RLogger.Log("Waiting for HolographicRemoting is not ready to start. Try again later.");
+                RLogger.Log("Error: HolographicRemoting is not ready to start. Check App's XR Settings and try again later.");
                 return;
             }
             RLogger.Log("HolographicRemoting: Ready to start, trying to connect");

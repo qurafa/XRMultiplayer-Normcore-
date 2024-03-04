@@ -2,19 +2,16 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.XR.ARFoundation;
 
 namespace com.perceptlab.armultiplayer
 {
     public class AlignTheWorld : MonoBehaviour
     {
-        [Serializable]
-        struct ButtonHandler
-        {
-            public string name;
-            public UnityEvent onPressed;
-        }
+
         private ARSession _ARSession;
+        
         [SerializeField]
         GameObject room;
         [SerializeField, Tooltip("The topmost game object in hierarchy that is holding the player in the game (MRTK XR Rig in AR)")]
@@ -22,49 +19,42 @@ namespace com.perceptlab.armultiplayer
         [SerializeField, Tooltip("The camera")]
         GameObject player_camera;
 
+        // assign the actions asset to this field in the inspector:
+        [SerializeField, Tooltip("The action asset with MoveX, MoveY, MoveZ, RotateY, 1D axes and ActivateAlign and DoneAlign buttons")]
+        private InputActionAsset actions;
+
         [SerializeField]
         private float move_speed = 0.003f;
 
         [SerializeField]
-        private float rotatoin_speed = 0.01f;
-
-        private bool active = true;
-        private bool done = false;
+        private float rotatoin_speed = 0.1f;
 
         [SerializeField]
         public UnityEvent onDoneAlign;
 
-        [SerializeField]
-        private List<ButtonHandler> OptionalButtons;
 
+        private bool active = true;
+        private bool done = false;
 
-        //List<string> xboxButtons = new List<string> { "X", "Y", "A", "B", "Left Stick Button", "Right Stick Button", "Start", "Back", "RB", "LB", };
-        //List<string> xboxButtons = new List<string> { "BeginEndAlign", "DoneAlign" };
-        //List<string> xboxAxes = new List<string> { "Left Stick X", "Left Stick Y", "Right Stick X", "Right Stick Y", "D-pad X", "D-pad Y", "RT", "LT", "Triggers" };
-        //List<string> xboxAxes = new List<string> { "MoveX", "MoveZ", "MoveY", "RotateY" };
+        private InputAction moveX;
+        private InputAction moveY;
+        private InputAction moveZ;
+        private InputAction rotateY;
 
-        //void LogButtons()
-        //{
-        //    //Debug.Log("printing buttons");
-        //    foreach (string name in xboxButtons)
-        //    {
-        //        //Debug.Log("checking " + name);
-        //        if (Input.GetButtonDown(name))
-        //            RLogger.Log("Button Down: " + name.ToString());
-        //    }
-        //}
-
-        //void LogAxes()
-        //{
-        //    foreach (string name in xboxAxes)
-        //    {
-        //        if (Input.GetAxis(name) != 0)
-        //            RLogger.Log("Axis: " + name + " is: " + Input.GetAxis(name).ToString());
-        //    }
-        //}
+        private void Awake()
+        {
+            RLogger.Log("Align the world is active");
+            actions.FindActionMap("Align").FindAction("ActivateAlign").performed += OnActivateAlign;
+            actions.FindActionMap("Align").FindAction("DoneAlign").performed += OnDoneAlign;
+            moveX = actions.FindActionMap("Align").FindAction("MoveX");
+            moveY = actions.FindActionMap("Align").FindAction("MoveY");
+            moveZ = actions.FindActionMap("Align").FindAction("MoveZ");
+            rotateY = actions.FindActionMap("Align").FindAction("RotateY");
+        }
 
         private void Start()
         {
+            RLogger.Log("Align the world is active");
             _ARSession = GetComponent<ARSession>();
             if (_ARSession != null)
             {
@@ -72,54 +62,55 @@ namespace com.perceptlab.armultiplayer
             }
         }
 
+        private void OnActivateAlign(InputAction.CallbackContext context)
+        {
+            RLogger.Log("BeginEndAlign was pressed");
+            active = !active;
+            if (_ARSession != null)
+            {
+                _ARSession.enabled = active;
+            }
+        }
+
+        private void OnDoneAlign(InputAction.CallbackContext context)
+        {
+            if (done)
+                return;
+            RLogger.Log("DoneAlign was pressed, world position is: " + room.transform.position.ToString() + " player position is: " + player.transform.position);
+            active = false;
+            done = true;
+            onDoneAlign?.Invoke();
+            if (_ARSession != null)
+            {
+                _ARSession.enabled = false;
+                // revert the changes caused by _ARSession.MatchFrameRate = True
+                Application.targetFrameRate = 0;
+                QualitySettings.vSyncCount = 1;
+            }
+            actions.FindActionMap("Align").Disable();
+        }
+
         // Moves the player instead of the world. Player is in the same real position, thus, the virtual world is being moved!
         void Update()
         {
             if (done)
             {
+                RLogger.Log("align the world is destroyed cause: done");
                 Destroy(this);
-            }
-            if (Input.GetButtonDown("BeginEndAlign"))
-            {
-                RLogger.Log("BeginEndAlign was pressed");
-                active = !active;
-                if (_ARSession != null) {
-                    _ARSession.enabled = !_ARSession.enabled;
-                }
-
-            }
-            if (Input.GetButtonDown("DoneAlign") && !done)
-            {
-                RLogger.Log("DoneAlign was pressed, world position is: " + room.transform.position.ToString() + " player posisiont is: "+ player.transform.position);
-                active = false;
-                done = true;
-                onDoneAlign?.Invoke();
-                if (_ARSession != null)
-                {
-                    _ARSession.enabled = false;
-                    // revert the changes caused by _ARSession.MatchFrameRate = True
-                    Application.targetFrameRate = 0;
-                    QualitySettings.vSyncCount = 1;
-                }
-
             }
             if (active)
             {
                 movePlayer();
             }
-            handleExtraButtons();
         }
 
         void movePlayer()
         {
-            float keyboard_movex = Input.GetKey(KeyCode.A) ? 1f : Input.GetKey(KeyCode.D) ? -1f : 0f;
-            float keyboard_movez = Input.GetKey(KeyCode.W) ? 1f : Input.GetKey(KeyCode.S) ? -1f : 0f;
-            float keyboard_movey = Input.GetKey(KeyCode.UpArrow) ? 1f : Input.GetKey(KeyCode.DownArrow) ? -1f : 0f;
-            float keyboard_rotatey = Input.GetKey(KeyCode.RightArrow) ? 1f : Input.GetKey(KeyCode.LeftArrow) ? -1f : 0f;
+            float movex = moveX.ReadValue<float>();
+            float movez = -moveZ.ReadValue<float>();
+            float movey = -moveY.ReadValue<float>();
+            float rotatey = rotateY.ReadValue<float>();
 
-            float movex = Input.GetAxis("MoveX") + keyboard_movex;
-            float movey= Input.GetAxis("MoveY") + keyboard_movey;
-            float movez = Input.GetAxis("MoveZ") + keyboard_movez;
 
             Vector3 player_forward = player_camera.transform.forward; player_forward.y = 0f; player_forward = Vector3.Normalize(player_forward);
             Vector3 player_right = player_camera.transform.right; player_right.y = 0f; player_right = Vector3.Normalize(player_right);
@@ -128,21 +119,19 @@ namespace com.perceptlab.armultiplayer
 
             player.transform.Translate(-1f* translate * move_speed, Space.World);
 
-
-            // if we assume objects are renders straight up, which we did!, we won't need the room.transform.rotation multiplication. 
-            player.transform.Rotate( room.transform.rotation * Vector3.up * -1f *(Input.GetAxis("RotateY") + keyboard_rotatey) * rotatoin_speed, Space.Self);
+            // if we assume objects are rendered straight up, which we did!, we only need to rotate the room around world y axis to adjust (we have assuemd x and z axes rotations are 0)
+            player.transform.RotateAround(player.transform.position, Vector3.up, -1f * rotatey * rotatoin_speed);
         }
 
-        void handleExtraButtons()
+        void OnEnable()
         {
-            foreach (ButtonHandler b in OptionalButtons)
-            {
-                if (Input.GetButtonDown(b.name))
-                {
-                    b.onPressed.Invoke();
-                }
-            }
+            actions.FindActionMap("Align").Enable();
         }
+        void OnDisable()
+        {
+            actions.FindActionMap("Align").Disable();
+        }
+
 
 
         //private void PerformRelocatin()
