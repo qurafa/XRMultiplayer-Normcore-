@@ -28,7 +28,7 @@ namespace com.perceptlab.armultiplayer
         bool drawGUI = false;
 
         // connects to port 8265 because HL2 player app listens to this port.
-        public void BlockingConnect(string IP)
+        public void Connect(string IP)
         {
             remotingConfiguration.RemoteHostName = IP;
 
@@ -40,8 +40,11 @@ namespace com.perceptlab.armultiplayer
                 RLogger.Log("The ip is not reachable, make sure it's entered correclty");
                 return;
             }
-            RLogger.Log("HolographicRemoting: Blocking connect started");
-            while (AppRemoting.IsReadyToStart == false) { RLogger.Log("Waiting for HolographicRemoting to be ready to start"); }
+            if (AppRemoting.IsReadyToStart == false) 
+            { 
+                RLogger.Log("Waiting for HolographicRemoting is not ready to start. Try again later.");
+                return;
+            }
             RLogger.Log("HolographicRemoting: Ready to start, trying to connect");
             AppRemoting.StartConnectingToPlayer(remotingConfiguration);
         }
@@ -116,7 +119,7 @@ namespace com.perceptlab.armultiplayer
                     if (GUI.Button(new Rect(365, 10, 100, 30), "Connect"))
                     {
                         GUI.Label(new Rect(365, 10, 100, 30), "Connecting...");
-                        BlockingConnect(remotingConfiguration.RemoteHostName);
+                        Connect(remotingConfiguration.RemoteHostName);
                     }
                 }
                 else

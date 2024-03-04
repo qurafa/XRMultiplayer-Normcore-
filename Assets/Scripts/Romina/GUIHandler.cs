@@ -81,7 +81,7 @@ public class GUIHandler : MonoBehaviour
             if (GUI.Button(new Rect(365, 10, 100, 30), "Connect"))
             {
                 GUI.Label(new Rect(365, 10, 100, 30), "Connecting...");
-                remotingHandler.BlockingConnect(IP);
+                remotingHandler.Connect(IP);
             }
         }
         else
