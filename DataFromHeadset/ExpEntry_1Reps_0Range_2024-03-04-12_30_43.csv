@@ -1,0 +1,4 @@
+Trial,Shape,Size,Response,ResponseTime,Time
+1,Square, 1, 1, 00:00:02.0247510, 12:30:49.0230630
+2,Octagon, 1, 0, 00:00:01.4179370, 12:30:51.9306590
+3,Star-Separated, 1, 0, 00:00:00.7474880, 12:30:54.7694370

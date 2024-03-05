@@ -47,10 +47,21 @@ public class ExpController : MonoBehaviour
     private int m_NumberSmaller = 0;
     [SerializeField]
     private int m_NumberLarger = 0;
+    /// <summary>
+    /// Number of repeats for each shape and size
+    /// </summary>
     [SerializeField]
     private int m_Repeats = 0;
+    /// <summary>
+    /// Represents the difference in range of shapes between trials
+    /// </summary>
     [SerializeField]
     private float m_ScaleDiff = 0.025f;
+    /// <summary>
+    /// Number of shapes to use, picks randon n number of shapes to use
+    /// </summary>
+    [SerializeField]
+    private int m_NumOfShapes = 6;
 
     [Header("INPUT ACTIONS")]
     [SerializeField]
@@ -72,7 +83,13 @@ public class ExpController : MonoBehaviour
     /// </summary>
     private GameObject spawn = null;
 
+    /// <summary>
+    /// Time last stimuli is displayed
+    /// </summary>
     private DateTime _dispTime = DateTime.Now;
+    /// <summary>
+    /// Time last entry was registered
+    /// </summary>
     private DateTime _entryTime = DateTime.Now;
 
     //important variables
@@ -80,8 +97,8 @@ public class ExpController : MonoBehaviour
     private readonly static string SMALLER_RESPONSE = "0";
     private readonly static string NO_RESPONSE = "-1";
 
-    //soooo namy flags.........lol
-    //when we're ready to start
+    //soooo many flags.........lol
+    //when we're ready to start flag
     private bool _ready = false;
 
     //next trial loading flag
@@ -184,9 +201,12 @@ public class ExpController : MonoBehaviour
 
         //don't do anything if it isn't the first user....
         if (m_Realtime.clientID != 0) return;
-
+        
+        //Shuffle the order of the shapes
+        ShuffleShapes();
         //Set up experiment order
         CreateExpOrder();
+        //Shuffle the order
         ShuffleOrder();
 
         //Create file path to store entries 
@@ -210,16 +230,26 @@ public class ExpController : MonoBehaviour
         m_SortingCube.eulerAngles = _shapeToBoxRotation[shape];
     }
 
+    /// <summary>
+    /// Sets the number of random shapes to use, caps at the number of shapes we have to use
+    /// </summary>
+    /// <param name="num"></param>
+    public void SetNumOfShapes(int num)
+    {
+        m_NumOfShapes = num > m_Shapes.Length ? m_Shapes.Length : num;
+        Debug.Log($"using {m_NumOfShapes} shapes");
+    }
+
     public void SetRepeats(int repeats)
     {
-        Debug.Log($"Setting repeats {repeats}");
         m_Repeats = repeats;
+        Debug.Log($"Set repeats to {repeats}");
     }
 
     public void SetScaleDiff(float diff)
     {
-        Debug.Log($"Setting scale diff {diff}");
         m_ScaleDiff = diff;
+        Debug.Log($"set scale diff to {diff}");
     }
 
     private bool CreateExpOrder()
@@ -230,25 +260,25 @@ public class ExpController : MonoBehaviour
         string entry;
 
         //for every shape
-        foreach (string shape in m_Shapes)
+        for (int i = 0; i < m_NumOfShapes; i++)
         {
             //for every repeat for each shape
             for (int r = 0; r < m_Repeats; r++)
             {
-                entry = $"{shape}|{1}";//mid scale
+                entry = $"{m_Shapes[i]}|{1}";//mid scale
                 _order.Add(entry);
 
                 //smaller sizes
                 for (int zS = 1; zS <= m_NumberSmaller; zS++)
                 {
-                    entry = $"{shape}|{1 - (m_ScaleDiff * zS)}";//smaller scales
+                    entry = $"{m_Shapes[i]}|{1 - (m_ScaleDiff * zS)}";//smaller scales
                     _order.Add(entry);
                 }
 
                 //larger sizes
                 for (int zL = 1; zL <= m_NumberLarger; zL++)
                 {
-                    entry = $"{shape}|{1 + (m_ScaleDiff * zL)}";//larger scales
+                    entry = $"{m_Shapes[i]}|{1 + (m_ScaleDiff * zL)}";//larger scales
                     _order.Add(entry);
                 }
             }
@@ -260,6 +290,18 @@ public class ExpController : MonoBehaviour
     public List<string> GetOrder()
     { 
         return _order; 
+    }
+
+    private void ShuffleShapes()
+    {
+        for (int n = 0; n < m_Shapes.Length; n++)
+        {
+            int i = UnityEngine.Random.Range(0, m_Shapes.Length - 1);
+
+            string temp = m_Shapes[i];
+            m_Shapes[i] = m_Shapes[n];
+            m_Shapes[n] = temp;
+        }
     }
 
     private void ShuffleOrder()
@@ -308,8 +350,8 @@ public class ExpController : MonoBehaviour
         float size = float.Parse(trial.Split('|')[1]);
 
         _entryTime= DateTime.Now;
-
-        m_DataManager.UpdateExpFile(_nTrialNumber, shape, size, response, (_entryTime - _dispTime).ToString() , _entryTime.ToString("HH_mm_ss"));
+        TimeSpan diff = _entryTime - _dispTime;
+        m_DataManager.UpdateExpFile(_nTrialNumber, shape, size, response, diff.ToString(), _entryTime.TimeOfDay.ToString());
 
         /*string entry = $"{_nTrialNumber},{shape}, {size}, {response}";
         FILE_TEMP.AppendLine(string.Join(SEPARATOR, entry));*/
