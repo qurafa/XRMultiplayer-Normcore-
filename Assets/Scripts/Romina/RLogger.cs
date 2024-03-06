@@ -5,6 +5,10 @@ using UnityEngine;
 using System;
 using System.Text;
 
+
+///< summary >
+/// Logs statically on the console. Also logs on GUI or a manually set TMPro text.
+/// </summary>
 namespace com.perceptlab.armultiplayer
 {
     public class RLogger: MonoBehaviour
