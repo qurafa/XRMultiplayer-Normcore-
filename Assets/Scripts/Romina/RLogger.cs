@@ -7,7 +7,8 @@ using System.Text;
 
 
 ///< summary >
-/// Logs statically on the console. Also logs on GUI or a manually set TMPro text.
+/// Simple class for seeing Logs in Builds. Will always call Debug.Log(), therefore always pritns logs ot Unity console 
+/// If added to a GameObject, will show logs on screen.
 /// </summary>
 namespace com.perceptlab.armultiplayer
 {
@@ -18,12 +19,13 @@ namespace com.perceptlab.armultiplayer
         private static Queue<int> nextLineIdx = new Queue<int>();
         private static int lastIdx = 0;
 
-        private static int maxLines = 5;
+        [SerializeField]
+        private int maxLines = 5;
         [SerializeField]
         private bool showOnUnityConsole = true;
-        [SerializeField]
+        [SerializeField, Tooltip("If true, the last 'maxLines' logs will be shown on screen on OnGUI callbacks (no textMesh needed)")]
         private bool showOnAppGui = true;
-        [SerializeField]
+        [SerializeField, Tooltip("If set, the text will be set to the last 'maxLines' logs.")]
         private TMPro.TextMeshProUGUI custumeTextHolder;
 
         private void setInstance()
@@ -49,16 +51,21 @@ namespace com.perceptlab.armultiplayer
             {
                 Debug.Log(message);
             }
+
+            //adding message (implemented this way so there would be no need to concat strings)
             GUIText += "\n" + message;
             nextLineIdx.Enqueue(GUIText.Length-lastIdx);
             lastIdx = GUIText.Length;
-            if (maxLines == -1)
-                    return;
-            if (nextLineIdx.Count>maxLines)
+
+            if (instance != null)
             {
-                int cut = nextLineIdx.Dequeue();
-                GUIText = GUIText.Substring(cut);
-                lastIdx -= cut;
+                while (nextLineIdx.Count > instance.maxLines)
+                {
+                    //removing message
+                    int cut = nextLineIdx.Dequeue();
+                    GUIText = GUIText.Substring(cut);
+                    lastIdx -= cut;
+                }
             }
         }
 

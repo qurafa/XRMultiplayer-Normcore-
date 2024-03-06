@@ -2,6 +2,9 @@ using com.perceptlab.armultiplayer;
 using Microsoft.MixedReality.OpenXR.Remoting;
 using UnityEngine;
 
+///< summary >
+/// <c>GUIHandler</c>: GUI for the Windows app
+/// </summary>
 public class GUIHandler : MonoBehaviour
 {
 
