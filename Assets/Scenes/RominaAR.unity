@@ -321,11 +321,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 205605692}
   m_SourcePrefab: {fileID: 100100000, guid: 2bd7034377fe91545b15418bc2dd5c48, type: 3}
---- !u!1 &205605689 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2bd7034377fe91545b15418bc2dd5c48, type: 3}
-  m_PrefabInstance: {fileID: 205605688}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &205605690 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6705703933449363120, guid: 2bd7034377fe91545b15418bc2dd5c48, type: 3}
@@ -473,15 +468,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 408e2a88d8fb07449bc574b9dd516e4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  room: {fileID: 205605689}
-  player: {fileID: 1417148834}
-  player_camera: {fileID: 1417148835}
+  player: {fileID: 1417148835}
+  player_camera: {fileID: 1417148834}
+  defaultCameraTransform: {fileID: 0}
   actions: {fileID: -944628639613478452, guid: a7b624942bc99cb42a85cbba1340da85, type: 3}
   move_speed: 0.003
   rotatoin_speed: 0.1
   onDoneAlign:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 546984970637287104}
+        m_TargetAssemblyTypeName: com.perceptlab.armultiplayer.NetworkManager, Assembly-CSharp
+        m_MethodName: Connect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &1365689594
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -549,15 +556,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2351505567455720332, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.29
+      value: 0.617
       objectReference: {fileID: 0}
     - target: {fileID: 2351505567455720332, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2
+      value: -2.167
       objectReference: {fileID: 0}
     - target: {fileID: 2351505567455720332, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3
+      value: 3.25
       objectReference: {fileID: 0}
     - target: {fileID: 2351505567455720332, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -591,6 +598,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MRTK XR Rig
       objectReference: {fileID: 0}
+    - target: {fileID: 3712792914886690938, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+      propertyPath: m_RequestedTrackingOriginMode
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5334666798807300184, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -614,7 +625,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
 --- !u!1 &1417148834 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 2351505567455720334, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+  m_CorrespondingSourceObject: {fileID: 2351505566771328562, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
   m_PrefabInstance: {fileID: 1417148833}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1417148835 stripped
@@ -653,6 +664,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showOnUnityConsole: 1
   showOnAppGui: 1
+  custumeTextHolder: {fileID: 0}
 --- !u!4 &1427442809
 Transform:
   m_ObjectHideFlags: 0
@@ -703,7 +715,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   remotingHandler: {fileID: 764639275}
-  align: {fileID: 0}
+  align: {fileID: 1156848456}
   IP: 192.168.0.103
 --- !u!4 &1936076429
 Transform:
@@ -849,9 +861,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomName: MultiDeviceRoom
   interactablePrefabNames:
-  - ARShapeSortingCube
+  - Octagon
   firstInstantiationPosition: {x: 1, y: -0.7, z: 3.6}
-  InstantiationPositionOffset: {x: 0.1, y: 0, z: 0}
+  InstantiationPositionOffset: {x: 0, y: 0, z: -0.1}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

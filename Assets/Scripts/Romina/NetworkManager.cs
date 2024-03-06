@@ -51,7 +51,7 @@ namespace com.perceptlab.armultiplayer
         void instantiateObjects(Realtime realtime)
         {
             // Instantiate the Player for this client once we've successfully connected to the room
-            Realtime.InstantiateOptions options = new InstantiateOptions
+            InstantiateOptions options = new InstantiateOptions
             {
                 ownedByClient = true,
                 preventOwnershipTakeover = false,
@@ -63,7 +63,13 @@ namespace com.perceptlab.armultiplayer
             int i = 0;
             foreach (string name in interactablePrefabNames)
             {
+                RLogger.Log("instantiating " + name);
                 GameObject cube = Realtime.Instantiate(prefabName: name, position: Vector3.zero, rotation: Quaternion.identity, options);
+                if (cube == null)
+                {
+                    RLogger.Log("didn't find " + name);
+                    continue;
+                }
                 RealtimeTransform realtimeTransform = cube.GetComponent<RealtimeTransform>();
                 cube.transform.localPosition = firstInstantiationPosition + i * InstantiationPositionOffset;
                 i += 1;
@@ -74,7 +80,7 @@ namespace com.perceptlab.armultiplayer
 
         void instantiaceOrigin(Realtime realtime)
         {
-            GameObject origin = Realtime.Instantiate(
+            Realtime.Instantiate(
                 prefabName: originPrefabName, Vector3.zero, Quaternion.identity,
                 new InstantiateOptions
                 {

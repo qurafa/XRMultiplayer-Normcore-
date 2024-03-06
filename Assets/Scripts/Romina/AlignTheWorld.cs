@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.Interaction.Toolkit;
 
 namespace com.perceptlab.armultiplayer
 {
@@ -11,23 +13,26 @@ namespace com.perceptlab.armultiplayer
     {
 
         private ARSession _ARSession;
-        
-        [SerializeField]
-        GameObject room;
-        [SerializeField, Tooltip("The topmost game object in hierarchy that is holding the player in the game (MRTK XR Rig in AR)")]
+
+        [Header("XR Rig and Player Set up")]
+        [SerializeField, Tooltip("The game object in hierarchy that moves with locomotion; \"Camera Offset\" in MRTK XR Rig and \"XR Origin\" in VR")]
         GameObject player;
         [SerializeField, Tooltip("The camera")]
         GameObject player_camera;
+        [SerializeField, Tooltip("When reset is pressed the camera's position will be set to this transform's position, if not provided, the starting position will be used")]
+        private Transform defaultCameraTransform;
 
+        [Header("Input")]
         // assign the actions asset to this field in the inspector:
         [SerializeField, Tooltip("The action asset with MoveX, MoveY, MoveZ, RotateY, 1D axes and ActivateAlign and DoneAlign buttons")]
         private InputActionAsset actions;
 
+        [Header("Speed")]
         [SerializeField]
-        private float move_speed = 0.003f;
+        private float move_speed = 0.03f;
 
         [SerializeField]
-        private float rotatoin_speed = 0.1f;
+        private float rotatoin_speed = 1f;
 
         [SerializeField]
         public UnityEvent onDoneAlign;
@@ -41,15 +46,20 @@ namespace com.perceptlab.armultiplayer
         private InputAction moveZ;
         private InputAction rotateY;
 
+        private Vector3 defaultCameraPosition;
+
         private void Awake()
         {
             RLogger.Log("Align the world is active");
             actions.FindActionMap("Align").FindAction("ActivateAlign").performed += OnActivateAlign;
             actions.FindActionMap("Align").FindAction("DoneAlign").performed += OnDoneAlign;
+            actions.FindActionMap("Align").FindAction("Reset").performed += OnReset;
             moveX = actions.FindActionMap("Align").FindAction("MoveX");
             moveY = actions.FindActionMap("Align").FindAction("MoveY");
             moveZ = actions.FindActionMap("Align").FindAction("MoveZ");
             rotateY = actions.FindActionMap("Align").FindAction("RotateY");
+
+            defaultCameraPosition = (defaultCameraTransform == null)? player_camera.transform.position: defaultCameraTransform.position;
         }
 
         private void Start()
@@ -76,7 +86,7 @@ namespace com.perceptlab.armultiplayer
         {
             if (done)
                 return;
-            RLogger.Log("DoneAlign was pressed, world position is: " + room.transform.position.ToString() + " player position is: " + player.transform.position);
+            RLogger.Log("DoneAlign was pressed, player position is: " + player.transform.position);
             active = false;
             done = true;
             onDoneAlign?.Invoke();
@@ -88,6 +98,29 @@ namespace com.perceptlab.armultiplayer
                 QualitySettings.vSyncCount = 1;
             }
             actions.FindActionMap("Align").Disable();
+        }
+
+        private void OnReset(InputAction.CallbackContext context)
+        {
+            RLogger.Log("Reset was pressed");
+            moveCameraToDestination(defaultCameraPosition);
+            makeCameraFaceDirection(Vector3.right);
+        }
+
+        private void moveCameraToDestination(Vector3 destination)
+        {
+            Quaternion rot = player_camera.transform.rotation;
+            Vector3 pd = player_camera.transform.InverseTransformPoint(player.transform.position);
+            pd = rot * pd;
+            player.transform.position = destination + pd;
+        }
+
+        private void makeCameraFaceDirection(Vector3 direction)
+        {
+            direction.y = 0; direction.Normalize();
+            Vector3 cameraFacing = player_camera.transform.forward; cameraFacing.y = 0; cameraFacing.Normalize();
+            float angle = Vector3.SignedAngle(cameraFacing, direction, Vector3.up);
+            player.transform.RotateAround(player_camera.transform.position, Vector3.up, angle);
         }
 
         // Moves the player instead of the world. Player is in the same real position, thus, the virtual world is being moved!
@@ -119,7 +152,7 @@ namespace com.perceptlab.armultiplayer
 
             player.transform.Translate(-1f* translate * move_speed, Space.World);
 
-            // if we assume objects are rendered straight up, which we did!, we only need to rotate the room around world y axis to adjust (we have assuemd x and z axes rotations are 0)
+            // if we assume objects are rendered straight up, which we did!, we only need to rotate the room about the world y axis to adjust (we have assuemd x and z axes rotations are 0)
             player.transform.RotateAround(player.transform.position, Vector3.up, -1f * rotatey * rotatoin_speed);
         }
 
@@ -133,7 +166,8 @@ namespace com.perceptlab.armultiplayer
         }
 
 
-
+        // alternatively, you can move the room instead of player (the logic might be easier) and when done align is pressed, call relocate to add room to origin and relocate the player
+        // this method is not tested
         //private void PerformRelocatin()
         //{
         //    // a_pos = diff_pos + b_pos => diff_pos = a_pos - b_pos => diff_pos = new_a_pos - new_b_pos => new_a_pos = diff_pos + new_b_pos
@@ -153,6 +187,7 @@ namespace com.perceptlab.armultiplayer
          * list of all required defined buttons and axes:
          * BegnEndAlign : button
          * DoneAlign: button
+         * Reset: button 
          * MoveX: axis -1 to 1
          * MoveZ: axis -1 to 1
          * MoveY: axix -1 to 1

@@ -18,7 +18,9 @@ namespace com.perceptlab.armultiplayer
         [SerializeField]
         private bool showOnUnityConsole = true;
         [SerializeField]
-        private bool showOnAppGui = true; 
+        private bool showOnAppGui = true;
+        [SerializeField]
+        private TMPro.TextMeshProUGUI custumeTextHolder;
 
         private void setInstance()
         {
@@ -53,6 +55,14 @@ namespace com.perceptlab.armultiplayer
                 int cut = nextLineIdx.Dequeue();
                 GUIText = GUIText.Substring(cut);
                 lastIdx -= cut;
+            }
+        }
+
+        private void Update()
+        {
+            if (custumeTextHolder != null)
+            {
+                custumeTextHolder.text = GUIText;
             }
         }
 
