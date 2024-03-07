@@ -109,10 +109,8 @@ namespace com.perceptlab.armultiplayer
 
         private void moveCameraToDestination(Vector3 destination)
         {
-            Quaternion rot = player_camera.transform.rotation;
-            Vector3 pd = player_camera.transform.InverseTransformPoint(player.transform.position);
-            pd = rot * pd;
-            player.transform.position = destination + pd;
+            Vector3 diff = player_camera.transform.position - player.transform.position;
+            player.transform.position = destination + diff;
         }
 
         private void makeCameraFaceDirection(Vector3 direction)
@@ -145,10 +143,11 @@ namespace com.perceptlab.armultiplayer
             float rotatey = rotateY.ReadValue<float>();
 
 
-            Vector3 player_forward = player_camera.transform.forward; player_forward.y = 0f; player_forward = Vector3.Normalize(player_forward);
-            Vector3 player_right = player_camera.transform.right; player_right.y = 0f; player_right = Vector3.Normalize(player_right);
-            
-            Vector3 translate = - player_forward*movez + player_right*movex - Vector3.up*movey;
+            //Vector3 player_forward = player_camera.transform.forward; player_forward.y = 0f; player_forward = Vector3.Normalize(player_forward);
+            //Vector3 player_right = player_camera.transform.right; player_right.y = 0f; player_right = Vector3.Normalize(player_right);
+            //Vector3 translate = - player_forward*movez + player_right*movex - Vector3.up*movey;
+
+            Vector3 translate = -Vector3.right * movez - Vector3.forward * movex - Vector3.up * movey;
 
             player.transform.Translate(-1f* translate * move_speed, Space.World);
 
