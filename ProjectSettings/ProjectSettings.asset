@@ -738,7 +738,7 @@ PlayerSettings:
   scriptingDefineSymbols:
     Android: NORMCORE;USE_INPUT_SYSTEM_POSE_CONTROL
     Standalone: NORMCORE;USE_INPUT_SYSTEM_POSE_CONTROL
-    Windows Store Apps: USE_INPUT_SYSTEM_POSE_CONTROL
+    Windows Store Apps: USE_INPUT_SYSTEM_POSE_CONTROL;NORMCORE
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

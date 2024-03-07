@@ -26,7 +26,7 @@ public class AvatarSync : RealtimeComponent<AvatarSyncModel>
         if(currentModel != null)
         {
             if(model.isFreshModel)
-                SetAvatarData("0");//show nothing
+                SetAvatarData("0|");//show nothing
 
             //then get what to show from Normcore
             UpdateAvatarData();
@@ -47,7 +47,7 @@ public class AvatarSync : RealtimeComponent<AvatarSyncModel>
         if (model.avatarData == null || model.avatarData.Length == 0)
             return;
 
-        ///todo
+        _avatarSyncImpl.UpdateFromNormcore(model.avatarData);
     }
 
     public void SetAvatarData(string value)

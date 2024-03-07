@@ -5,6 +5,7 @@ using UnityEditor.XR.LegacyInputHelpers;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Hands;
+using UnityEngine.XR.Hands.ProviderImplementation;
 using static UnityEngine.UI.Image;
 
 public class HandSyncImpl : MonoBehaviour
@@ -254,7 +255,7 @@ public class HandSyncImpl : MonoBehaviour
     {
         if (updateType == XRHandSubsystem.UpdateType.Dynamic)
             return;
-
+        
         UpdateToNormcore();
     }
 
