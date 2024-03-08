@@ -9,6 +9,9 @@ TagManager:
   - Box
   - Shape
   - spawn
+  - LeftController
+  - RightController
+  - CameraOffset
   layers:
   - Default
   - TransparentFX
