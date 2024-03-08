@@ -20,7 +20,11 @@ namespace com.perceptlab.armultiplayer
         [SerializeField] List<string> interactablePrefabNames;
         [SerializeField, Tooltip("The first object will be put here")] private Vector3 firstInstantiationPosition = new Vector3(0, -0.7f, 3.6f);
         [SerializeField, Tooltip("The distance between two consecutive instantiated objects")] private Vector3 InstantiationPositionOffset = new Vector3(0.1f, 0, 0);
-        private string originPrefabName = "OriginRT";
+        [SerializeField] bool useAvatar = false;
+        [SerializeField] private string avatarPrefabName = "VR Player Variant";
+        [SerializeField] bool showOrigin = true;
+        [SerializeField] private string originPrefabName = "OriginRT";
+        
 
         private void Awake()
         {
@@ -45,7 +49,7 @@ namespace com.perceptlab.armultiplayer
                 instantiateObjects(realtime);
 
             instantiaceOrigin(realtime);
-            
+            instantiateAvatar(realtime);
         }
 
         void instantiateObjects(Realtime realtime)
@@ -78,9 +82,31 @@ namespace com.perceptlab.armultiplayer
             }
         }
 
+        void instantiateAvatar(Realtime realtime)
+        {
+            if (!useAvatar)
+            {
+                return;
+            }
+            Realtime.Instantiate(
+                prefabName: avatarPrefabName, Vector3.zero, Quaternion.identity,
+                new InstantiateOptions
+                {
+                    ownedByClient = true,
+                    preventOwnershipTakeover = true,
+                    destroyWhenOwnerLeaves = true,
+                    destroyWhenLastClientLeaves = true,
+                    useInstance = realtime
+                });
+        }
+
         void instantiaceOrigin(Realtime realtime)
         {
-            Realtime.Instantiate(
+            if (!showOrigin) 
+            { 
+                return; 
+            }
+            GameObject o = Realtime.Instantiate(
                 prefabName: originPrefabName, Vector3.zero, Quaternion.identity,
                 new InstantiateOptions
                 {
@@ -90,6 +116,7 @@ namespace com.perceptlab.armultiplayer
                     destroyWhenLastClientLeaves = true,
                     useInstance = realtime
                 });
+            o.GetComponentInChildren<TMP_Text>().text = realtime.room.clientID.ToString();
         }
 
     }

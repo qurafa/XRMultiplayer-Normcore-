@@ -170,6 +170,8 @@ MonoBehaviour:
   - Z3
   firstInstantiationPosition: {x: 1, y: -0.7, z: 3.6}
   InstantiationPositionOffset: {x: 0, y: 0, z: -0.1}
+  avatarPrefabName: 
+  originPrefabName: OriginRT
 --- !u!114 &387283834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -686,6 +688,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 665c5c7e00a22e946920e5b17c485409, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxLines: 5
   showOnUnityConsole: 1
   showOnAppGui: 1
   custumeTextHolder: {fileID: 491176279}

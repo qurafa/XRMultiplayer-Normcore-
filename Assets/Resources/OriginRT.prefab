@@ -12,6 +12,54 @@ PrefabInstance:
       propertyPath: m_Name
       value: OriginRT
       objectReference: {fileID: 0}
+    - target: {fileID: 5162809374199814219, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
+      propertyPath: m_text
+      value: '?'
+      objectReference: {fileID: 0}
+    - target: {fileID: 5162809374199814219, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
+      propertyPath: m_fontSize
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5162809374199814219, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
+      propertyPath: m_margin.x
+      value: 0.05416482
+      objectReference: {fileID: 0}
+    - target: {fileID: 5162809374199814219, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5208503608539690487, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5208503608539690487, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5208503608539690487, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5208503608539690487, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5208503608539690487, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5208503608539690487, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.0504
+      objectReference: {fileID: 0}
+    - target: {fileID: 5208503608539690487, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.0438
+      objectReference: {fileID: 0}
+    - target: {fileID: 5208503608539690487, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

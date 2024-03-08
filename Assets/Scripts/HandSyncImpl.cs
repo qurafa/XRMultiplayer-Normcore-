@@ -146,7 +146,14 @@ public class HandSyncImpl : MonoBehaviour
             if (s_SubsystemsReuse.Count == 0)
                 return;
 
-            _mSubSystem = s_SubsystemsReuse[0];
+            for (var i = 0; i < s_SubsystemsReuse.Count; ++i)
+            {
+                var handSubsystem = s_SubsystemsReuse[i];
+                if (handSubsystem.running)
+                {
+                    _mSubSystem = handSubsystem;
+                }
+            }
             _mSubSystem.trackingAcquired += OnTrackingAcquired;
             _mSubSystem.trackingLost += OnTrackingLost;
             _mSubSystem.updatedHands += UpdateHands;
@@ -327,17 +334,17 @@ public class HandSyncImpl : MonoBehaviour
     {
         if (!_jointsAssigned)
             return;
-            
+
         //DONT RECEIVE ANYTHING FROM NORMCORE IF IT IS LOCALLY OWNED
-        if (_rtView != null)
-            if (_rtView.isOwnedLocallySelf)
-                return;
-                
-                
-        if(netHandData == null || netHandData == "")
+        //if (_rtView != null)
+        //    if (_rtView.isOwnedLocallySelf)
+        //        return;
+
+
+        if (netHandData == null || netHandData == "")
             return;
 
-        
+
         string[] netHandDataArr = netHandData.Split('|');
         //Debug.Log(netHandDataArr[0]);
         if (netHandDataArr[0] == "0")

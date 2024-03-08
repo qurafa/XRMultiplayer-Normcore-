@@ -98,16 +98,32 @@ namespace com.perceptlab.armultiplayer
 
         public void OnDisable() 
         {
-            RLogger.Log("OnDisable called, holographic remoting disconnecting");
-            if (connected) 
+            RLogger.Log("OnDisable called, holographic remoting disconnecting must see Disconnecting in the next line:");
+            if (connected)
+            {
+                RLogger.Log("Disconnecting");
                 AppRemoting.Disconnect();
+            }
         }
 
         public void OnApplicationQuit()
         {
-            RLogger.Log("Application quit called, holographic remoting disconnecting");
+            RLogger.Log("Application quit called, holographic remoting disconnecting must see Disconnecting in the next line:");
             if (connected)
+            {
+                RLogger.Log("Disconnecting");
                 AppRemoting.Disconnect();
+            }
+        }
+
+        public void OnApplicationPause()
+        {
+            RLogger.Log("Application pause called, holographic remoting disconnecting must see Disconnecting in the next line:");
+            if (connected)
+            {
+                RLogger.Log("Disconnecting"); 
+                AppRemoting.Disconnect();
+            }
         }
 
         public void OnGUI()

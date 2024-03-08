@@ -79,7 +79,7 @@ PlayerSettings:
   androidAutoRotationBehavior: 1
   defaultIsNativeResolution: 1
   macRetinaSupport: 1
-  runInBackground: 0
+  runInBackground: 1
   captureSingleScreen: 0
   muteOtherAudioSources: 0
   Prepare IOS For Recording: 0
@@ -138,11 +138,7 @@ PlayerSettings:
   vulkanEnableCommandBufferRecycling: 1
   loadStoreDebugModeEnabled: 0
   bundleVersion: 0.1
-  preloadedAssets:
-  - {fileID: 11400000, guid: c677e5c4eb85b7849a8da406775c299d, type: 2}
-  - {fileID: 5095499490845383269, guid: 405580dff92e95b4483cbbe469537353, type: 2}
-  - {fileID: 11400000, guid: d70f1d5f9ab9b3d45ae74c65999ce502, type: 2}
-  - {fileID: -7497298030415024141, guid: a7047ef4631f5a743aab651d7b45bf3b, type: 2}
+  preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -164,7 +160,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.PerceptLab.VRMultiplayerNormcoreTest
-    Standalone: com.PerceptLab.VRMultiplayer-Normcore--Test
+    Standalone: com.PerceptLab.VRMultiplayer-Normcore--Test-2
   buildNumber:
     Standalone: 0
     VisionOS: 0
