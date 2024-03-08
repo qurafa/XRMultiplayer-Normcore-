@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 //using Normal.Realtime;
@@ -15,7 +16,7 @@ public class LobbyController : MonoBehaviour
     [SerializeField]
     private Dropdown m_ExpModeDropdown;
     [SerializeField]
-    private Dropdown m_ExpRangeDropdown;
+    private TextMeshProUGUI m_ExpRange;
 
     private bool isLoading;
 
@@ -100,10 +101,18 @@ public class LobbyController : MonoBehaviour
         {
             ExpController expCont = FindObjectOfType<ExpController>();
 
-            if (m_ExpModeDropdown.value == 0) expCont.SetRepeats(1);
-            else expCont.SetRepeats(3);
+            if (m_ExpModeDropdown.value == 0)
+            {
+                expCont.SetRepeats(1);
+                expCont.SetNumOfShapes(3);
+            }
+            else
+            {
+                expCont.SetRepeats(3);
+                expCont.SetNumOfShapes(int.MaxValue);
+            }
 
-            float range = float.Parse(m_ExpRangeDropdown.options[m_ExpRangeDropdown.value].text)/100.0f;
+            float range = float.Parse(m_ExpRange.text) /100.0f;
             expCont.SetScaleDiff(range);
         }
 
