@@ -765,6 +765,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2351505566903569413, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+      propertyPath: m_TagString
+      value: CameraOffset
+      objectReference: {fileID: 0}
     - target: {fileID: 2351505567455720332, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.5
@@ -817,6 +821,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5727148871348114051, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+      propertyPath: m_TagString
+      value: RightController
+      objectReference: {fileID: 0}
     - target: {fileID: 5727148872130156896, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -824,6 +832,10 @@ PrefabInstance:
     - target: {fileID: 5870931076040997458, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5870931076965904817, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
+      propertyPath: m_TagString
+      value: LeftController
       objectReference: {fileID: 0}
     - target: {fileID: 6056176063914695530, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
       propertyPath: m_IsActive
@@ -1338,6 +1350,54 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1417148836}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1724173399
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1724173401}
+  - component: {fileID: 1724173400}
+  m_Layer: 0
+  m_Name: dm
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1724173400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1724173399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 257f325d36eeec34594e3f9e4661b758, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _canTrackPlayer: 1
+  _canTrackObjects: 0
+  _realTime: {fileID: 0}
+  _timeInterval: 0
+--- !u!4 &1724173401
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1724173399}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.3452466, y: -0.7172396, z: 2.7449417}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1936076427
 GameObject:
   m_ObjectHideFlags: 0
@@ -1517,8 +1577,8 @@ MonoBehaviour:
   - Octagon
   firstInstantiationPosition: {x: 1, y: -0.7, z: 3.6}
   InstantiationPositionOffset: {x: 0, y: 0, z: -0.1}
-  useAvatar: 0
-  avatarPrefabName: VR Player Variant
+  useAvatar: 1
+  avatarPrefabName: VR Avatar
   showOrigin: 1
   originPrefabName: OriginRT
 --- !u!1660057539 &9223372036854775807
@@ -1534,3 +1594,4 @@ SceneRoots:
   - {fileID: 1156848455}
   - {fileID: 205605688}
   - {fileID: 1529315918}
+  - {fileID: 1724173401}
