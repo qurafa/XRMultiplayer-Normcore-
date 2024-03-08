@@ -5377,7 +5377,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentSceneIndex: 0
-  m_RunExp: 1
+  m_RunExp: 0
   m_ExpModeDropdown: {fileID: 640745964}
   m_ExpRange: {fileID: 517588569}
 --- !u!1 &1384334280
