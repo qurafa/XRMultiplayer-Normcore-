@@ -1636,9 +1636,9 @@ MonoBehaviour:
   m_RemoteHandMesh: {fileID: 8124856949328481711}
   m_LocalRootTag: RightController
   m_CameraOffsetTag: CameraOffset
-  m_Device: 1
+  m_Device: 0
   m_Type: 2
-  m_HandMode: 2
+  m_HandMode: 3
 --- !u!114 &5330851158653415918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1651,7 +1651,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 659e1591d8ac6e54585d4f7036aabccf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _avatarSyncImpl: {fileID: 5385201243688266865}
+  m_AvatarSyncImpl: {fileID: 5385201243688266865}
 --- !u!1 &1258564198898063398
 GameObject:
   m_ObjectHideFlags: 0
@@ -2892,9 +2892,9 @@ MonoBehaviour:
   m_RemoteHandMesh: {fileID: 5505286093852318684}
   m_LocalRootTag: LeftController
   m_CameraOffsetTag: CameraOffset
-  m_Device: 1
+  m_Device: 0
   m_Type: 1
-  m_HandMode: 2
+  m_HandMode: 3
 --- !u!114 &3321701960363139519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2907,7 +2907,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 659e1591d8ac6e54585d4f7036aabccf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _avatarSyncImpl: {fileID: 2447199092536869576}
+  m_AvatarSyncImpl: {fileID: 2447199092536869576}
 --- !u!1 &4538368022000596441
 GameObject:
   m_ObjectHideFlags: 0
@@ -4709,7 +4709,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 659e1591d8ac6e54585d4f7036aabccf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _avatarSyncImpl: {fileID: 5941684954289782701}
+  m_AvatarSyncImpl: {fileID: 5941684954289782701}
 --- !u!1 &7642770751151827798
 GameObject:
   m_ObjectHideFlags: 0

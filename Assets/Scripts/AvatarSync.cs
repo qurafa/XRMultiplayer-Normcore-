@@ -7,13 +7,13 @@ using UnityEngine;
 public class AvatarSync : RealtimeComponent<AvatarSyncModel>
 {
     [SerializeField]
-    AvatarSyncImpl _avatarSyncImpl;
+    private AvatarSyncImpl m_AvatarSyncImpl;
 
     // Start is called before the first frame update
     void Start()
     {
-        if (_avatarSyncImpl == null)
-            _avatarSyncImpl = GetComponent<AvatarSyncImpl>();
+        if (m_AvatarSyncImpl == null)
+            m_AvatarSyncImpl = GetComponent<AvatarSyncImpl>();
     }
 
     protected override void OnRealtimeModelReplaced(AvatarSyncModel previousModel, AvatarSyncModel currentModel)
@@ -26,7 +26,7 @@ public class AvatarSync : RealtimeComponent<AvatarSyncModel>
         if(currentModel != null)
         {
             if(model.isFreshModel)
-                SetAvatarData("0");//show nothing
+                SetAvatarData("0|");//show nothing
 
             //then get what to show from Normcore
             UpdateAvatarData();
@@ -47,11 +47,13 @@ public class AvatarSync : RealtimeComponent<AvatarSyncModel>
         if (model.avatarData == null || model.avatarData.Length == 0)
             return;
 
-        _avatarSyncImpl.UpdateFromNormcore(model.avatarData);
+        Debug.Log($"getting avatar data....{model.avatarData}");
+        m_AvatarSyncImpl.UpdateFromNormcore(model.avatarData);
     }
 
     public void SetAvatarData(string value)
     {
+        //Debug.Log($"set avatar data....{value}");
         model.avatarData = value;
     }
 }
