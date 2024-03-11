@@ -371,8 +371,8 @@ public class AvatarSyncImpl : MonoBehaviour
 
     public void UpdateFromNormcore(string netData)
     {
-        if (m_RealtimeView != null && m_RealtimeView.isOwnedLocallySelf)
-            return;
+        /*if (m_RealtimeView != null && m_RealtimeView.isOwnedLocallySelf)
+            return;*/
 
         if (netData == null || netData == "")
         {
