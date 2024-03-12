@@ -2503,6 +2503,30 @@ PrefabInstance:
       propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2303852269284305028, guid: 752ffbe6348b81e4ea492d4db8ae7cbd, type: 3}
+      propertyPath: m_Text
+      value: 'Facing forward, towards the direction of your table/set-up, press the
+        A button on you RIGHT CONTROLLER to start.
+
+        
+
+        Use the LEFT
+        and RIGHT JOYSTICKS, to change the height and lateral position of the grid(table)
+        in front of you.
+
+        
+
+        NOTE: If you''re pointing at the UI
+        while moving the joy sticks, the grid(table) will not move.
+
+
+        When
+        you feel comfortable, select your mode and range using the on the left.
+
+
+        Click
+        the START BUTTON on your LEFT CONTROLLER to begin.'
+      objectReference: {fileID: 0}
     - target: {fileID: 3108073557142846287, guid: 752ffbe6348b81e4ea492d4db8ae7cbd, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

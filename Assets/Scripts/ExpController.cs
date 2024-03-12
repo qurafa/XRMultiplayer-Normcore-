@@ -231,10 +231,10 @@ public class ExpController : MonoBehaviour
     }
 
     /// <summary>
-    /// Sets the number of random shapes to use, caps at the number of shapes we have to use
+    /// Sets the number of random shapes to use, caps at the number of shapes we have
     /// </summary>
     /// <param name="num"></param>
-    public void SetNumOfShapes(int num)
+    public void SetNumOfShapes(int num = int.MaxValue)
     {
         m_NumOfShapes = num > m_Shapes.Length ? m_Shapes.Length : num;
         Debug.Log($"using {m_NumOfShapes} shapes");
