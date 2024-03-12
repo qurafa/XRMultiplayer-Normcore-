@@ -104,7 +104,7 @@ public class LobbyController : MonoBehaviour
             if (m_ExpModeDropdown.value == 0)
             {
                 expCont.SetRepeats(1);
-                expCont.SetNumOfShapes(3);
+                expCont.SetNumOfShapes(int.MaxValue);
             }
             else
             {

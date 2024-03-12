@@ -5046,8 +5046,6 @@ MonoBehaviour:
   - Quaterfoil-Separated
   - Square
   - Triangle
-  - Star-Separated
-  - Octagon
   - Pentagon
   m_MinBlankTimeLimit: 1
   m_MaxBlankTimeLimit: 300
@@ -5056,6 +5054,7 @@ MonoBehaviour:
   m_NumberLarger: 3
   m_Repeats: 1
   m_ScaleDiff: 0.025
+  m_NumOfShapes: 4
   largerButton:
     m_Name: Larger Button
     m_Type: 0
