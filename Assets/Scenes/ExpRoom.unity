@@ -5155,8 +5155,8 @@ MonoBehaviour:
   m_TrialTimeLimit: 2.5
   m_NumberSmaller: 3
   m_NumberLarger: 3
-  m_PID: 
-  m_Condition: 
+  m_PID: 0
+  m_Condition: test
   m_Repeats: 1
   m_ScaleDiff: 0.025
   m_NumOfShapes: 4
@@ -15110,7 +15110,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2001921951}
   m_Layer: 0
-  m_Name: XR Interaction Hands Setup
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

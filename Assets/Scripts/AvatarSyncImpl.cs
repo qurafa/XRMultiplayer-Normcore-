@@ -1,3 +1,5 @@
+using MixedReality.Toolkit;
+using MixedReality.Toolkit.Subsystems;
 using Normal.Realtime;
 using System.Collections.Generic;
 using Unity.XR.CoreUtils;
@@ -24,7 +26,8 @@ public class AvatarSyncImpl : MonoBehaviour
 
     //Devices and Subsystems
     private InputDevice _controller;
-    private XRHandSubsystem _handSubsystem;
+    private XRHandSubsystem _questHandSubsystem;
+    private HandsAggregatorSubsystem _holoHandSubsystem;
     private List<XRHandSubsystem> _subsystems = new();
     
     //Bool checks
@@ -43,7 +46,6 @@ public class AvatarSyncImpl : MonoBehaviour
     private Transform[] _joints = new Transform[26];
 
     //XR
-    private XROrigin _xrOrigin;
     private XRHand _xrHand;
     private Handedness _handedness;
 
@@ -132,9 +134,11 @@ public class AvatarSyncImpl : MonoBehaviour
 
     private void InitHandSubsystem()
     {
-        if (_handSubsystem != null && _handSubsystem.running) return;
-            
-        if(m_Device == Device.MetaQuest || m_Device == Device.HoloLens)
+        if (m_Device == Device.MetaQuest && _questHandSubsystem != null && _questHandSubsystem.running) return;
+
+        if (m_Device == Device.HoloLens && _holoHandSubsystem != null && _holoHandSubsystem.running) return;
+
+        if(m_Device == Device.MetaQuest)
         {
             SubsystemManager.GetSubsystems(_subsystems);
             if (_subsystems.Count == 0)
@@ -147,7 +151,7 @@ public class AvatarSyncImpl : MonoBehaviour
             {
                 if (s.running)
                 {
-                    _handSubsystem = s;
+                    _questHandSubsystem = s;
                     break;
                 }
             }
@@ -155,6 +159,12 @@ public class AvatarSyncImpl : MonoBehaviour
             SubSubsystem();
             InitXRHand();
             _handSubsysInit = true;
+        }
+        else if (m_Device == Device.HoloLens)
+        {
+            _holoHandSubsystem = XRSubsystemHelpers.GetFirstRunningSubsystem<HandsAggregatorSubsystem>();
+            _handSubsysInit = _holoHandSubsystem != null && _holoHandSubsystem.running;
+            //todo
         }
         else
         {
@@ -168,7 +178,7 @@ public class AvatarSyncImpl : MonoBehaviour
     {
         if(_jointsInit) return;
             
-        if((m_Type == Type.LeftHand || m_Type == Type.RightHand) && (m_Device == Device.MetaQuest || m_Device == Device.HoloLens))
+        if((m_Type == Type.LeftHand || m_Type == Type.RightHand) && m_Device == Device.MetaQuest)
         {
             for (int j = 0; j < _joints.Length; j++)
             {
@@ -179,10 +189,9 @@ public class AvatarSyncImpl : MonoBehaviour
                     break;
                 }
             }
-            for (int c = 0; c < root.childCount; c++)
-                InitHandJoints(root.GetChild(c));
+            
         }
-        /*else if(m_Device == Device.HoloLens)
+        else if((m_Type == Type.LeftHand || m_Type == Type.RightHand) && m_Device == Device.HoloLens)
         {
             for (int j = 0; j < _joints.Length; j++)
             {
@@ -192,13 +201,14 @@ public class AvatarSyncImpl : MonoBehaviour
                     break;
                 }
             }
-            for (int c = 0; c < root.childCount; c++)
-                InitHandJoints(root.GetChild(c));
-        }*/
+        }
         else
         {
-            //Debug.Log($"{this.gameObject.name}...Init joints, device or type not supported");
+            Debug.Log($"{this.gameObject.name}...Init joints, device or type not supported");
+            return;
         }
+        for (int c = 0; c < root.childCount; c++)
+            InitHandJoints(root.GetChild(c));
     }
 
     private void InitXRHand()
@@ -206,10 +216,10 @@ public class AvatarSyncImpl : MonoBehaviour
         switch (m_Type)
         {
             case Type.LeftHand:
-                _xrHand = _handSubsystem.leftHand;
+                _xrHand = _questHandSubsystem.leftHand;
                 break;
             case Type.RightHand:
-                _xrHand = _handSubsystem.rightHand;
+                _xrHand = _questHandSubsystem.rightHand;
                 break;
             default:
                 //Debug.Log($"{this.gameObject.name}...Avatar type does not need XRHand");
@@ -456,19 +466,19 @@ public class AvatarSyncImpl : MonoBehaviour
 
     private void SubSubsystem()
     {
-        if (_handSubsystem == null) return;
+        if (_questHandSubsystem == null) return;
 
-        _handSubsystem.trackingAcquired += OnHandTrackingAcquired;
-        _handSubsystem.trackingLost += OnHandTrackingLost;
-        _handSubsystem.updatedHands += OnUpdatedHands;
+        _questHandSubsystem.trackingAcquired += OnHandTrackingAcquired;
+        _questHandSubsystem.trackingLost += OnHandTrackingLost;
+        _questHandSubsystem.updatedHands += OnUpdatedHands;
     }
 
     private void UnSubSubsystem()
     {
-        if(_handSubsystem == null) return;
+        if(_questHandSubsystem == null) return;
 
-        _handSubsystem.trackingAcquired -= OnHandTrackingAcquired;
-        _handSubsystem.trackingLost -= OnHandTrackingLost;
-        _handSubsystem.updatedHands -= OnUpdatedHands;
+        _questHandSubsystem.trackingAcquired -= OnHandTrackingAcquired;
+        _questHandSubsystem.trackingLost -= OnHandTrackingLost;
+        _questHandSubsystem.updatedHands -= OnUpdatedHands;
     }
 }

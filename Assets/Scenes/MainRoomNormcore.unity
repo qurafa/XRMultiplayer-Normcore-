@@ -5433,11 +5433,14 @@ MonoBehaviour:
   - Octagon
   - Pentagon
   - Hexagon
+  m_FacePlayer: 0
   m_MinBlankTimeLimit: 1
   m_MaxBlankTimeLimit: 120
   m_TrialTimeLimit: 2
   m_NumberSmaller: 2
   m_NumberLarger: 2
+  m_PID: 
+  m_Condition: 
   m_Repeats: 1
   m_ScaleDiff: 0.025
   m_NumOfShapes: 6
@@ -15908,7 +15911,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2001921951}
   m_Layer: 0
-  m_Name: XR Interaction Hands Setup
+  m_Name: Player
   m_TagString: spawn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

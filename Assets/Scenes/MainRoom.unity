@@ -2530,7 +2530,7 @@ GameObject:
   m_Component:
   - component: {fileID: 264333351}
   m_Layer: 0
-  m_Name: XR Interaction Hands Setup
+  m_Name: Player
   m_TagString: spawn
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
