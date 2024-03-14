@@ -1,10 +1,11 @@
-using Normal.Realtime;
+﻿using Normal.Realtime;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -365,11 +366,23 @@ public class ExpController : MonoBehaviour
         return _order; 
     }
 
+    /// <summary>
+    /// In-place Shuffle based on the Fisher-Yates Algorithm 
+    /// </summary>
+    /// <remarks>
+    /// Fisher-Yates: <see href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Wikipedia</see>
+    /// <seealso cref="https://stackoverflow.com/questions/273313/randomize-a-listt"/>
+    /// <see cref="https://docs.unity3d.com/ScriptReference/Random.Range.html">Unity Random</see>
+    /// Pseudocode:
+    ///     for i from 0 to n−2 do
+    ///         j ← random integer such that i ≤ j < n
+    ///         exchange a[i] and a[j]
+    /// </remarks>
     private void ShuffleShapes()
     {
         for (int n = 0; n < m_Shapes.Length; n++)
         {
-            int i = UnityEngine.Random.Range(0, m_Shapes.Length - 1);
+            int i = UnityEngine.Random.Range(n, m_Shapes.Length);
 
             string temp = m_Shapes[i];
             m_Shapes[i] = m_Shapes[n];
