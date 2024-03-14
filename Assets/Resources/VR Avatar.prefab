@@ -1636,9 +1636,9 @@ MonoBehaviour:
   m_RemoteHandMesh: {fileID: 8124856949328481711}
   m_LocalRootTag: RightController
   m_CameraOffsetTag: CameraOffset
-  m_Device: 0
+  m_Device: 1
   m_Type: 2
-  m_HandMode: 3
+  m_HandMode: 2
 --- !u!114 &5330851158653415918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2892,9 +2892,9 @@ MonoBehaviour:
   m_RemoteHandMesh: {fileID: 5505286093852318684}
   m_LocalRootTag: LeftController
   m_CameraOffsetTag: CameraOffset
-  m_Device: 0
+  m_Device: 1
   m_Type: 1
-  m_HandMode: 3
+  m_HandMode: 2
 --- !u!114 &3321701960363139519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4694,7 +4694,7 @@ MonoBehaviour:
   m_RemoteHandMesh: {fileID: 0}
   m_LocalRootTag: MainCamera
   m_CameraOffsetTag: CameraOffset
-  m_Device: 0
+  m_Device: 1
   m_Type: 0
   m_HandMode: 0
 --- !u!114 &1588371396441658754
