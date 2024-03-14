@@ -382,7 +382,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   renderers:
   - {fileID: 747781560990333975}
-  originalColor: {r: 1, g: 0.31764707, b: 0.31764707, a: 1}
+  originalColor: {r: 1, g: 0, b: 0, a: 1}
   holdingColor: {r: 1, g: 0.2, b: 0.2, a: 1}
   dM: {fileID: 0}
 --- !u!114 &2483839612105575589

@@ -273,7 +273,7 @@ public class ExpController : MonoBehaviour
         float xDiff = m_PlayerCamera.transform.position.x - m_ExpSetUp.transform.position.x;
         float yDiff = m_PlayerCamera.transform.position.y - m_ExpSetUp.transform.position.y;
         float zDiff = m_PlayerCamera.transform.position.z - m_ExpSetUp.transform.position.z;
-        m_ExpSetUp.Translate(new Vector3(xDiff + 0.5f, yDiff, zDiff));
+        m_ExpSetUp.Translate(new Vector3(xDiff + 0.8f, yDiff, zDiff));
 
         string shape = GetNextTrial().Split('|')[0];
         m_SortingCube.position = m_CubeSpawn.position;
@@ -289,8 +289,6 @@ public class ExpController : MonoBehaviour
             m_SortingCube.eulerAngles = _shapeToBoxRotation0[shape];
             m_ShapeSpawn.eulerAngles = new Vector3(90, 90, 0);
         }
-        
-        
     }
 
     public void SetPID(string id)
