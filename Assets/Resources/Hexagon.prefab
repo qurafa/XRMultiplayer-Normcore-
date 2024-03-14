@@ -75,7 +75,7 @@ Rigidbody:
   serializedVersion: 4
   m_Mass: 1e+9
   m_Drag: 1000
-  m_AngularDrag: 10000
+  m_AngularDrag: 1000
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -321,13 +321,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4455522085148023818}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.021999996, y: 0.019999998, z: 0.021999998}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5851980506299256403}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3189020932993643434
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -335,7 +335,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4455522085148023818}
-  m_Mesh: {fileID: -4575734979276873811, guid: 4b384ada6166d75459291f2232452f3f, type: 3}
+  m_Mesh: {fileID: -4575734979276873811, guid: bac684799c4fc1945a93344aabe9ab8d, type: 3}
 --- !u!23 &4486155810669355189
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -399,4 +399,4 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: -4575734979276873811, guid: 4b384ada6166d75459291f2232452f3f, type: 3}
+  m_Mesh: {fileID: -4575734979276873811, guid: bac684799c4fc1945a93344aabe9ab8d, type: 3}

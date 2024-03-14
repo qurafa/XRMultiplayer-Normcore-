@@ -41,7 +41,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4785144725140493757}
-  m_Mesh: {fileID: 4312495324443960292, guid: 63f0b521c97b6be4fa0faf3a73bc3221, type: 3}
+  m_Mesh: {fileID: 4312495324443960292, guid: c46a58864e9762742b789db36160e69f, type: 3}
 --- !u!23 &1234720959529579597
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -105,7 +105,7 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 4312495324443960292, guid: 63f0b521c97b6be4fa0faf3a73bc3221, type: 3}
+  m_Mesh: {fileID: 4312495324443960292, guid: c46a58864e9762742b789db36160e69f, type: 3}
 --- !u!1 &9169216351865416291
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,7 +154,7 @@ Rigidbody:
   serializedVersion: 4
   m_Mass: 1e+9
   m_Drag: 1000
-  m_AngularDrag: 10000
+  m_AngularDrag: 1000
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
