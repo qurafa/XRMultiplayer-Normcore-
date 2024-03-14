@@ -13,6 +13,7 @@ using UnityEngine.UI;
 
 public class ExpController : MonoBehaviour
 {
+    [Header("SCENE VARIABLES")]
     [SerializeField]
     private bool ToRun = false;
     [SerializeField]
@@ -37,6 +38,11 @@ public class ExpController : MonoBehaviour
     /// </summary>
     [SerializeField]
     private string[] m_Shapes = new string[] { };
+    /// <summary>
+    /// Whether the shape and the box should face towards the player's position or not
+    /// </summary>
+    [SerializeField]
+    private bool m_FacePlayer = false;
     [SerializeField]
     private float m_MinBlankTimeLimit = 1.0f;
     [SerializeField]
@@ -47,6 +53,10 @@ public class ExpController : MonoBehaviour
     private int m_NumberSmaller = 0;
     [SerializeField]
     private int m_NumberLarger = 0;
+    [SerializeField]
+    private string m_PID = "";
+    [SerializeField]
+    private string m_Condition = "";
     /// <summary>
     /// Number of repeats for each shape and size
     /// </summary>
@@ -77,6 +87,8 @@ public class ExpController : MonoBehaviour
     /// Next trial number, where trials go from 0 to n
     /// </summary>
     private int _nTrialNumber = 0;
+
+    private Transform _playerTransform;
 
     /// <summary>
     /// to keep track of the objects being spawned
@@ -116,7 +128,8 @@ public class ExpController : MonoBehaviour
     private bool _savingEntry = false;
     private bool _savedEntry = false;
 
-    private Dictionary<string, Vector3> _shapeToBoxRotation = new Dictionary<string, Vector3>();
+    private Dictionary<string, Vector3> _shapeToBoxRotation0;
+    private Dictionary<string, Vector3[]> _shapeToBoxRotation1;
 
     void OnEnable()
     {
@@ -129,22 +142,57 @@ public class ExpController : MonoBehaviour
     void Start()
     {
         //Add the shape to rotation
-        _shapeToBoxRotation.Add("Trapezoid", new Vector3(0, 0, 0));
-        _shapeToBoxRotation.Add("Oval", new Vector3(0, 0, 0));
-        _shapeToBoxRotation.Add("Rhombus", new Vector3(0, 0, 0));
+        //without LookAt vector, euler angles is....new Vector3(0, 180, 0)
+        
 
-        _shapeToBoxRotation.Add("Quaterfoil-Separated", new Vector3 (90, -90, 0));
-        _shapeToBoxRotation.Add("Square", new Vector3 (90, -90, 0));
-        _shapeToBoxRotation.Add("Triangle", new Vector3 (90, -90, 0));
+        if (m_FacePlayer)
+        {
+            _shapeToBoxRotation1 = new Dictionary<string, Vector3[]>
+            {
+                //set from trying it out with the box in teh editor and setting it here,
+                //you'll have to do that again on your end if you want to change the values for whatever reason
+                { "Trapezoid", new[] { Vector3.up, new Vector3(0, -90, 0) } },
+                { "Oval", new[] { Vector3.up, new Vector3(0, -90, 0) } },
+                { "Diamond", new[] { Vector3.up, new Vector3(0, -90, 0) } },
 
-        _shapeToBoxRotation.Add("Octagon", new Vector3 (0, 90, 0));
-        _shapeToBoxRotation.Add("Parallelogram", new Vector3 (0, 90, 0));
-        _shapeToBoxRotation.Add("Star-Separated", new Vector3 (0, 90, 0));
+                { "Quatrefoil", new[] { Vector3.down, new Vector3(90, 0, 0) } },
+                { "Square", new[] { Vector3.down, new Vector3(90, 0, 0) } },
+                { "Triangle", new[] { Vector3.down, new Vector3(90, 0, 0) } },
 
-        _shapeToBoxRotation.Add("Hexagon", new Vector3(0, 180, 0));
-        _shapeToBoxRotation.Add("Rectangle", new Vector3(0, 180, 0));
-        _shapeToBoxRotation.Add("Pentagon", new Vector3(0, 180, 0));
+                { "Octagon", new[] { Vector3.up, new Vector3(90, 0, 0) } },
+                { "Parallelogram", new[] { Vector3.up, new Vector3(90, 0, 0) } },
+                { "Star", new[] { Vector3.up, new Vector3(90, 0, 0) } },
 
+                { "Hexagon", new[] { Vector3.up, new Vector3(0, 90, 0) } },
+                { "Rectangle", new[] { Vector3.up, new Vector3(0, 90, 0) } },
+                { "Pentagon", new[] { Vector3.up, new Vector3(0, 90, 0) } }
+            };
+        }
+        else
+        {
+            _shapeToBoxRotation0 = new Dictionary<string, Vector3>
+            {
+                //without LookAt vector, euler angles is....new Vector3(0, 180, 0)
+                { "Trapezoid", new Vector3(0, 180, 0) },
+                { "Oval", new Vector3(0, 180, 0) },
+                { "Diamond", new Vector3(0, 180, 0) },
+
+                //new Vector3 (-90, 0, 90)
+                { "Quatrefoil", new Vector3(-90, 0, 90) },
+                { "Square", new Vector3(-90, 0, 90) },
+                { "Triangle", new Vector3(-90, 0, 90) },
+
+                //new Vector3 (0, -90, 0)
+                { "Octagon", new Vector3(0, -90, 0) },
+                { "Parallelogram", new Vector3(0, -90, 0) },
+                { "Star", new Vector3(0, -90, 0) },
+
+                //new Vector3(0, 0, 0)
+                { "Hexagon", new Vector3(0, 0, 0) },
+                { "Rectangle", new Vector3(0, 0, 0) },
+                { "Pentagon", new Vector3(0, 0, 0) }
+            };
+        }
         //see nothing when you join
         //m_PlayerCamera.cullingMask = 0;
 
@@ -212,22 +260,43 @@ public class ExpController : MonoBehaviour
         //Create file path to store entries 
         CreateExpFile();
 
+        _playerTransform = m_PlayerCamera.transform;
+
         _ready = true;
 
         //Start exp
         //NextTrial();
     }
 
-    private void SetEyeLevel()
+    private void NextSetUp()
     {
         float xDiff = m_PlayerCamera.transform.position.x - m_ExpSetUp.transform.position.x;
         float yDiff = m_PlayerCamera.transform.position.y - m_ExpSetUp.transform.position.y;
         float zDiff = m_PlayerCamera.transform.position.z - m_ExpSetUp.transform.position.z;
-        m_ExpSetUp.Translate(new Vector3(0, yDiff, zDiff));
+        m_ExpSetUp.Translate(new Vector3(xDiff + 0.5f, yDiff, zDiff));
 
         string shape = GetNextTrial().Split('|')[0];
         m_SortingCube.position = m_CubeSpawn.position;
-        m_SortingCube.eulerAngles = _shapeToBoxRotation[shape];
+        if (m_FacePlayer)
+        {
+            m_SortingCube.LookAt(_playerTransform.position, _shapeToBoxRotation1[shape][0]);
+            m_SortingCube.Rotate(_shapeToBoxRotation1[shape][1]);
+
+            m_ShapeSpawn.transform.LookAt(_playerTransform.position, Vector3.up);
+        }
+        else
+        {
+            m_SortingCube.eulerAngles = _shapeToBoxRotation0[shape];
+            m_ShapeSpawn.eulerAngles = new Vector3(90, 90, 0);
+        }
+        
+        
+    }
+
+    public void SetPID(string id)
+    {
+        m_PID = id;
+        Debug.Log($"set id to {id}");
     }
 
     /// <summary>
@@ -250,6 +319,12 @@ public class ExpController : MonoBehaviour
     {
         m_ScaleDiff = diff;
         Debug.Log($"set scale diff to {diff}");
+    }
+
+    public void SetCondition(string cond)
+    {
+        m_Condition = cond;
+        Debug.Log($"set condition to {cond}");
     }
 
     private bool CreateExpOrder()
@@ -330,7 +405,7 @@ public class ExpController : MonoBehaviour
 
     private void CreateExpFile()
     {
-        m_DataManager.CreateExpFile($"{m_Repeats}Reps_{m_ScaleDiff}Range");
+        m_DataManager.CreateExpFile($"{m_PID}_{m_Condition}_{m_Repeats}Reps_{m_ScaleDiff}Range");
 /*        FILE_PATH = $"{Application.persistentDataPath}/ExpEntry_{System.DateTime.Now:yyyy-MM-dd-HH_mm_ss}.csv";
         Debug.Log("fILE PATH IS: " + FILE_PATH);
 
@@ -393,7 +468,7 @@ public class ExpController : MonoBehaviour
         _savedEntry = false;
 
         //Set up experiment env
-        SetEyeLevel();
+        NextSetUp();
 
         if (spawn != null)
         {
@@ -405,6 +480,7 @@ public class ExpController : MonoBehaviour
 
         string shape = trial.Split('|')[0];
         float size = float.Parse(trial.Split('|')[1]);
+
         spawn = Realtime.Instantiate(shape, m_ShapeSpawn.position, m_ShapeSpawn.rotation, new Realtime.InstantiateOptions
         {
             ownedByClient = true,
@@ -413,10 +489,12 @@ public class ExpController : MonoBehaviour
             destroyWhenLastClientLeaves = true,
             useInstance = m_Realtime,
         });
-        spawn.transform.localScale = new Vector3(spawn.transform.localScale.x * 1,
-            spawn.transform.localScale.y * size,
+        spawn.transform.localScale = new Vector3(spawn.transform.localScale.x * size,
+            spawn.transform.localScale.y * 1,
             spawn.transform.localScale.z * size);
-        
+        if(m_FacePlayer)
+            spawn.transform.Rotate(new Vector3(90,0,0));
+
         _dispTime = DateTime.Now;
         
         _nTrialNumber++;

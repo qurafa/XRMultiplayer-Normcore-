@@ -12,9 +12,13 @@ public class LobbyController : MonoBehaviour
     private int currentSceneIndex;
     [Header("EXPERIMENT")]
     [SerializeField]
+    private TextMeshProUGUI m_pID;
+    [SerializeField]
     private bool m_RunExp;
     [SerializeField]
-    private Dropdown m_ExpModeDropdown;
+    private Dropdown m_ExpCondition;
+    [SerializeField]
+    private Dropdown m_ExpMode;
     [SerializeField]
     private TextMeshProUGUI m_ExpRange;
 
@@ -101,16 +105,32 @@ public class LobbyController : MonoBehaviour
         {
             ExpController expCont = FindObjectOfType<ExpController>();
 
-            if (m_ExpModeDropdown.value == 0)
+            expCont.SetPID(m_pID.text);
+
+            if (m_ExpCondition.value == 0)
+                expCont.SetCondition("Monocular");
+            else
+                expCont.SetCondition("Binocular");
+
+            if (m_ExpMode.value == 0)
             {
                 expCont.SetRepeats(1);
                 expCont.SetNumOfShapes(int.MaxValue);
             }
             else
             {
-                expCont.SetRepeats(3);
+                expCont.SetRepeats(4);
                 expCont.SetNumOfShapes(int.MaxValue);
             }
+
+            /*if (m_ExpCondition.value == 0)
+            {
+                
+            }
+            else
+            {
+
+            }*/
 
             float range = float.Parse(m_ExpRange.text) /100.0f;
             expCont.SetScaleDiff(range);
