@@ -394,7 +394,7 @@ public class ExpController : MonoBehaviour
     {
         for (int n = 0; n < _order.Count; n++)
         {
-            int i = UnityEngine.Random.Range(0, _order.Count - 1);
+            int i = UnityEngine.Random.Range(n, _order.Count);
 
             string temp = _order[i];
             _order[i] = _order[n];
