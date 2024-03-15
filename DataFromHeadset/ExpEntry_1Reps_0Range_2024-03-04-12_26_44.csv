@@ -1,9 +1,0 @@
-Trial,Shape,Size,Response,ResponseTime,Time
-1,Square, 1, 0, 0h0m1s532ms, 12:26:48.1227260
-2,Star-Separated, 1, 0, 0h0m0s691ms, 12:26:50.8037600
-3,Pentagon, 1, 1, 0h0m1s307ms, 12:26:54.9390720
-4,Triangle, 1, 0, 0h0m0s650ms, 12:26:57.8054580
-5,Star-Separated, 1, 0, 0h0m0s653ms, 12:27:01.3278440
-6,Square, 1, 0, 0h0m0s667ms, 12:27:04.8631930
-7,Quaterfoil-Separated, 1, 0, 0h0m0s802ms, 12:27:08.5240070
-8,Octagon, 1, 0, 0h0m0s804ms, 12:27:12.0457100
