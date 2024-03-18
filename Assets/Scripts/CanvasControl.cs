@@ -43,20 +43,21 @@ public class CanvasControl : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public void OnConcatText(string v)
     {
         string val = m_pID.text;
-        val += v;
+        if(val.Length < 3) val += v;
+
         m_pID.text = val;
     }
 
     public void OnDeconcatText()
     {
-        string v = m_pID.text;
-        if(v.Length == 1 || v.Length == 0)
+        string val = m_pID.text;
+        if(val.Length == 1 || val.Length == 0)
         {
             m_pID.text = "";
         }
         else
         {
-            m_pID.text = v.Substring(0, v.Length - 1);
+            m_pID.text = val.Substring(0, val.Length - 1);
         }
 
     }
