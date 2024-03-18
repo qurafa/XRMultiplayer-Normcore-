@@ -1,4 +1,5 @@
-﻿using Normal.Realtime;
+﻿using com.perceptlab.armultiplayer;
+using Normal.Realtime;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -399,6 +400,11 @@ public class ExpController : MonoBehaviour
             string temp = _order[i];
             _order[i] = _order[n];
             _order[n] = temp;
+        }
+        RLogger.Log("Order Shuffeled, the resuls is:");
+        for (int n = 0; n < _order.Count; n++)
+        {
+            RLogger.Log(_order[n]);
         }
     }
 
