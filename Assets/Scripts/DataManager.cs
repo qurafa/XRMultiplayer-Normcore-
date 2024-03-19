@@ -87,7 +87,7 @@ public class DataManager : MonoBehaviour
         OBJECT_FILE_TEMP.AppendLine(string.Join(SEPARATOR, OBJECT_HEADING));
         //File.WriteAllText(OBJECT_FILE_PATH, _objectHeader);
 
-        Debug.Log($"Object File Path is: {OBJECT_FILE_PATH}");
+        //Debug.Log($"Object File Path is: {OBJECT_FILE_PATH}");
 
         objfileCreated = true;
     }
@@ -139,19 +139,13 @@ public class DataManager : MonoBehaviour
 
         try
         {
-            //OVERWRITE EXISTING FILE
-            if (File.Exists(OBJECT_FILE_PATH))
-            {
-                File.Create(OBJECT_FILE_PATH);
-            }
-
-            File.WriteAllText(OBJECT_FILE_PATH, OBJECT_FILE_TEMP.ToString());
+            File.AppendAllText(OBJECT_FILE_PATH, OBJECT_FILE_TEMP.ToString());
             OBJECT_FILE_TEMP.Clear();
-            Debug.Log($"Objects file saved to {OBJECT_FILE_PATH}");
+            //Debug.Log($"Objects file saved to {OBJECT_FILE_PATH}");
         }
         catch (Exception e)
         {
-            Debug.Log($"Objects data could not be written to csv file due to exception: {e}");
+            //Debug.Log($"Objects data could not be written to csv file due to exception: {e}");
             return;
         }
     }
@@ -215,19 +209,13 @@ public class DataManager : MonoBehaviour
 
         try
         {
-            //OVERWRITE EXISTING FILE
-            if (File.Exists(PLAYER_FILE_PATH[pID]))
-            {
-                File.Create(PLAYER_FILE_PATH[pID]);
-            }
-
-            File.WriteAllText(PLAYER_FILE_PATH[pID], PLAYER_FILE_TEMP[pID].ToString());
-            PLAYER_FILE_TEMP.Clear();
-            Debug.Log($"Player {pID} file saved to {PLAYER_FILE_PATH[pID]}");
+            File.AppendAllText(PLAYER_FILE_PATH[pID], PLAYER_FILE_TEMP[pID].ToString());
+            PLAYER_FILE_TEMP[pID].Clear();
+            //Debug.Log($"Player {pID} file saved to {PLAYER_FILE_PATH[pID]}");
         }
         catch (Exception e)
         {
-            Debug.Log($"Player {pID} data could not be written to file due to exception: {e}");
+            //Debug.Log($"Player {pID} data could not be written to file due to exception: {e}");
             return;
         }
     }
@@ -246,12 +234,12 @@ public class DataManager : MonoBehaviour
     {
         if(EXP_FILE_PATH != "")
         {
-            Debug.LogError("Exp File already created");
+            //Debug.LogError("Exp File already created");
             return;
         }
 
         EXP_FILE_PATH = $"{Application.persistentDataPath}/ExpEntry_{System.DateTime.Now:yyyy-MM-dd-HH_mm_ss}.csv";
-        Debug.Log($"EXP FILE PATH IS: {EXP_FILE_PATH}");
+        //Debug.Log($"EXP FILE PATH IS: {EXP_FILE_PATH}");
 
         EXP_FILE_TEMP = new StringBuilder();
         EXP_FILE_TEMP.AppendLine(string.Join(SEPARATOR, EXP_HEADING));
@@ -261,21 +249,22 @@ public class DataManager : MonoBehaviour
     {
         if (EXP_FILE_PATH != "")
         {
-            Debug.LogError("Exp File already created");
+            //Debug.LogError("Exp File already created");
             return;
         }
 
         EXP_FILE_PATH = $"{Application.persistentDataPath}/ExpEntry_{extraInfo}_{System.DateTime.Now:yyyy-MM-dd-HH_mm_ss}.csv";
-        Debug.Log($"EXP FILE PATH IS: {EXP_FILE_PATH}");
+        //Debug.Log($"EXP FILE PATH IS: {EXP_FILE_PATH}");
 
         EXP_FILE_TEMP = new StringBuilder();
         EXP_FILE_TEMP.AppendLine(string.Join(SEPARATOR, EXP_HEADING));
+        SaveExpFile();
     }
 
     public void UpdateExpFile(int trial, string shape, float size, string response, string responseTime, string time)
     {
         string entry = $"{trial},{shape}, {size}, {response}, {responseTime}, {time}";
-        Debug.Log($"Updating Entry: {entry}");
+        //Debug.Log($"Updating Entry: {entry}");
         EXP_FILE_TEMP.AppendLine(string.Join(SEPARATOR, entry));
     }
 
@@ -295,21 +284,16 @@ public class DataManager : MonoBehaviour
     /// </summary>
     public void SaveExpFile()
     {
+        if (EXP_FILE_TEMP.Length == 0) return;
         try
         {
-            //OVERWRITE EXISTING FILE
-            if (File.Exists(EXP_FILE_PATH))
-            {
-                File.Create(EXP_FILE_PATH);
-            }
-
             File.AppendAllText(EXP_FILE_PATH, EXP_FILE_TEMP.ToString());
-            Debug.Log($"Exp file saved to {EXP_FILE_PATH}");
             EXP_FILE_TEMP.Clear();
+            //Debug.Log($"Exp file saved to {EXP_FILE_PATH}");
         }
         catch (Exception e)
         {
-            Debug.Log($"Exp data could not be written to file due to exception: {e}");
+            //Debug.Log($"Exp data could not be written to file due to exception: {e}");
             return;
         }
     }
@@ -325,18 +309,25 @@ public class DataManager : MonoBehaviour
         foreach(int pID in PLAYER_FILE_PATH.Keys)
             SavePlayerFile(pID);
     }
+    
+    private void OnApplicationPause(bool pause)
+    {
+        SaveAllFiles();
+    }
 
     private void OnApplicationQuit()
     {
         SaveAllFiles();
     }
 
-    private void OnApplicationPause(bool pause)
+    private void OnDisable()
     {
-        if (pause)
-        {
-            SaveAllFiles();
-        }
+        SaveAllFiles();
+    }
+
+    private void OnDestroy()
+    {
+        SaveAllFiles();
     }
 }
 
