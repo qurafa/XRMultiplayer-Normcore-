@@ -1,8 +1,10 @@
 using MixedReality.Toolkit;
+using MixedReality.Toolkit.Diagnostics;
 using MixedReality.Toolkit.Subsystems;
 using Normal.Realtime;
 using System.Collections.Generic;
 using Unity.XR.CoreUtils;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Hands;
@@ -35,7 +37,6 @@ public class AvatarSyncImpl : MonoBehaviour
     private bool _controllerInit = false;
     private bool _handSubsysInit = false;
     private bool _jointsInit = false;
-    private bool _xrInit = false;
 
     private bool _controllerTracking = false;
     private bool _handTracking = false;
@@ -47,10 +48,12 @@ public class AvatarSyncImpl : MonoBehaviour
 
     //XR
     private XRHand _xrHand;
+    private XRNode _xrNode;
     private Handedness _handedness;
 
     //Other
     private DataManager _dataManager;
+    private static readonly string DEFAULTSYNC = "0|";
 
     //Enums
     public enum Device { MetaQuest, HoloLens, Other }
@@ -157,18 +160,30 @@ public class AvatarSyncImpl : MonoBehaviour
             }
 
             SubSubsystem();
-            InitXRHand();
+            InitQuestXRHand();
             _handSubsysInit = true;
         }
         else if (m_Device == Device.HoloLens)
         {
+            switch (m_Type)
+            {
+                case Type.LeftHand:
+                    _xrNode = XRNode.LeftHand;
+                    break;
+                case Type.RightHand:
+                    _xrNode = XRNode.RightHand;
+                    break;
+                default:
+                    //Debug.Log($"{this.gameObject.name}...Avatar Type set does not need _xrNode");
+                    return;
+            }
+
             _holoHandSubsystem = XRSubsystemHelpers.GetFirstRunningSubsystem<HandsAggregatorSubsystem>();
             _handSubsysInit = _holoHandSubsystem != null && _holoHandSubsystem.running;
-            //todo
         }
         else
         {
-            //Debug.Log($"{this.gameObject.name}...HandSubsystem......device not supported");
+            Debug.Log($"{this.gameObject.name}...HandSubsystem......device not supported");
             _handSubsysInit = false;
         }
         
@@ -211,7 +226,7 @@ public class AvatarSyncImpl : MonoBehaviour
             InitHandJoints(root.GetChild(c));
     }
 
-    private void InitXRHand()
+    private void InitQuestXRHand()
     {
         switch (m_Type)
         {
@@ -264,8 +279,15 @@ public class AvatarSyncImpl : MonoBehaviour
             return false;
         }
 
-        InitXRHand();
-        _handTracking = _xrHand.isTracked;
+        if(m_Device == Device.MetaQuest)
+        {
+            InitQuestXRHand();
+            _handTracking = _xrHand.isTracked;
+        }
+        else if(m_Device == Device.HoloLens)
+        {
+            _handTracking = (_holoHandSubsystem != null && _holoHandSubsystem.running);
+        }
 
         return _handTracking;
     }
@@ -326,18 +348,74 @@ public class AvatarSyncImpl : MonoBehaviour
                     return;
                 }
                 dataToSend += "2|";
-                for (int j = 0; j < _joints.Length; j++)
+                if(m_Device == Device.MetaQuest)
                 {
-                    if (!_xrHand.GetJoint((XRHandJointID)(j + 1)).TryGetPose(out Pose jp))
+                    for (int j = 0; j < _joints.Length; j++)
+                    {
+                        if (!_xrHand.GetJoint((XRHandJointID)(j + 1)).TryGetPose(out Pose jp))
+                            return;
+
+                        var cameraOffsetPose = new Pose(_cameraOffset.position, _cameraOffset.rotation);
+                        Pose jointPose = jp.GetTransformedBy(cameraOffsetPose);
+
+                        dataToSend += $"{jointPose.position.x}|{jointPose.position.y}|{jointPose.position.z}|{jointPose.rotation.eulerAngles.x}|{jointPose.rotation.eulerAngles.y}|{jointPose.rotation.eulerAngles.z}|";
+
+                        _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, jointPose, string.Concat((XRHandJointID)(j + 1)));
+                    }
+                }
+                else if(m_Device == Device.HoloLens)
+                {
+                    if (!_holoHandSubsystem.TryGetEntireHand(_xrNode, out IReadOnlyList<HandJointPose> jp))
                         return;
 
-                    var cameraOffsetPose = new Pose(_cameraOffset.position, _cameraOffset.rotation);
-                    Pose jointPose = jp.GetTransformedBy(cameraOffsetPose);
+                    float error = 0.0f;
+                    for (int i = 0; i < jp.Count; i++)
+                    {
+                        HandJointPose jointPose = jp[i];
+                        Transform jointTransform = _joints[i];
 
-                    dataToSend += $"{jointPose.position.x}|{jointPose.position.y}|{jointPose.position.z}|{jointPose.rotation.eulerAngles.x}|{jointPose.rotation.eulerAngles.y}|{jointPose.rotation.eulerAngles.z}|";
-
-                    _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, jointPose, string.Concat((XRHandJointID)(j + 1)));
+                        switch ((TrackedHandJoint)i)
+                        {
+                            case TrackedHandJoint.Palm:
+                                // Don't track the palm. The hand mesh shouldn't have a "palm bone".
+                                break;
+                            case TrackedHandJoint.Wrist:
+                                // Set the wrist directly from the joint data.
+                                jointTransform.position = jointPose.Position;
+                                jointTransform.rotation = jointPose.Rotation;
+                                break;
+                            case TrackedHandJoint.ThumbTip:
+                            case TrackedHandJoint.IndexTip:
+                            case TrackedHandJoint.MiddleTip:
+                            case TrackedHandJoint.RingTip:
+                            case TrackedHandJoint.LittleTip:
+                                // The tip bone uses the joint rotation directly.
+                                jointTransform.rotation = jp[i - 1].Rotation;
+                                // Compute and accumulate the error between the hand mesh and the user's joint data.
+                                error += JointError(jointTransform.position, jp[i - 1].Position, jointTransform.forward);
+                                break;
+                            case TrackedHandJoint.ThumbMetacarpal:
+                            case TrackedHandJoint.IndexMetacarpal:
+                            case TrackedHandJoint.MiddleMetacarpal:
+                            case TrackedHandJoint.RingMetacarpal:
+                            case TrackedHandJoint.LittleMetacarpal:
+                                // Special case metacarpals, because Wrist is not always i-1.
+                                // This is the same "simple IK" as the default case, but with special index logic.
+                                jointTransform.rotation = Quaternion.LookRotation(jointPose.Position - jp[(int)TrackedHandJoint.Wrist].Position, jointPose.Up);
+                                break;
+                            default:
+                                // For all other bones, do a simple "IK" from the rigged joint to the joint data's position.
+                                jointTransform.rotation = Quaternion.LookRotation(jointPose.Position - jointTransform.position, jp[i - 1].Up);
+                                break;
+                        }
+                        dataToSend += $"{jointTransform.position.x}|{jointTransform.position.y}|{jointTransform.position.z}|{jointTransform.rotation.eulerAngles.x}|{jointTransform.rotation.eulerAngles.y}|{jointTransform.rotation.eulerAngles.z}|";
+                    }
                 }
+                else
+                {
+                    dataToSend = DEFAULTSYNC;
+                }
+                
                 //Debug.Log($"{this.gameObject.name}...sending hand track data....{dataToSend}");
             }
             else if (_controllerTracking)
@@ -366,7 +444,7 @@ public class AvatarSyncImpl : MonoBehaviour
             }
             else
             {
-                dataToSend = "0|";
+                dataToSend = DEFAULTSYNC;
             }
         }
         //Debug.Log($"{this.gameObject.name}...Sending....{dataToSend}");
@@ -462,6 +540,16 @@ public class AvatarSyncImpl : MonoBehaviour
         {
             UnSubSubsystem();
         }
+    }
+
+    // Computes the error between the rig's joint position and
+    // the user's joint position along the finger vector.
+    private float JointError(Vector3 armatureJointPosition, Vector3 userJointPosition, Vector3 fingerVector)
+    {
+        // The computed error between the rigged mesh's joints and the user's joints
+        // is essentially the distance between the mesh and user joints, projected
+        // along the forward axis of the finger itself; i.e., the "length error" of the finger.
+        return Vector3.Dot((armatureJointPosition - userJointPosition), fingerVector);
     }
 
     private void SubSubsystem()

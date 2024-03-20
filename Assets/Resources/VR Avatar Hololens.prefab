@@ -1638,7 +1638,7 @@ MonoBehaviour:
   m_CameraOffsetTag: CameraOffset
   m_Device: 1
   m_Type: 2
-  m_HandMode: 3
+  m_HandMode: 2
 --- !u!114 &5330851158653415918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2894,7 +2894,7 @@ MonoBehaviour:
   m_CameraOffsetTag: CameraOffset
   m_Device: 1
   m_Type: 1
-  m_HandMode: 3
+  m_HandMode: 2
 --- !u!114 &3321701960363139519
 MonoBehaviour:
   m_ObjectHideFlags: 0
