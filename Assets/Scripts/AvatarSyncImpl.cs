@@ -1,10 +1,8 @@
 using MixedReality.Toolkit;
-using MixedReality.Toolkit.Diagnostics;
 using MixedReality.Toolkit.Subsystems;
 using Normal.Realtime;
 using System.Collections.Generic;
 using Unity.XR.CoreUtils;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Hands;
