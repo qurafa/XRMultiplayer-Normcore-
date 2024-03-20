@@ -1578,7 +1578,7 @@ MonoBehaviour:
   firstInstantiationPosition: {x: 1, y: -0.7, z: 3.6}
   InstantiationPositionOffset: {x: 0, y: 0, z: -0.1}
   useAvatar: 1
-  avatarPrefabName: VR Avatar
+  avatarPrefabName: VR Avatar Hololens
   showOrigin: 1
   originPrefabName: OriginRT
 --- !u!1660057539 &9223372036854775807
