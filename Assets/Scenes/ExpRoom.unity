@@ -1435,8 +1435,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 213492968}
-  - component: {fileID: 213492969}
-  - component: {fileID: 213492970}
   m_Layer: 0
   m_Name: Shape Spawn
   m_TagString: Untagged
@@ -1459,51 +1457,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 687863474}
   m_LocalEulerAnglesHint: {x: 90, y: 90, z: 0}
---- !u!114 &213492969
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 213492967}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -363599832, guid: ebae63e7edba59945a994528ada1f7a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _realtime: {fileID: 437273665631284249}
-  _sceneViewUUID: 
-  _viewUUID: 868f07e4-013c-4fa0-9be9-eb9244cc2e85
-  _sceneViewPreventOwnershipTakeover: 0
-  _sceneViewDestroyWhenOwnerOrLastClientLeaves: 1
-  _sceneViewDestroyWhenOwnerOrLastClientLeavesMigrated: 1
-  _sceneViewDestroyWhenLastClientLeaves: 1
-  _components:
-  - componentID: 1
-    component: {fileID: 213492970}
-  _childViews:
-  - componentID: 1
-    component: {fileID: 0}
-  - componentID: 2
-    component: {fileID: 0}
---- !u!114 &213492970
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 213492967}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1029778088, guid: ebae63e7edba59945a994528ada1f7a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _interpolate: 1
-  _syncPosition: 1
-  _syncRotation: 1
-  _syncScale: 1
-  _syncVelocity: 1
-  _maintainOwnershipWhileSleeping: 0
 --- !u!1001 &225626361
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3511,7 +3464,7 @@ MonoBehaviour:
   m_Script: {fileID: -1029778088, guid: ebae63e7edba59945a994528ada1f7a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolate: 1
+  _interpolate: 0
   _syncPosition: 1
   _syncRotation: 1
   _syncScale: 1
@@ -5497,7 +5450,7 @@ MonoBehaviour:
   - componentID: 9
     component: {fileID: 484951893}
   - componentID: 10
-    component: {fileID: 213492969}
+    component: {fileID: 0}
   - componentID: 11
     component: {fileID: 904558928}
   - componentID: 12
@@ -8139,7 +8092,7 @@ MonoBehaviour:
   m_Script: {fileID: -1029778088, guid: ebae63e7edba59945a994528ada1f7a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interpolate: 1
+  _interpolate: 0
   _syncPosition: 1
   _syncRotation: 1
   _syncScale: 1
@@ -11525,7 +11478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 257f325d36eeec34594e3f9e4661b758, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _canTrackPlayer: 1
+  _canTrackPlayer: 0
   _canTrackObjects: 0
   _realTime: {fileID: 437273665631284249}
   _timeInterval: 0.1
@@ -12135,7 +12088,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1652715011
 Transform:
   m_ObjectHideFlags: 0
@@ -12999,7 +12952,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1758654188
 Transform:
   m_ObjectHideFlags: 0
