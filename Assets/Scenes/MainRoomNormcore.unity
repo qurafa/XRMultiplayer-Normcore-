@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 0}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 9bd4e672aaafc1944975db4aac973568, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -1988,6 +1988,10 @@ PrefabInstance:
     - target: {fileID: 1258605402002065344, guid: a5db500c5fc6a2247bf278880f2764b2, type: 3}
       propertyPath: _viewUUID
       value: 9464e30a-5897-4f5d-bd3c-6c22dd68d4dc
+      objectReference: {fileID: 0}
+    - target: {fileID: 6437344924746720810, guid: a5db500c5fc6a2247bf278880f2764b2, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8081281336320705225, guid: a5db500c5fc6a2247bf278880f2764b2, type: 3}
       propertyPath: m_Name
@@ -8685,6 +8689,14 @@ PrefabInstance:
     - target: {fileID: 547935186390231739, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8571081528783892354, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8874025051970643143, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_ReceiveGI
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
