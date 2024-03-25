@@ -6167,11 +6167,11 @@ MonoBehaviour:
   - m_Interactor: {fileID: 1934490520}
     m_TeleportRay: 0
   - m_Interactor: {fileID: 470668640}
-    m_TeleportRay: 1
+    m_TeleportRay: 0
   - m_Interactor: {fileID: 646197290}
     m_TeleportRay: 0
   - m_Interactor: {fileID: 1218517934}
-    m_TeleportRay: 1
+    m_TeleportRay: 0
   m_AimAssistRequiredAngle: 30
   m_AimAssistRequiredSpeed: 0.25
   m_AimAssistPercent: 0.8
@@ -11478,7 +11478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 257f325d36eeec34594e3f9e4661b758, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _canTrackPlayer: 0
+  _canTrackPlayer: 1
   _canTrackObjects: 0
   _realTime: {fileID: 437273665631284249}
   _timeInterval: 0.1
@@ -13314,7 +13314,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   m_RaycastTriggerInteraction: 1
   m_RaycastSnapVolumeInteraction: 0
-  m_HitClosestOnly: 0
+  m_HitClosestOnly: 1
   m_HoverToSelect: 1
   m_HoverTimeToSelect: 1
   m_AutoDeselect: 1
