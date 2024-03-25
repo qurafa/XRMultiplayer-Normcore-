@@ -1525,7 +1525,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _obsoleteAppKey: 
   _normcoreAppSettings: {fileID: 11400000, guid: 5fee15753b6388e47ac8fb53e285ed59, type: 2}
-  _roomToJoinOnStart: Main Room
+  _roomToJoinOnStart: 
   _joinRoomOnStart: 0
 --- !u!1 &541238334710213055
 GameObject:
@@ -1572,9 +1572,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2aac180a3b7dc1944a15df909c5868bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomName: Main Room
+  roomName: Main Room X
   interactablePrefabNames:
   - Octagon
+  - Z1
   firstInstantiationPosition: {x: 1, y: -0.7, z: 3.6}
   InstantiationPositionOffset: {x: 0, y: 0, z: -0.1}
   useAvatar: 1
