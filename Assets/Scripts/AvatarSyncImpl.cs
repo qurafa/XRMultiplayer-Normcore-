@@ -2,6 +2,7 @@ using MixedReality.Toolkit;
 using MixedReality.Toolkit.Subsystems;
 using Normal.Realtime;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.XR;
@@ -65,8 +66,7 @@ public class AvatarSyncImpl : MonoBehaviour
         if (m_RealtimeView == null) m_RealtimeView = GetComponent<RealtimeView>();
         if (m_AvatarSync == null) m_AvatarSync = GetComponent<AvatarSync>();
 
-        InitHandJoints(m_RemoteRoot);
-        _jointsInit = true;
+        
     }
 
     // Update is called once per frame
@@ -78,9 +78,9 @@ public class AvatarSyncImpl : MonoBehaviour
         {
             InitLocalReferences();
             InitController();
-            InitHandSubsystem();
         }
-
+        InitHandSubsystem();
+        InitHandJoints(m_RemoteRoot);
         ControllerTracking();
         HandTracking();
     }
@@ -190,23 +190,29 @@ public class AvatarSyncImpl : MonoBehaviour
     private void InitHandJoints(Transform root)
     {
         if(_jointsInit) return;
-            
-        if((m_Type == Type.LeftHand || m_Type == Type.RightHand) && m_Device == Device.MetaQuest)
+
+        _jointsInit = true;
+
+        if ((m_Type == Type.LeftHand || m_Type == Type.RightHand) && m_Device == Device.MetaQuest)
         {
             for (int j = 0; j < _joints.Length; j++)
             {
                 if (root.name.ToLower().Contains(XRHandJointIDUtility.FromIndex(j).ToString().ToLower()))
                 {
                     _joints[j] = root;
-                    //Debug.Log($"{this.gameObject.name}...{j} Assign {root.name} to {XRHandJointIDUtility.FromIndex(j)}");
                     break;
                 }
             }
-            
         }
         else if((m_Type == Type.LeftHand || m_Type == Type.RightHand) && m_Device == Device.HoloLens)
         {
-            for (int j = 0; j < _joints.Length; j++)
+            if (!_holoHandSubsystem.TryGetEntireHand(_xrNode, out IReadOnlyList<HandJointPose> jp))
+            {
+                _jointsInit = false;
+                Debug.Log($"{this.gameObject.name} _jointsInit false couldnt get hololens hand");
+                return;
+            }
+            for (int j = 0; j < jp.Count; j++)
             {
                 if (root.name.ToLower().Contains(((TrackedHandJoint)j).ToString().ToLower()))
                 {
@@ -222,6 +228,11 @@ public class AvatarSyncImpl : MonoBehaviour
         }
         for (int c = 0; c < root.childCount; c++)
             InitHandJoints(root.GetChild(c));
+
+        if (_joints.Contains(null))
+        {
+            Debug.Log($"{this.gameObject.name} _jointsInit false joints contains null");
+        }  
     }
 
     private void InitQuestXRHand()
@@ -376,6 +387,8 @@ public class AvatarSyncImpl : MonoBehaviour
                         {
                             case TrackedHandJoint.Palm:
                                 // Don't track the palm. The hand mesh shouldn't have a "palm bone".
+                                jointTransform.position = jointPose.Position;
+                                jointTransform.rotation = jointPose.Rotation;
                                 break;
                             case TrackedHandJoint.Wrist:
                                 // Set the wrist directly from the joint data.
@@ -388,6 +401,7 @@ public class AvatarSyncImpl : MonoBehaviour
                             case TrackedHandJoint.RingTip:
                             case TrackedHandJoint.LittleTip:
                                 // The tip bone uses the joint rotation directly.
+                                jointTransform.position = jointPose.Position;
                                 jointTransform.rotation = jp[i - 1].Rotation;
                                 // Compute and accumulate the error between the hand mesh and the user's joint data.
                                 error += JointError(jointTransform.position, jp[i - 1].Position, jointTransform.forward);
@@ -445,7 +459,7 @@ public class AvatarSyncImpl : MonoBehaviour
                 dataToSend = DEFAULTSYNC;
             }
         }
-        //Debug.Log($"{this.gameObject.name}...Sending....{dataToSend}");
+
         m_AvatarSync.SetAvatarData(dataToSend);
     }
 
@@ -458,7 +472,7 @@ public class AvatarSyncImpl : MonoBehaviour
         {
             Debug.Log("Empty netData");
             return;
-        }  
+        }
 
         //Debug.Log($"Receiving {netData}");
 

@@ -337,9 +337,9 @@ public class HandSyncImpl : MonoBehaviour
             return;
 
         //DONT RECEIVE ANYTHING FROM NORMCORE IF IT IS LOCALLY OWNED
-        //if (_rtView != null)
-        //    if (_rtView.isOwnedLocallySelf)
-        //        return;
+        if (_rtView != null)
+            if (_rtView.isOwnedLocallySelf)
+                return;
 
 
         if (netHandData == null || netHandData == "")

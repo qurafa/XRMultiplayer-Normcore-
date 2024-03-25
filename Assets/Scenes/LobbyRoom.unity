@@ -2233,6 +2233,14 @@ MonoBehaviour:
       m_Groups: 
       m_Action: Left Hand PB
       m_Flags: 0
+    - m_Name: 
+      m_Id: 10c0b623-3186-49be-a085-01879a9b2737
+      m_Path: <XRController>{LeftHand}/primaryButton
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Left Hand PB
+      m_Flags: 0
     m_Flags: 0
   leftHandSB:
     m_Name: Left Hand SB
@@ -2245,6 +2253,14 @@ MonoBehaviour:
     - m_Name: 
       m_Id: 8161eef9-454c-4f66-a1a2-44f6c06be3ee
       m_Path: <QuestProTouchController>{LeftHand}/secondaryButton
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Left Hand SB
+      m_Flags: 0
+    - m_Name: 
+      m_Id: c899548e-6627-49b8-a07a-c800028b4e2b
+      m_Path: <XRController>{LeftHand}/secondaryButton
       m_Interactions: 
       m_Processors: 
       m_Groups: 
@@ -2267,6 +2283,14 @@ MonoBehaviour:
       m_Groups: 
       m_Action: Left JS
       m_Flags: 0
+    - m_Name: 
+      m_Id: 5ff85992-5401-4121-bd7d-45f0702b8317
+      m_Path: <XRController>{LeftHand}/thumbstick
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Left JS
+      m_Flags: 0
     m_Flags: 0
   rightHandPB:
     m_Name: Right Hand PB
@@ -2279,6 +2303,14 @@ MonoBehaviour:
     - m_Name: 
       m_Id: 466880ce-31c5-480a-bdfd-f31f78ca3571
       m_Path: <QuestProTouchController>{RightHand}/primaryButton
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Right Hand PB
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 37ce95a2-11f1-4e27-b2cc-b3b9102682ba
+      m_Path: <XRController>{RightHand}/primaryButton
       m_Interactions: 
       m_Processors: 
       m_Groups: 
@@ -2301,6 +2333,14 @@ MonoBehaviour:
       m_Groups: 
       m_Action: Right Hand SB
       m_Flags: 0
+    - m_Name: 
+      m_Id: 13db0f0d-8d0b-44cc-875a-e866785598aa
+      m_Path: <XRController>{RightHand}/secondaryButton
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Right Hand SB
+      m_Flags: 0
     m_Flags: 0
   rightJS:
     m_Name: Right JS
@@ -2313,6 +2353,14 @@ MonoBehaviour:
     - m_Name: 
       m_Id: b187bb5d-0af7-4c25-afda-5b7b3b6683ef
       m_Path: <QuestProTouchController>{RightHand}/thumbstick
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Right JS
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 7cfa8a5e-017f-47d5-80ce-4c3f4cf1c94f
+      m_Path: <XRController>{RightHand}/thumbstick
       m_Interactions: 
       m_Processors: 
       m_Groups: 
@@ -8226,8 +8274,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentSceneIndex: 0
+  m_RunExp: 0
+  m_ExpCanvas: {fileID: 4025449299479621227}
   m_pID: {fileID: 1953658321}
-  m_RunExp: 1
   m_ExpCondition: {fileID: 592678257}
   m_ExpMode: {fileID: 7622448590415999479}
   m_ExpRange: {fileID: 3014176135503138594}
@@ -29717,7 +29766,7 @@ GameObject:
   - component: {fileID: 599167901141628003}
   - component: {fileID: 8269309322033243976}
   m_Layer: 5
-  m_Name: UI
+  m_Name: ExpUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
