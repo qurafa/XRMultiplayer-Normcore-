@@ -1634,6 +1634,7 @@ MonoBehaviour:
   m_RemoteRoot: {fileID: 3232886766432466127}
   m_RemoteController: {fileID: 587439916339534413}
   m_RemoteHandMesh: {fileID: 8124856949328481711}
+  m_RemoteControllerMesh: {fileID: 0}
   m_LocalRootTag: RightController
   m_CameraOffsetTag: CameraOffset
   m_Device: 0
@@ -2890,6 +2891,7 @@ MonoBehaviour:
   m_RemoteRoot: {fileID: 363014440677211293}
   m_RemoteController: {fileID: 6998726634484562618}
   m_RemoteHandMesh: {fileID: 5505286093852318684}
+  m_RemoteControllerMesh: {fileID: 0}
   m_LocalRootTag: LeftController
   m_CameraOffsetTag: CameraOffset
   m_Device: 0
@@ -4705,6 +4707,7 @@ MonoBehaviour:
   m_RemoteRoot: {fileID: 8135624576558794826}
   m_RemoteController: {fileID: 0}
   m_RemoteHandMesh: {fileID: 0}
+  m_RemoteControllerMesh: {fileID: 0}
   m_LocalRootTag: MainCamera
   m_CameraOffsetTag: CameraOffset
   m_Device: 0

@@ -1524,8 +1524,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _obsoleteAppKey: 
-  _normcoreAppSettings: {fileID: 11400000, guid: 5fee15753b6388e47ac8fb53e285ed59, type: 2}
-  _roomToJoinOnStart: Main Room
+  _normcoreAppSettings: {fileID: 11400000, guid: 63121f715bd5a6544bc8d111ed84045d, type: 2}
+  _roomToJoinOnStart: 
   _joinRoomOnStart: 0
 --- !u!1 &541238334710213055
 GameObject:
