@@ -1572,13 +1572,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2aac180a3b7dc1944a15df909c5868bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomName: Main Room
+  roomName: Main Room X
   interactablePrefabNames:
   - Octagon
+  - Z1
   firstInstantiationPosition: {x: 1, y: -0.7, z: 3.6}
   InstantiationPositionOffset: {x: 0, y: 0, z: -0.1}
   useAvatar: 1
-  avatarPrefabName: VR Avatar
+  avatarPrefabName: VR Avatar Hololens
   showOrigin: 1
   originPrefabName: OriginRT
 --- !u!1660057539 &9223372036854775807
