@@ -52,7 +52,7 @@ public class realtimeHelper : MonoBehaviour
 
     private void Update()
     {
-        if (_Realtime.connected) return; // R: no logic here
+        //if (_Realtime.connected) return; // R: no logic here
     }
 
     //Realtime Event when Connecting to a Room
@@ -109,13 +109,18 @@ public class realtimeHelper : MonoBehaviour
     private void RequestOwnerShip(GameObject o)
     {
         if (o.TryGetComponent<RealtimeView>(out RealtimeView rtView))
-            rtView.RequestOwnershipOfSelfAndChildren();
+        {
+            Debug.Log(rtView.transform.name);
+            if(!rtView.isOwnedRemotelySelf && !rtView.isOwnedLocallySelf)
+                rtView.RequestOwnershipOfSelfAndChildren();
+        }
+            
 
 /*        if (o.TryGetComponent<RealtimeTransform>(out RealtimeTransform rtTransform))
             rtTransform.RequestOwnership();*/
 
-        for (int c = 0; c < o.transform.childCount; c++)
-            RequestOwnerShip(o.transform.GetChild(c).gameObject);
+        /*for (int c = 0; c < o.transform.childCount; c++)
+            RequestOwnerShip(o.transform.GetChild(c).gameObject);*/
 
         return;
     }
@@ -127,7 +132,9 @@ public class realtimeHelper : MonoBehaviour
 
         foreach (RealtimeView v in rViews)
         {
-            v.RequestOwnershipOfSelfAndChildren();
+            Debug.Log(v.transform.name);
+            if(!v.isOwnedRemotelySelf && !v.isOwnedLocallySelf)
+                v.RequestOwnershipOfSelfAndChildren();
         }
 /*        foreach (RealtimeTransform t in rTransforms)
         {

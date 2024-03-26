@@ -90,6 +90,7 @@ public class DataManager : MonoBehaviour
         //Debug.Log($"Object File Path is: {OBJECT_FILE_PATH}");
 
         objfileCreated = true;
+        SaveObjectsFile();
     }
 
     public void UpdateObjectFile()
@@ -137,6 +138,8 @@ public class DataManager : MonoBehaviour
 
         if (_toTrack.Count <= 0) return;
 
+        if(OBJECT_FILE_TEMP == null) return;
+
         try
         {
             File.AppendAllText(OBJECT_FILE_PATH, OBJECT_FILE_TEMP.ToString());
@@ -172,6 +175,7 @@ public class DataManager : MonoBehaviour
 
         //File.WriteAllText(playerFilePath, _playerHeader);
         PLAYER_FILE_PATH.Add(pID, playerFilePath);
+        SavePlayerFile(pID);
     }
 
     public void UpdatePlayerFile(int pID, Transform transform)
@@ -206,6 +210,8 @@ public class DataManager : MonoBehaviour
         if (!_canTrackPlayer) return;
 
         if (!PLAYER_FILE_PATH.ContainsKey(pID)) return;
+
+        if (PLAYER_FILE_TEMP[pID] == null || PLAYER_FILE_TEMP[pID].Length == 0) return;
 
         try
         {
@@ -284,7 +290,7 @@ public class DataManager : MonoBehaviour
     /// </summary>
     public void SaveExpFile()
     {
-        if (EXP_FILE_TEMP.Length == 0) return;
+        if (EXP_FILE_TEMP == null || EXP_FILE_TEMP.Length == 0) return;
         try
         {
             File.AppendAllText(EXP_FILE_PATH, EXP_FILE_TEMP.ToString());

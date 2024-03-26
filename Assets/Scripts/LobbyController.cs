@@ -12,9 +12,11 @@ public class LobbyController : MonoBehaviour
     private int currentSceneIndex;
     [Header("EXPERIMENT")]
     [SerializeField]
-    private TextMeshProUGUI m_pID;
-    [SerializeField]
     private bool m_RunExp;
+    [SerializeField]
+    private Canvas m_ExpCanvas;
+    [SerializeField]
+    private TextMeshProUGUI m_pID;
     [SerializeField]
     private Dropdown m_ExpCondition;
     [SerializeField]
@@ -31,6 +33,10 @@ public class LobbyController : MonoBehaviour
 
     private void Start()
     {
+        if (!m_RunExp)
+        {
+            m_ExpCanvas.gameObject.SetActive(false);
+        }
     }
 
     /// <summary>

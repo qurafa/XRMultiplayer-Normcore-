@@ -44,7 +44,7 @@ public class AvatarSync : RealtimeComponent<AvatarSyncModel>
     {
         if (model == null)
             return;
-        if (model.avatarData == null || model.avatarData.Length == 0)
+        if (model.avatarData == "")
             return;
 
         //Debug.Log($"getting avatar data....{model.avatarData}");

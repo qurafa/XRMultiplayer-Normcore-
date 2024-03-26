@@ -511,7 +511,14 @@ public class ExpController : MonoBehaviour
             spawn.transform.localScale.z * size);
         if(m_FacePlayer)
             spawn.transform.Rotate(new Vector3(90,0,0));
-
+        if(spawn.TryGetComponent<Rigidbody>(out Rigidbody r))
+        {
+            r.mass = 1e+09f;
+            r.constraints = RigidbodyConstraints.FreezeRotation;
+            r.drag = 1000;
+            r.angularDrag = 0;
+        }
+            
         _dispTime = DateTime.Now;
         
         _nTrialNumber++;
