@@ -44,10 +44,10 @@ public class AvatarSync : RealtimeComponent<AvatarSyncModel>
     {
         if (model == null)
             return;
+        //Debug.Log($"getting avatar data....{model.avatarData}");
         if (model.avatarData == "")
             return;
 
-        //Debug.Log($"getting avatar data....{model.avatarData}");
         m_AvatarSyncImpl.UpdateFromNormcore(model.avatarData);
     }
 

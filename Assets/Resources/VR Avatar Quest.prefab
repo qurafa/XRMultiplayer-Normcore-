@@ -1598,6 +1598,10 @@ MonoBehaviour:
   - componentID: 3
     component: {fileID: 0}
   - componentID: 4
+    component: {fileID: 0}
+  - componentID: 5
+    component: {fileID: 0}
+  - componentID: 6
     component: {fileID: 7437985355103498579}
 --- !u!114 &2798117045505827186
 MonoBehaviour:
@@ -1634,7 +1638,6 @@ MonoBehaviour:
   m_RemoteRoot: {fileID: 3232886766432466127}
   m_RemoteController: {fileID: 587439916339534413}
   m_RemoteHandMesh: {fileID: 8124856949328481711}
-  m_RemoteControllerMesh: {fileID: 0}
   m_LocalRootTag: RightController
   m_CameraOffsetTag: CameraOffset
   m_Device: 0
@@ -2855,6 +2858,10 @@ MonoBehaviour:
   - componentID: 3
     component: {fileID: 0}
   - componentID: 4
+    component: {fileID: 0}
+  - componentID: 5
+    component: {fileID: 0}
+  - componentID: 6
     component: {fileID: 2250909286226332456}
 --- !u!114 &3383377142847124181
 MonoBehaviour:
@@ -2871,7 +2878,7 @@ MonoBehaviour:
   _interpolate: 1
   _syncPosition: 1
   _syncRotation: 1
-  _syncScale: 0
+  _syncScale: 1
   _syncVelocity: 1
   _maintainOwnershipWhileSleeping: 0
 --- !u!114 &2447199092536869576
@@ -2891,7 +2898,6 @@ MonoBehaviour:
   m_RemoteRoot: {fileID: 363014440677211293}
   m_RemoteController: {fileID: 6998726634484562618}
   m_RemoteHandMesh: {fileID: 5505286093852318684}
-  m_RemoteControllerMesh: {fileID: 0}
   m_LocalRootTag: LeftController
   m_CameraOffsetTag: CameraOffset
   m_Device: 0
@@ -3391,6 +3397,10 @@ MonoBehaviour:
   - componentID: 4
     component: {fileID: 0}
   - componentID: 5
+    component: {fileID: 0}
+  - componentID: 6
+    component: {fileID: 0}
+  - componentID: 7
     component: {fileID: 0}
 --- !u!114 &1749348511257355574
 MonoBehaviour:
@@ -4633,7 +4643,9 @@ MonoBehaviour:
     component: {fileID: 6770285162707121289}
   - componentID: 3
     component: {fileID: 1588371396441658754}
-  _childViews: []
+  _childViews:
+  - componentID: 1
+    component: {fileID: 0}
 --- !u!114 &8889495927716644011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4707,7 +4719,6 @@ MonoBehaviour:
   m_RemoteRoot: {fileID: 8135624576558794826}
   m_RemoteController: {fileID: 0}
   m_RemoteHandMesh: {fileID: 0}
-  m_RemoteControllerMesh: {fileID: 0}
   m_LocalRootTag: MainCamera
   m_CameraOffsetTag: CameraOffset
   m_Device: 0
