@@ -23,12 +23,18 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/MainRoomNormcore.unity
     guid: 23564db9b3c8f64478d4336677a6eb34
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/R-AR.unity
     guid: e09477795660201408178eb9e9b002d7
   - enabled: 0
     path: Assets/Scenes/MainRoomNormcore(Old).unity
     guid: 9eeaa6a4b964da84bb06a03992cb313b
+  - enabled: 1
+    path: Assets/Scenes/AnchorTest.unity
+    guid: d18c686912eb2654e901f2ccd9f310da
+  - enabled: 0
+    path: Assets/Samples/XR Interaction Toolkit/2.5.2/AR Starter Assets/ARDemoScene.unity
+    guid: da4db6c21a88243878fecfe160c1be3b
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 4365ebcc117fcc54db940ee5b02674e1, type: 2}
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: d70f1d5f9ab9b3d45ae74c65999ce502, type: 2}
