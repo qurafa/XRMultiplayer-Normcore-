@@ -53,11 +53,11 @@ public class ObjectModelImpl : RealtimeComponent<ObjectModel>
         {
             case 0:
                 this.gameObject.SetActive(true);
-                setColor(originalColor);
+                //setColor(originalColor);
                 break;
             case 1:
                 this.gameObject.SetActive(true);
-                setColor(holdingColor);
+                //setColor(holdingColor);
                 dM.AddObjectTrack(this.gameObject);
                 break;
              case 2:

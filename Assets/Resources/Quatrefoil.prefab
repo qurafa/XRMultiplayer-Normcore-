@@ -214,7 +214,7 @@ MonoBehaviour:
       m_Calls: []
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
-  m_UseDynamicAttach: 0
+  m_UseDynamicAttach: 1
   m_MatchAttachPosition: 1
   m_MatchAttachRotation: 1
   m_SnapToColliderVolume: 1
@@ -256,7 +256,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   m_ThrowVelocityScale: 1.5
   m_ThrowAngularVelocityScale: 1
-  m_ForceGravityOnDetach: 0
+  m_ForceGravityOnDetach: 1
   m_RetainTransformParent: 1
   m_AttachPointCompatibilityMode: 0
   m_StartingSingleGrabTransformers: []
@@ -335,7 +335,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8411439825563083112}
-  m_Mesh: {fileID: 2982351631095374925, guid: 54904004c754ffe419a1102c1ff85f66, type: 3}
+  m_Mesh: {fileID: 2982351631095374925, guid: 1c812c5321f90304bbcccacb99e6db3b, type: 3}
 --- !u!23 &8051190956464881853
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -399,4 +399,4 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 2982351631095374925, guid: 54904004c754ffe419a1102c1ff85f66, type: 3}
+  m_Mesh: {fileID: 2982351631095374925, guid: 1c812c5321f90304bbcccacb99e6db3b, type: 3}

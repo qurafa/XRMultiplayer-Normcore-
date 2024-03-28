@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Text;
+using Unity.VisualScripting;
 
 public class DataManager : MonoBehaviour
 {
@@ -105,6 +106,11 @@ public class DataManager : MonoBehaviour
         int ownerID = -1;
         foreach (GameObject track in _toTrack)
         {
+            if (track.IsDestroyed())
+            {
+                _toTrack.Remove(track);
+                continue;
+            }
             ownerID = track.TryGetComponent<RealtimeView>(out RealtimeView rV) ? rV.ownerIDInHierarchy : ownerID;
             string status = (track.TryGetComponent<NomcoreObject>(out NomcoreObject nO)) ? nO.GetStatus() : track.name;
             update += $"{track.name},{ownerID},{DateTime.Now.TimeOfDay}," +
@@ -226,6 +232,16 @@ public class DataManager : MonoBehaviour
         }
     }
 
+    private void SaveAllPlayerFiles()
+    {
+        if (!_canTrackPlayer) return;
+
+        if(PLAYER_FILE_PATH == null) return;
+
+        foreach (int pID in PLAYER_FILE_PATH.Keys)
+            SavePlayerFile(pID);
+    }
+
     public bool PlayerFileExists(int pID)
     {
         return PLAYER_FILE_PATH.ContainsKey(pID);
@@ -312,8 +328,7 @@ public class DataManager : MonoBehaviour
     {
         SaveExpFile();
         SaveObjectsFile();
-        foreach(int pID in PLAYER_FILE_PATH.Keys)
-            SavePlayerFile(pID);
+        SaveAllPlayerFiles();
     }
     
     private void OnApplicationPause(bool pause)

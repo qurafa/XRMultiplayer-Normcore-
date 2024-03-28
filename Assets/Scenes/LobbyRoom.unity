@@ -8274,7 +8274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentSceneIndex: 0
-  m_RunExp: 0
+  m_RunExp: 1
   m_ExpCanvas: {fileID: 4025449299479621227}
   m_pID: {fileID: 1953658321}
   m_ExpCondition: {fileID: 592678257}

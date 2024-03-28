@@ -34,7 +34,7 @@ public class NomcoreObject : MonoBehaviour
     /// </summary>
     private string _statusWRTBox = "Outside Box";
 
-    private Rigidbody m_rigidbody;
+    private Rigidbody m_Rigidbody;
 
     private RealtimeView m_RealtimeView;
     private XRGrabInteractable m_GrabInteractable;
@@ -44,12 +44,15 @@ public class NomcoreObject : MonoBehaviour
     {
         m_RealtimeView = GetComponent<RealtimeView>();
         m_GrabInteractable = GetComponent<XRGrabInteractable>();
-        m_rigidbody = GetComponent<Rigidbody>();
+        m_Rigidbody = GetComponent<Rigidbody>();
 
         if (objImpl == null) objImpl = GetComponent<ObjectModelImpl>();
 
-        m_GrabInteractable.selectEntered.AddListener(OnGrab);
-        m_GrabInteractable.selectExited.AddListener(OnRelease);
+        if (m_GrabInteractable != null)
+        {
+            m_GrabInteractable.selectEntered.AddListener(OnGrab);
+            m_GrabInteractable.selectExited.AddListener(OnRelease);
+        }
     }
 
     private void Start()
@@ -128,12 +131,20 @@ public class NomcoreObject : MonoBehaviour
         m_RealtimeView.RequestOwnershipOfSelfAndChildren();
         grabbing = true;
         releaseCount = 0;
+
+        m_Rigidbody.constraints = RigidbodyConstraints.None;
+        m_Rigidbody.drag = 0;
+        m_Rigidbody.angularDrag = 0.05f;
     }
 
     private void OnRelease(SelectExitEventArgs args)
     {
         grabbing = false;
         touchingCount = 0;
+
+        m_Rigidbody.constraints = RigidbodyConstraints.None;
+        m_Rigidbody.drag = 0;
+        m_Rigidbody.angularDrag = 0.05f;
     }
 
 /*    private void OnCollisionEnter(Collision collision)
@@ -216,5 +227,11 @@ public class NomcoreObject : MonoBehaviour
     {
         m_GrabInteractable.selectEntered.RemoveListener(RequestOwnership);
         m_GrabInteractable.selectExited.RemoveListener(ClearOwnership);
+    }
+
+    private void OnDestroy()
+    {
+        objImpl.UpdateTS(2);
+        tracking = false;
     }
 }

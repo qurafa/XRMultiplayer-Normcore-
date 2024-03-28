@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 33968322}
   m_Layer: 0
   m_Name: Right Controller
-  m_TagString: Untagged
+  m_TagString: RightController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1509,6 +1509,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4439683997676795880, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2184,7 +2188,7 @@ GameObject:
   - component: {fileID: 389031717}
   m_Layer: 0
   m_Name: Left Controller
-  m_TagString: Untagged
+  m_TagString: LeftController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5297,7 +5301,7 @@ MonoBehaviour:
   m_FacePlayer: 0
   m_MinBlankTimeLimit: 3
   m_MaxBlankTimeLimit: 300
-  m_TrialTimeLimit: 2.5
+  m_TrialTimeLimit: 5
   m_NumberSmaller: 3
   m_NumberLarger: 3
   m_PID: 0
@@ -10016,7 +10020,7 @@ GameObject:
   - component: {fileID: 1268174799}
   m_Layer: 0
   m_Name: Camera Offset
-  m_TagString: Untagged
+  m_TagString: CameraOffset
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11479,7 +11483,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canTrackPlayer: 1
-  _canTrackObjects: 0
+  _canTrackObjects: 1
   _realTime: {fileID: 437273665631284249}
   _timeInterval: 0.1
 --- !u!4 &1580161445
@@ -16744,7 +16748,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _localPlayer: {fileID: 2001921950}
-  playerPrefabName: VR Player Variant
+  playerPrefabName: VR Avatar Quest
   roomName: Exp Room
   room: {fileID: 205605689}
   _connectionStatus: {fileID: 1587690695}

@@ -279,6 +279,11 @@ public class ExpController : MonoBehaviour
 
         string shape = GetNextTrial().Split('|')[0];
         m_SortingCube.position = m_CubeSpawn.position;
+
+        if(m_SortingCube.TryGetComponent<Rigidbody>(out Rigidbody r)){
+            r.constraints = RigidbodyConstraints.FreezeAll;
+        }
+
         if (m_FacePlayer)
         {
             m_SortingCube.LookAt(_playerTransform.position, _shapeToBoxRotation1[shape][0]);
