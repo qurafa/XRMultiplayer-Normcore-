@@ -238,17 +238,17 @@ public class AvatarSyncImpl : MonoBehaviour
         }
         else
         {
-            Debug.Log($"{this.gameObject.name}...Init joints, device or type not supported");
+            //Debug.Log($"{this.gameObject.name}...Init joints, device or type not supported");
             _jointsInit = true;//so we don't try again
             return;
         }
         for (int c = 0; c < root.childCount; c++)
             InitHandJoints(root.GetChild(c));
 
-        if (_joints.Contains(null))
+        /*if (_joints.Contains(null))
         {
             Debug.Log($"{this.gameObject.name} _jointsInit false joints contains null");
-        }
+        }*/
     }
 
     private void InitQuestXRHand()
@@ -587,7 +587,7 @@ public class AvatarSyncImpl : MonoBehaviour
         }
         else
         {
-            Debug.Log("Error reading netdata");
+            //Debug.Log("Error reading netdata");
         }
     }
 
