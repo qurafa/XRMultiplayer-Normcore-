@@ -4181,7 +4181,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &540602854
 Transform:
   m_ObjectHideFlags: 0
@@ -10983,7 +10983,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3712792914886690938, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
       propertyPath: m_RequestedTrackingOriginMode
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5334666798807300184, guid: 4d7e2f87fefe0ba468719b15288b46e7, type: 3}
       propertyPath: m_IsActive
@@ -14331,7 +14331,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1724173400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16252,7 +16252,7 @@ MonoBehaviour:
   - Z1
   firstInstantiationPosition: {x: 1, y: -0.7, z: 3.6}
   InstantiationPositionOffset: {x: 0, y: 0, z: -0.1}
-  useAvatar: 1
+  useAvatar: 0
   avatarPrefabName: VR Avatar Hololens
   showOrigin: 1
   originPrefabName: OriginRT
