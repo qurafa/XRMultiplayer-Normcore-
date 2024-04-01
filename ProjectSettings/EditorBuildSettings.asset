@@ -11,7 +11,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Samples/XR Interaction Toolkit/2.5.2/Hands Interaction Demo/HandsDemoScene.unity
     guid: 3ff35cecbcc52cc42945cf531638a60a
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/LobbyRoom.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 0
@@ -20,7 +20,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/MainRoom.unity
     guid: 2a5150f85c83b32439249718b4bd6f55
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/MainRoomNormcore.unity
     guid: 23564db9b3c8f64478d4336677a6eb34
   - enabled: 0
@@ -29,7 +29,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/MainRoomNormcore(Old).unity
     guid: 9eeaa6a4b964da84bb06a03992cb313b
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/AnchorTest.unity
     guid: d18c686912eb2654e901f2ccd9f310da
   - enabled: 0
