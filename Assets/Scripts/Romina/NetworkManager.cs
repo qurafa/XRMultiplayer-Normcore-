@@ -88,7 +88,7 @@ namespace com.perceptlab.armultiplayer
             {
                 return;
             }
-            Realtime.Instantiate(
+            GameObject avatar = Realtime.Instantiate(
                 prefabName: avatarPrefabName, Vector3.zero, Quaternion.identity,
                 new InstantiateOptions
                 {
@@ -98,6 +98,7 @@ namespace com.perceptlab.armultiplayer
                     destroyWhenLastClientLeaves = true,
                     useInstance = realtime
                 });
+            avatar.GetComponent<RealtimeView>().RequestOwnershipOfSelfAndChildren();
         }
 
         void instantiaceOrigin(Realtime realtime)

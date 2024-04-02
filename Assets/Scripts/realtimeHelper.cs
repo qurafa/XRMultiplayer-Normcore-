@@ -89,12 +89,12 @@ public class realtimeHelper : MonoBehaviour
             destroyWhenLastClientLeaves = true,
             useInstance = _Realtime,
         });
-        RequestOwnerShip(newPlayer);
+        //RequestOwnerShip(newPlayer);
+        if (newPlayer.TryGetComponent<RealtimeView>(out RealtimeView r))
+            r.RequestOwnershipOfSelfAndChildren();
 
         if (id == 0)
-        {
             AllRequestOwnerShip();
-        }
         _connectionStatus.material.color = ROOM_CONNECTED;
     }
 
@@ -111,12 +111,10 @@ public class realtimeHelper : MonoBehaviour
         if (o.TryGetComponent<RealtimeView>(out RealtimeView rtView))
         {
             Debug.Log(rtView.transform.name);
-            if(!rtView.isOwnedRemotelySelf && !rtView.isOwnedLocallySelf)
-                rtView.RequestOwnershipOfSelfAndChildren();
+            rtView.RequestOwnershipOfSelfAndChildren();
         }
-            
 
-/*        if (o.TryGetComponent<RealtimeTransform>(out RealtimeTransform rtTransform))
+        /*        if (o.TryGetComponent<RealtimeTransform>(out RealtimeTransform rtTransform))
             rtTransform.RequestOwnership();*/
 
         /*for (int c = 0; c < o.transform.childCount; c++)

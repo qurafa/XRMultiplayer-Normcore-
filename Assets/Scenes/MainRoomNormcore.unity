@@ -16716,7 +16716,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _localPlayer: {fileID: 2001921950}
-  playerPrefabName: VR Avatar Hololens
+  playerPrefabName: VR Avatar Quest
   roomName: Main Room
   room: {fileID: 205605689}
   _connectionStatus: {fileID: 1587690695}
