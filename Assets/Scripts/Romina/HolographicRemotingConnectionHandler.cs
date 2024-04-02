@@ -18,7 +18,8 @@ namespace com.perceptlab.armultiplayer
 {
     public class HolographicRemotingConnectionHandler : MonoBehaviour
     {
-        private bool connected { get; set; } = false;
+        public enum HandlerConnectionState { Connected, Disconnected, Disconnecting };
+        public HandlerConnectionState _connectionState { get; private set; } = HandlerConnectionState.Disconnected;
 
         // port 8265 is the port Holographic Remoting player app on 
         private RemotingConnectConfiguration remotingConfiguration = new() { RemoteHostName = "192.168.0.103", RemotePort = 8265, MaxBitrateKbps = 20000 };
@@ -36,70 +37,94 @@ namespace com.perceptlab.armultiplayer
 
         // connects to port 8265 because HL2 player app listens to this port.
 
-        public void Awake()
+        private void logEditorApplicationState()
         {
-            AppRemoting.Connected += onConnected;
-            AppRemoting.Disconnecting += onDisconnected;
-            Application.wantsToQuit += wantsToQuitCheck;
 #if UNITY_EDITOR
-            EditorApplication.playModeStateChanged += delegate
-            {
-                if (!wantsToQuitCheck())
-                {
-                    RLogger.Log("playMode state changed and we don't want to allow quitting, so we prevent it");
-                    EditorApplication.isPlaying = true;
-                }
-            };
+
+            RLogger.Log("EditorApplication.isCompiling? " + EditorApplication.isCompiling);
+            RLogger.Log("EditorApplication.isPaused? " + EditorApplication.isPaused);
+            RLogger.Log("EditorApplication.isPlaying? " + EditorApplication.isPlaying);
+            RLogger.Log("EditorApplication.isPlayingOrWillChangePlaymode? " + EditorApplication.isPlayingOrWillChangePlaymode);
+            RLogger.Log("EditorApplication.isRemoteConnected? " + EditorApplication.isRemoteConnected);
+#else
+            RLogger.Log("EditorApplication is not running");
 #endif
         }
 
-        private bool isDisconnected()
+        public void Awake()
         {
-            RLogger.Log("Checking disconnected");
+            AppRemoting.Connected += onConnected;
+            AppRemoting.Disconnecting += onDisconnecting;
+
+            Application.wantsToQuit += SafeQuit;
+            EditorApplication.playModeStateChanged += delegate (PlayModeStateChange pmstate)
+            {
+                if (pmstate == PlayModeStateChange.ExitingPlayMode)
+                {
+                    RLogger.Log("[HolographicRemotingConnectionHandler] EditorApplication trying to exit playmode");
+                    if (!SafeQuit())
+                    {
+                        RLogger.Log("[HolographicRemotingConnectionHandler] EditorApplication preventing playmode exit");
+                        EditorApplication.isPlaying = true;
+                    }
+                }
+            };
+        }
+
+        private ConnectionState? GetAppRemotingConnectionState()
+        {
             ConnectionState cs = new ConnectionState();
             DisconnectReason dr = new DisconnectReason();
             if (AppRemoting.TryGetConnectionState(out cs, out dr))
             {
-                RLogger.Log("Connection state is: " + cs.ToString());
-                if (cs != ConnectionState.Disconnected)
-                {
-                    RLogger.Log("Returning true");
-                    return true;
-                }
+                return cs;
             }
             else
             {
-                RLogger.Log("couldn't get connection state, assuming we're not connected (probably remoting Subsystem is not initialized yet)....");
-                return true;
+                return null;
             }
-            RLogger.Log("returning false");
-            return false;
         }
 
-        private bool wantsToQuitCheck()
+        private void Quit()
+        {
+#if UNITY_EDITOR
+            EditorApplication.isPlaying = false;
+#else
+            Application.Quit(); 
+#endif
+        }
+
+        private bool SafeQuit()
         {
             if (preventedCount >= 10)
             {
-                RLogger.Log("wantsToQuitCheck allowing quit because has prevented quit for more than ten times");
+                RLogger.Log("[HolographicRemotingConnectionHandler] QuitCheck allowing quit because has prevented quit for more than ten times");
                 return true;
             }
-            RLogger.Log("application wants to quit");
-            if (!isDisconnected())
+            RLogger.Log("[HolographicRemotingConnectionHandler] Checking Quit condition");
+            if (_connectionState != HandlerConnectionState.Disconnected)
             {
-                RLogger.Log("wants to quit but is not disconnected, not allowing quit, and trying to disconnect instead.");
+                RLogger.Log("[HolographicRemotingConnectionHandler] wants to quit but is not disconnected, not allowing quit, and trying to disconnect instead.");
+                onDisconnectedFromDevice.AddListener(delegate (DisconnectReason dr)
+                {
+                    RLogger.Log("[HolographicRemotingConnectionHandler] Quitting following a previously rejected quit request.");
+                    Quit();
+                });
                 Disconnect();
                 preventedCount += 1;
                 return false;
             }
             if (XRGeneralSettings.Instance.Manager.activeLoader != null)
             {
-                RLogger.Log("wants to quit and is disconnected but XR active loader is not null, not allowing quit.");
+                RLogger.Log("[HolographicRemotingConnectionHandler] wants to quit and is disconnected but XR active loader is not null, not allowing quit.");
                 preventedCount += 1;
                 return false;
             }
-            RLogger.Log("allwoing quit.");
+            RLogger.Log("[HolographicRemotingConnectionHandler] allwoing quit.");
             return true;
         }
+
+
 
         public void Connect(string IP)
         {
@@ -107,15 +132,15 @@ namespace com.perceptlab.armultiplayer
 
             if (!isReachable(remotingConfiguration.RemoteHostName, remotingConfiguration.RemotePort))
             {
-                RLogger.Log("The IP address is not reachable, make sure it's entered correclty");
+                RLogger.Log("[HolographicRemotingConnectionHandler]: The IP address is not reachable, make sure it's entered correclty");
                 return;
             }
             if (AppRemoting.IsReadyToStart == false)
             {
-                RLogger.Log("Error: HolographicRemoting is not ready to start. Check App's XR Settings and try again later.");
+                RLogger.Log("[HolographicRemotingConnectionHandler] Error: HolographicRemoting is not ready to start. Check App's XR Settings and try again later.");
                 return;
             }
-            RLogger.Log("HolographicRemoting: Ready to start, trying to connect");
+            RLogger.Log("[HolographicRemotingConnectionHandler]: Ready to start, trying to connect");
             AppRemoting.StartConnectingToPlayer(remotingConfiguration);
         }
 
@@ -145,59 +170,55 @@ namespace com.perceptlab.armultiplayer
 
         public void Disconnect()
         {
-            RLogger.Log("HolographicRemoting: Disconnect request, XRGeneralSettings.Instance.Manager.activeLoader is null? " + (XRGeneralSettings.Instance.Manager.activeLoader == null).ToString());
-            if (!isDisconnected())
+            RLogger.Log("[HolographicRemotingConnectionHandler] Disconnect called, XRGeneralSettings.Instance.Manager.activeLoader is null? " + (XRGeneralSettings.Instance.Manager.activeLoader == null).ToString());
+            if (GetAppRemotingConnectionState() != ConnectionState.Disconnected)
             {
-                RLogger.Log("Calling Disconnect on AppRemoting");
+                RLogger.Log("[HolographicRemotingConnectionHandler] Calling Disconnect on AppRemoting");
                 AppRemoting.Disconnect();
             }
             else
             {
-                RLogger.Log("Disconnect called but we're already disconnected");
+                RLogger.Log("[HolographicRemotingConnectionHandler] Disconnect called but we're already disconnected");
             }
         }
 
         private void onConnected()
         {
-            RLogger.Log("HolographicRemoting: Connected" + " XRGeneralSettings.Instance.Manager.activeLoader is null ? " + (XRGeneralSettings.Instance.Manager.activeLoader == null).ToString());
-            connected = true;
-            onConnectedToDevice?.Invoke();
+            ConnectionState? cs = GetAppRemotingConnectionState();
+            RLogger.Log("[HolographicRemotingConnectionHandler] onConnected called" + " XRGeneralSettings.Instance.Manager.activeLoader is null ? " + (XRGeneralSettings.Instance.Manager.activeLoader == null).ToString() + ". Connection State: " + cs.ToString());
+            _connectionState = (cs == ConnectionState.Connected) ? HandlerConnectionState.Connected : HandlerConnectionState.Disconnected;
+            if (_connectionState == HandlerConnectionState.Connected)
+            {
+                RLogger.Log("[HolographicRemotingConnectionHandler] invoking onConnectedToDevice");
+                onConnectedToDevice?.Invoke();
+            }
         }
 
-        private void onDisconnected(DisconnectReason reason)
+        private void onDisconnecting(DisconnectReason reason)
         {
-            RLogger.Log("HolographicRemoting: Disconnected. Reason:" + reason.ToString() + " XRGeneralSettings.Instance.Manager.activeLoader is null ? " + (XRGeneralSettings.Instance.Manager.activeLoader == null).ToString());
-            connected = false;
-            ConnectionState cs = new ConnectionState();
-            DisconnectReason dr = new DisconnectReason();
-            AppRemoting.TryGetConnectionState(out cs, out dr);
-            RLogger.Log("I set connected to false, but are we really disconnected? this is the AppRemoting status: " + cs.ToString());
-            onDisconnectedFromDevice?.Invoke(reason);
-        }
-
-        public void OnDisable()
-        {
-            RLogger.Log("OnDisable called" + "XRGeneralSettings.Instance.Manager.activeLoader is null ? " + (XRGeneralSettings.Instance.Manager.activeLoader == null).ToString() + ", holographic remoting disconnecting must see Disconnecting in the next line:");
-            Disconnect();
+            ConnectionState? cs = GetAppRemotingConnectionState();
+            RLogger.Log("[HolographicRemotingConnectionHandler] onDisconnected called. Reason:" + reason.ToString() + " XRGeneralSettings.Instance.Manager.activeLoader is null ? " + (XRGeneralSettings.Instance.Manager.activeLoader == null).ToString() + ". Connection State: " + cs.ToString());
+            _connectionState = (cs == ConnectionState.Connected) ? HandlerConnectionState.Disconnecting : HandlerConnectionState.Disconnected;
+            RLogger.Log("[HolographicRemotingConnectionHandler] OnDisconnected called, _connectionState is now: " + _connectionState.ToString());
+            if (_connectionState == HandlerConnectionState.Disconnected)
+            {
+                RLogger.Log("[HolographicRemotingConnectionHandler] invoking onDisconnectedFromDevice");
+                onDisconnectedFromDevice?.Invoke(reason);
+            }
         }
 
         public void OnApplicationQuit()
         {
-            RLogger.Log("OnApplicationQuit called" + "XRGeneralSettings.Instance.Manager.activeLoader is null ? " + (XRGeneralSettings.Instance.Manager.activeLoader == null).ToString() + ", holographic remoting disconnecting must see Disconnecting in the next line:");
-            Disconnect();
-        }
-
-        public void OnApplicationPause()
-        {
-            RLogger.Log("OnApplicationPause called" + "XRGeneralSettings.Instance.Manager.activeLoader is null ? " + (XRGeneralSettings.Instance.Manager.activeLoader == null).ToString() + ", holographic remoting disconnecting must see Disconnecting in the next line:");
-            Disconnect();
+            RLogger.Log("[HolographicRemotingConnectionHandler] OnApplicationQuit called. " +
+                "XRGeneralSettings.Instance.Manager.activeLoader is null ? " + (XRGeneralSettings.Instance.Manager.activeLoader == null).ToString() +
+                ", _connectionState = " + _connectionState.ToString());
         }
 
         public void OnGUI()
         {
             if (drawGUI)
             {
-                if (!connected)
+                if (_connectionState == HandlerConnectionState.Disconnected)
                 {
                     remotingConfiguration.RemoteHostName = GUI.TextField(new Rect(155, 10, 200, 30), remotingConfiguration.RemoteHostName, 25);
                     if (GUI.Button(new Rect(365, 10, 100, 30), "Connect"))
