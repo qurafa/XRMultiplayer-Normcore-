@@ -57,6 +57,7 @@ namespace com.perceptlab.armultiplayer
             AppRemoting.Disconnecting += onDisconnecting;
 
             Application.wantsToQuit += SafeQuit;
+#if UNITY_EDITOR
             EditorApplication.playModeStateChanged += delegate (PlayModeStateChange pmstate)
             {
                 if (pmstate == PlayModeStateChange.ExitingPlayMode)
@@ -69,6 +70,7 @@ namespace com.perceptlab.armultiplayer
                     }
                 }
             };
+#endif
         }
 
         private ConnectionState? GetAppRemotingConnectionState()
@@ -123,8 +125,6 @@ namespace com.perceptlab.armultiplayer
             RLogger.Log("[HolographicRemotingConnectionHandler] allwoing quit.");
             return true;
         }
-
-
 
         public void Connect(string IP)
         {
