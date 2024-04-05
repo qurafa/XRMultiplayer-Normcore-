@@ -119,7 +119,6 @@ GameObject:
   - component: {fileID: 6046602434782992500}
   - component: {fileID: 4741886369561402883}
   - component: {fileID: 1390127827524911297}
-  - component: {fileID: 7889736925659048708}
   - component: {fileID: 8066969887114769256}
   m_Layer: 0
   m_Name: Pentagon
@@ -346,7 +345,7 @@ MonoBehaviour:
   - componentID: 1
     component: {fileID: 1390127827524911297}
   - componentID: 2
-    component: {fileID: 7889736925659048708}
+    component: {fileID: 0}
   _childViews:
   - componentID: 1
     component: {fileID: 0}
@@ -368,23 +367,6 @@ MonoBehaviour:
   _syncScale: 1
   _syncVelocity: 1
   _maintainOwnershipWhileSleeping: 1
---- !u!114 &7889736925659048708
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3324249360952219856}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5bcd29f0c5d3fcb4a97cadf81a780be4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  renderers:
-  - {fileID: 1673838384822460032}
-  originalColor: {r: 0.85, g: 0.85, b: 0, a: 1}
-  holdingColor: {r: 1, g: 1, b: 0, a: 1}
-  dM: {fileID: 0}
 --- !u!114 &8066969887114769256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,6 +379,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0aff2b5bf43c82479072e46d0a68c3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objImpl: {fileID: 7889736925659048708}
+  objImpl: {fileID: 0}
   _audioSource: {fileID: 0}
   tracking: 1

@@ -337,7 +337,7 @@ public class CallibrateRoom : MonoBehaviour
             vision = Vision.Normal;
 
             if (_doneEvent != null)
-                _doneEvent.Invoke(_send, 1);
+                _doneEvent.Invoke(_send);
 
             //stop ability to calibrate
             _canCalibrate = false;
@@ -502,7 +502,7 @@ public class CallibrateRoom : MonoBehaviour
 }
 
 [System.Serializable]
-public class MyLoadSceneEvent : UnityEvent<MyTransform, int>
+public class MyLoadSceneEvent : UnityEvent<MyTransform>
 {
 }
 

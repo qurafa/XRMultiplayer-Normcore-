@@ -119,7 +119,6 @@ GameObject:
   - component: {fileID: 6608441390320794670}
   - component: {fileID: 65351225524543331}
   - component: {fileID: 1835215518875220374}
-  - component: {fileID: 8029636521002998725}
   - component: {fileID: 8369229025834943890}
   m_Layer: 0
   m_Name: Square
@@ -344,7 +343,7 @@ MonoBehaviour:
   _sceneViewDestroyWhenLastClientLeaves: 1
   _components:
   - componentID: 1
-    component: {fileID: 8029636521002998725}
+    component: {fileID: 0}
   - componentID: 2
     component: {fileID: 1835215518875220374}
   _childViews:
@@ -368,23 +367,6 @@ MonoBehaviour:
   _syncScale: 1
   _syncVelocity: 1
   _maintainOwnershipWhileSleeping: 1
---- !u!114 &8029636521002998725
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2052806445666274366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5bcd29f0c5d3fcb4a97cadf81a780be4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  renderers:
-  - {fileID: 421753048707890412}
-  originalColor: {r: 0, g: 0.8509804, b: 0, a: 1}
-  holdingColor: {r: 0, g: 1, b: 0, a: 1}
-  dM: {fileID: 0}
 --- !u!114 &8369229025834943890
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,6 +379,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0aff2b5bf43c82479072e46d0a68c3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objImpl: {fileID: 8029636521002998725}
+  objImpl: {fileID: 0}
   _audioSource: {fileID: 0}
   tracking: 1

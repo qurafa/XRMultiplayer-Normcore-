@@ -49,6 +49,8 @@ public class ObjectModelImpl : RealtimeComponent<ObjectModel>
 
     private void DoneUpdateTrackState(int ts)
     {
+        if(this.IsDestroyed())
+        { return; }
         switch (ts)
         {
             case 0:
@@ -61,6 +63,7 @@ public class ObjectModelImpl : RealtimeComponent<ObjectModel>
                 dM.AddObjectTrack(this.gameObject);
                 break;
              case 2:
+                
                 dM.RemoveObjectTrack(this.gameObject);
                 this.gameObject.SetActive(false);
                 //Debug.Log("222222222222222222222");

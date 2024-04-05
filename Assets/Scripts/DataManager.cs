@@ -14,8 +14,6 @@ public class DataManager : MonoBehaviour
     private bool _canTrackPlayer;
     [SerializeField]
     private bool _canTrackObjects;
-    [SerializeField]
-    private Realtime _realTime;
     /// <summary>
     /// How often should data be read to the output files in seconds when specified
     /// </summary>
@@ -27,19 +25,23 @@ public class DataManager : MonoBehaviour
     private string PLAYER_HEADING = "Bone,Time,XPos,YPos,ZPos,XRot,YRot,ZRot\n";
     private string EXP_HEADING = "Trial,Shape,Size,Response,ResponseTime,Time";
     private int id = 0;
-    private bool objfileCreated = false;
 
     private float timeCounter = 0;
 
 
     //all file paths
+    private string EXP_FILE_PATH = "";
     private Dictionary<int, string> PLAYER_FILE_PATH;
     private string OBJECT_FILE_PATH = "";
-    private string EXP_FILE_PATH = "";
-    //temporary file informations
+    //temp files
+    private static StringBuilder EXP_FILE_TEMP;
     private static Dictionary<int, StringBuilder> PLAYER_FILE_TEMP;
     private static StringBuilder OBJECT_FILE_TEMP;
-    private static StringBuilder EXP_FILE_TEMP;
+    //flags
+    private bool EXP_FILE_READY = false;
+    //private static Dictionary<int, bool> PLAYER_FILE_READY;
+    private bool OBJECT_FILE_READY = false;
+    private bool _updatingTrackedObjects = false;
     private static string SEPARATOR = ",";
 
     // Start is called before the first frame update
@@ -68,19 +70,23 @@ public class DataManager : MonoBehaviour
 
     public void AddObjectTrack(GameObject g)
     {
+        _updatingTrackedObjects = true;
         _toTrack.Add(g);
+        _updatingTrackedObjects = false;
     }
 
     public void RemoveObjectTrack(GameObject g)
     {
+        _updatingTrackedObjects = true;
         _toTrack.Remove(g);
+        _updatingTrackedObjects = false;
     }
 
     private void CreateObjectsFile()
     {
         if (!_canTrackObjects) return;
 
-        if (OBJECT_FILE_PATH != "") return;
+        if (OBJECT_FILE_READY) return;
 
         OBJECT_FILE_PATH = $"{Application.persistentDataPath}/objectsData_{System.DateTime.Now.ToString("yyyy-MM-dd-HH_mm_ss")}.csv";//something to identify the participant
 
@@ -90,7 +96,7 @@ public class DataManager : MonoBehaviour
 
         //Debug.Log($"Object File Path is: {OBJECT_FILE_PATH}");
 
-        objfileCreated = true;
+        OBJECT_FILE_READY = true;
         SaveObjectsFile();
     }
 
@@ -98,28 +104,30 @@ public class DataManager : MonoBehaviour
     {
         if (!_canTrackObjects) return;
 
-        if (!objfileCreated) return;
+        if (!OBJECT_FILE_READY) return;
 
         if (_toTrack.Count <= 0) return;
 
+        if (_updatingTrackedObjects) return;
+
         string update = "";
         int ownerID = -1;
+        string status = "N/A";
+
         foreach (GameObject track in _toTrack)
         {
-            if (track.IsDestroyed())
+            if(track.TryGetComponent<EnvObject>(out EnvObject eO))
             {
-                _toTrack.Remove(track);
-                continue;
+                ownerID = eO.GetOwnerID();
+                status = eO.GetStatus();
             }
-            ownerID = track.TryGetComponent<RealtimeView>(out RealtimeView rV) ? rV.ownerIDInHierarchy : ownerID;
-            string status = (track.TryGetComponent<NomcoreObject>(out NomcoreObject nO)) ? nO.GetStatus() : track.name;
-            update += $"{track.name},{ownerID},{DateTime.Now.TimeOfDay}," +
+            update = $"{track.name},{ownerID},{DateTime.Now.TimeOfDay}," +
                 $"{track.transform.position.x},{track.transform.position.y},{track.transform.position.z}," +
                 $"{track.transform.eulerAngles.x},{track.transform.eulerAngles.y},{track.transform.eulerAngles.z}," +
                 $"{status}";
             OBJECT_FILE_TEMP.AppendLine(string.Join(SEPARATOR, update));
+            Debug.Log($"Appending {update}");
         }
-        //File.AppendAllText(OBJECT_FILE_PATH, update);
     }
 
     public bool ObjectFileExists()
@@ -140,7 +148,7 @@ public class DataManager : MonoBehaviour
     {
         if (!_canTrackObjects) return;
 
-        if (!objfileCreated) return;
+        if (!OBJECT_FILE_READY) return;
 
         if (_toTrack.Count <= 0) return;
 
@@ -254,7 +262,7 @@ public class DataManager : MonoBehaviour
 
     public void CreateExpFile()
     {
-        if(EXP_FILE_PATH != "")
+        if(EXP_FILE_READY)
         {
             //Debug.LogError("Exp File already created");
             return;
@@ -265,11 +273,13 @@ public class DataManager : MonoBehaviour
 
         EXP_FILE_TEMP = new StringBuilder();
         EXP_FILE_TEMP.AppendLine(string.Join(SEPARATOR, EXP_HEADING));
+        SaveExpFile();
+        EXP_FILE_READY = true;
     }
 
     public void CreateExpFile(string extraInfo)
     {
-        if (EXP_FILE_PATH != "")
+        if (EXP_FILE_READY)
         {
             //Debug.LogError("Exp File already created");
             return;
@@ -281,10 +291,13 @@ public class DataManager : MonoBehaviour
         EXP_FILE_TEMP = new StringBuilder();
         EXP_FILE_TEMP.AppendLine(string.Join(SEPARATOR, EXP_HEADING));
         SaveExpFile();
+        EXP_FILE_READY = true;
     }
 
     public void UpdateExpFile(int trial, string shape, float size, string response, string responseTime, string time)
     {
+        if (!EXP_FILE_READY) return;
+
         string entry = $"{trial},{shape}, {size}, {response}, {responseTime}, {time}";
         //Debug.Log($"Updating Entry: {entry}");
         EXP_FILE_TEMP.AppendLine(string.Join(SEPARATOR, entry));
@@ -292,7 +305,7 @@ public class DataManager : MonoBehaviour
 
     public bool ExpFileExists()
     {
-        return EXP_FILE_PATH != "";
+        return EXP_FILE_READY;
     }
 
     public string GetExpFilePath()
@@ -306,7 +319,7 @@ public class DataManager : MonoBehaviour
     /// </summary>
     public void SaveExpFile()
     {
-        if (EXP_FILE_TEMP == null || EXP_FILE_TEMP.Length == 0) return;
+        if (!EXP_FILE_READY) return;
         try
         {
             File.AppendAllText(EXP_FILE_PATH, EXP_FILE_TEMP.ToString());

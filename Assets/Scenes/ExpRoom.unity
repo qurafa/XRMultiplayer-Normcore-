@@ -1513,7 +1513,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -1521,17 +1525,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 225626365}
   m_SourcePrefab: {fileID: 100100000, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
---- !u!114 &225626362 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 181314534412776534, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
-  m_PrefabInstance: {fileID: 225626361}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -363599832, guid: ebae63e7edba59945a994528ada1f7a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &225626363 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 547935186390231739, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
@@ -3424,8 +3417,6 @@ GameObject:
   - component: {fileID: 484951897}
   - component: {fileID: 484951896}
   - component: {fileID: 484951895}
-  - component: {fileID: 484951893}
-  - component: {fileID: 484951894}
   m_Layer: 0
   m_Name: CubePlatform
   m_TagString: Untagged
@@ -3433,47 +3424,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &484951893
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 484951892}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -363599832, guid: ebae63e7edba59945a994528ada1f7a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _realtime: {fileID: 437273665631284249}
-  _sceneViewUUID: 
-  _viewUUID: 58c8d0e1-19a9-42ab-a838-359bfafb57d9
-  _sceneViewPreventOwnershipTakeover: 0
-  _sceneViewDestroyWhenOwnerOrLastClientLeaves: 1
-  _sceneViewDestroyWhenOwnerOrLastClientLeavesMigrated: 1
-  _sceneViewDestroyWhenLastClientLeaves: 1
-  _components:
-  - componentID: 1
-    component: {fileID: 484951894}
-  _childViews: []
---- !u!114 &484951894
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 484951892}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1029778088, guid: ebae63e7edba59945a994528ada1f7a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _interpolate: 0
-  _syncPosition: 1
-  _syncRotation: 1
-  _syncScale: 1
-  _syncVelocity: 1
-  _maintainOwnershipWhileSleeping: 0
 --- !u!65 &484951895
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5241,8 +5191,6 @@ GameObject:
   m_Component:
   - component: {fileID: 687863474}
   - component: {fileID: 687863475}
-  - component: {fileID: 687863477}
-  - component: {fileID: 687863476}
   - component: {fileID: 687863478}
   m_Layer: 0
   m_Name: Exp Set Up
@@ -5285,7 +5233,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ToRun: 1
-  m_Realtime: {fileID: 437273665631284249}
   m_DataManager: {fileID: 1580161444}
   m_PlayerCamera: {fileID: 723038006}
   m_ExpSetUp: {fileID: 687863474}
@@ -5294,10 +5241,10 @@ MonoBehaviour:
   m_ShapeSpawn: {fileID: 213492968}
   m_SaveAudio: {fileID: 687863478}
   m_Shapes:
-  - Quatrefoil
-  - Square
-  - Triangle
-  - Pentagon
+  - {fileID: 6906252785099467498, guid: 3969823beb6eab440bbe742b65355020, type: 3}
+  - {fileID: 2052806445666274366, guid: ab09aef92b40186429676981b11faa8b, type: 3}
+  - {fileID: 8081281336320705225, guid: a5db500c5fc6a2247bf278880f2764b2, type: 3}
+  - {fileID: 3324249360952219856, guid: 4d4f55e52627be34b96d9cf1b3f0b046, type: 3}
   m_FacePlayer: 0
   m_MinBlankTimeLimit: 3
   m_MaxBlankTimeLimit: 300
@@ -5392,79 +5339,6 @@ MonoBehaviour:
       m_Action: Reset Button
       m_Flags: 0
     m_Flags: 0
---- !u!114 &687863476
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 687863473}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1029778088, guid: ebae63e7edba59945a994528ada1f7a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _interpolate: 1
-  _syncPosition: 1
-  _syncRotation: 1
-  _syncScale: 1
-  _syncVelocity: 1
-  _maintainOwnershipWhileSleeping: 0
---- !u!114 &687863477
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 687863473}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -363599832, guid: ebae63e7edba59945a994528ada1f7a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _realtime: {fileID: 437273665631284249}
-  _sceneViewUUID: 
-  _viewUUID: 17fbc3f1-23d0-456c-af48-9199f6bdb131
-  _sceneViewPreventOwnershipTakeover: 0
-  _sceneViewDestroyWhenOwnerOrLastClientLeaves: 1
-  _sceneViewDestroyWhenOwnerOrLastClientLeavesMigrated: 1
-  _sceneViewDestroyWhenLastClientLeaves: 1
-  _components:
-  - componentID: 1
-    component: {fileID: 0}
-  - componentID: 2
-    component: {fileID: 687863476}
-  _childViews:
-  - componentID: 1
-    component: {fileID: 0}
-  - componentID: 2
-    component: {fileID: 0}
-  - componentID: 3
-    component: {fileID: 0}
-  - componentID: 4
-    component: {fileID: 0}
-  - componentID: 5
-    component: {fileID: 0}
-  - componentID: 6
-    component: {fileID: 0}
-  - componentID: 7
-    component: {fileID: 0}
-  - componentID: 8
-    component: {fileID: 0}
-  - componentID: 9
-    component: {fileID: 484951893}
-  - componentID: 10
-    component: {fileID: 0}
-  - componentID: 11
-    component: {fileID: 904558928}
-  - componentID: 12
-    component: {fileID: 0}
-  - componentID: 13
-    component: {fileID: 225626362}
-  - componentID: 14
-    component: {fileID: 0}
-  - componentID: 15
-    component: {fileID: 819197271}
 --- !u!82 &687863478
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6896,7 +6770,7 @@ MonoBehaviour:
   m_Script: {fileID: -363599832, guid: ebae63e7edba59945a994528ada1f7a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _realtime: {fileID: 437273665631284249}
+  _realtime: {fileID: 0}
   _sceneViewUUID: 
   _viewUUID: 868f07e4-013c-4fa0-9be9-eb9244cc2e85
   _sceneViewPreventOwnershipTakeover: 0
@@ -8052,8 +7926,6 @@ GameObject:
   - component: {fileID: 904558932}
   - component: {fileID: 904558931}
   - component: {fileID: 904558930}
-  - component: {fileID: 904558928}
-  - component: {fileID: 904558929}
   m_Layer: 0
   m_Name: ShapePlatform
   m_TagString: Untagged
@@ -8061,47 +7933,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &904558928
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 904558927}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -363599832, guid: ebae63e7edba59945a994528ada1f7a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _realtime: {fileID: 437273665631284249}
-  _sceneViewUUID: 
-  _viewUUID: 0eb2c219-0e42-44df-a646-f55159f67f26
-  _sceneViewPreventOwnershipTakeover: 0
-  _sceneViewDestroyWhenOwnerOrLastClientLeaves: 1
-  _sceneViewDestroyWhenOwnerOrLastClientLeavesMigrated: 1
-  _sceneViewDestroyWhenLastClientLeaves: 1
-  _components:
-  - componentID: 1
-    component: {fileID: 904558929}
-  _childViews: []
---- !u!114 &904558929
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 904558927}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1029778088, guid: ebae63e7edba59945a994528ada1f7a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _interpolate: 0
-  _syncPosition: 1
-  _syncRotation: 1
-  _syncScale: 1
-  _syncVelocity: 1
-  _maintainOwnershipWhileSleeping: 0
 --- !u!65 &904558930
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11484,7 +11315,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _canTrackPlayer: 1
   _canTrackObjects: 1
-  _realTime: {fileID: 437273665631284249}
   _timeInterval: 0.1
 --- !u!4 &1580161445
 Transform:
@@ -16686,22 +16516,6 @@ Transform:
   - {fileID: 394926009}
   m_Father: {fileID: 1691175270}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &437273665631284249
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 541238334710213055}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1424795628, guid: ebae63e7edba59945a994528ada1f7a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _obsoleteAppKey: 
-  _normcoreAppSettings: {fileID: 11400000, guid: 5fee15753b6388e47ac8fb53e285ed59, type: 2}
-  _roomToJoinOnStart: Exp Room
-  _joinRoomOnStart: 0
 --- !u!1 &541238334710213055
 GameObject:
   m_ObjectHideFlags: 0
@@ -16711,10 +16525,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 546984970637287103}
-  - component: {fileID: 437273665631284249}
   - component: {fileID: 546984970637287104}
   m_Layer: 0
-  m_Name: Realtime
+  m_Name: Scene Helper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16747,14 +16560,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d64f316adbc7ee84a9627bb7a866c63f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _localPlayer: {fileID: 2001921950}
-  playerPrefabName: VR Avatar Quest
-  roomName: Exp Room
-  room: {fileID: 205605689}
-  _connectionStatus: {fileID: 1587690695}
-  ROOM_NOT_CONNECTED: {r: 1, g: 0, b: 0, a: 1}
-  ROOM_CONNECTING: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  ROOM_CONNECTED: {r: 0, g: 1, b: 0, a: 0}
+  m_LocalPlayer: {fileID: 2001921950}
+  m_Room: {fileID: 205605689}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -4,27 +4,19 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(XRGrabInteractable), typeof(RealtimeTransform), typeof(ObjectModelImpl))]
-public class NomcoreObject : MonoBehaviour
+public class EnvObject : MonoBehaviour
 {
-    [SerializeField]
-    private ObjectModelImpl objImpl;
-    [SerializeField]
-    AudioSource _audioSource;
     /// <summary>
     /// Whether to track this object or not
     /// </summary>
     [SerializeField]
-    private bool tracking = false;
+    protected bool tracking = false;
+    [SerializeField]
+    protected AudioSource _audioSource;
+    [SerializeField]
+    protected int m_OwnerID = 0;
 
-    //private HashSet<GameObject> colliders;
-
-    private bool stopTracking = false;
-    private bool grabbing = false;
-    private readonly float touchingLimit = 0.5f;
-    private float touchingCount = 0;
-    private float releaseLimit = 1.5f;
-    private float releaseCount = 0;
+    private bool stopTracking;
     private float stopTrackCount = 0;
     private float stopTrackLimit = 1.5f;
 
@@ -35,30 +27,26 @@ public class NomcoreObject : MonoBehaviour
     private string _statusWRTBox = "Outside Box";
 
     private Rigidbody m_Rigidbody;
-
     private RealtimeView m_RealtimeView;
     private XRGrabInteractable m_GrabInteractable;
 
+    private DataManager m_DataManager;
     //add a listener to the selectEntered so it requests ownership when the object is grabbed
     private void OnEnable()
     {
+        m_DataManager = FindAnyObjectByType<DataManager>();
         m_RealtimeView = GetComponent<RealtimeView>();
         m_GrabInteractable = GetComponent<XRGrabInteractable>();
         m_Rigidbody = GetComponent<Rigidbody>();
+    }
 
-        if (objImpl == null) objImpl = GetComponent<ObjectModelImpl>();
-
+    private void Start()
+    {
         if (m_GrabInteractable != null)
         {
             m_GrabInteractable.selectEntered.AddListener(OnGrab);
             m_GrabInteractable.selectExited.AddListener(OnRelease);
         }
-    }
-
-    private void Start()
-    {
-        //colliders = new HashSet<GameObject>();
-        objImpl.UpdateTS(0);//set to idle tracking state
         SetUp();
     }
 
@@ -66,25 +54,12 @@ public class NomcoreObject : MonoBehaviour
     {
         if (!tracking) return;
 
-        if (touchingCount >= touchingLimit)
-        {
-            objImpl.UpdateTS(1);//set to tracking when touching/holding
-        }
-        else if (releaseCount >= releaseLimit)
-        {
-            objImpl.UpdateTS(0);//set to idle when released
-        }
-
         if (stopTrackCount >= stopTrackLimit)
         {
-            objImpl.UpdateTS(2);//set to stop tracking when touches the bottom
+            m_DataManager.RemoveObjectTrack(gameObject);
             tracking = false;
+            gameObject.SetActive(false);
         }
-
-        if (grabbing)
-            touchingCount += Time.deltaTime;
-        else
-            releaseCount += Time.deltaTime;
 
         if (stopTracking)
             stopTrackCount += Time.deltaTime;
@@ -93,6 +68,7 @@ public class NomcoreObject : MonoBehaviour
     private void SetUp()
     {
         SetUpColliders(transform);
+        m_DataManager.AddObjectTrack(gameObject);
     }
 
     private void SetUpColliders(Transform o)
@@ -106,32 +82,22 @@ public class NomcoreObject : MonoBehaviour
         return;
     }
 
-    private void ClearOwnership(SelectExitEventArgs arg0)
-    {
-        
-    }
-
-    private void RequestOwnership(SelectEnterEventArgs args)
-    {
-        m_RealtimeView.RequestOwnershipOfSelfAndChildren();
-    }
-
     /// <summary>
     /// Get the status of the object with respect to the box
     /// </summary>
     /// <returns>The status of the object with respect to the box</returns>
     public string GetStatus()
     {
-        if (this.CompareTag("Box")) return grabbing ? "Grabbing" : "Released";
-        else return _statusWRTBox;
+        return _statusWRTBox;
+    }
+
+    public int GetOwnerID()
+    {
+        return m_OwnerID;
     }
 
     private void OnGrab(SelectEnterEventArgs args)
     {
-        m_RealtimeView.RequestOwnershipOfSelfAndChildren();
-        grabbing = true;
-        releaseCount = 0;
-
         m_Rigidbody.constraints = RigidbodyConstraints.None;
         m_Rigidbody.drag = 0;
         m_Rigidbody.angularDrag = 0.05f;
@@ -139,9 +105,6 @@ public class NomcoreObject : MonoBehaviour
 
     private void OnRelease(SelectExitEventArgs args)
     {
-        grabbing = false;
-        touchingCount = 0;
-
         m_Rigidbody.constraints = RigidbodyConstraints.None;
         m_Rigidbody.drag = 0;
         m_Rigidbody.angularDrag = 0.05f;
@@ -223,15 +186,8 @@ public class NomcoreObject : MonoBehaviour
         }
     }
 
-    private void OnDisable() 
-    {
-        m_GrabInteractable.selectEntered.RemoveListener(RequestOwnership);
-        m_GrabInteractable.selectExited.RemoveListener(ClearOwnership);
-    }
-
     private void OnDestroy()
     {
-        objImpl.UpdateTS(2);
         tracking = false;
     }
 }
