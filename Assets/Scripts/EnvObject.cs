@@ -32,7 +32,7 @@ public class EnvObject : MonoBehaviour
 
     private DataManager m_DataManager;
     //add a listener to the selectEntered so it requests ownership when the object is grabbed
-    private void OnEnable()
+    public virtual void OnEnable()
     {
         m_DataManager = FindAnyObjectByType<DataManager>();
         m_RealtimeView = GetComponent<RealtimeView>();
@@ -96,14 +96,14 @@ public class EnvObject : MonoBehaviour
         return m_OwnerID;
     }
 
-    private void OnGrab(SelectEnterEventArgs args)
+    public virtual void OnGrab(SelectEnterEventArgs args)
     {
         m_Rigidbody.constraints = RigidbodyConstraints.None;
         m_Rigidbody.drag = 0;
         m_Rigidbody.angularDrag = 0.05f;
     }
 
-    private void OnRelease(SelectExitEventArgs args)
+    public virtual void OnRelease(SelectExitEventArgs args)
     {
         m_Rigidbody.constraints = RigidbodyConstraints.None;
         m_Rigidbody.drag = 0;

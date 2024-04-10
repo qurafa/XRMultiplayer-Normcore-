@@ -16693,8 +16693,9 @@ GameObject:
   - component: {fileID: 546984970637287103}
   - component: {fileID: 437273665631284249}
   - component: {fileID: 546984970637287104}
+  - component: {fileID: 546984970637287105}
   m_Layer: 0
-  m_Name: Realtime
+  m_Name: Scene Helper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16729,12 +16730,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_LocalPlayer: {fileID: 2001921950}
   m_Room: {fileID: 205605689}
+  m_DataManager: {fileID: 1580161444}
   m_RoomName: Exp Room
   m_RealtimePlayerPrefab: VR Avatar Quest
   m_ConnectionStatus: {fileID: 1587690695}
   ROOM_NOT_CONNECTED: {r: 1, g: 0, b: 0, a: 1}
   ROOM_CONNECTING: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   ROOM_CONNECTED: {r: 0, g: 1, b: 0, a: 0}
+--- !u!114 &546984970637287105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 541238334710213055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce16c93b932638f47bee9fc2b87cd512, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PlayerID: -1
+  m_DataManager: {fileID: 1580161444}
+  m_HeadRoot: {fileID: 723038010}
+  m_LeftControllerRoot: {fileID: 389031716}
+  m_RightControllerRoot: {fileID: 33968321}
+  m_CameraOffset: {fileID: 1268174799}
+  m_Device: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -1747,7 +1747,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 587439916339534413}
   - {fileID: 3415749873816856437}
@@ -2943,7 +2943,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2522467682562730353}
   - {fileID: 6998726634484562618}
@@ -3337,7 +3337,7 @@ GameObject:
   - component: {fileID: 1749348511257355574}
   - component: {fileID: 8846959940567584798}
   m_Layer: 0
-  m_Name: VR Avatar Quest
+  m_Name: VR Avatar Quest 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

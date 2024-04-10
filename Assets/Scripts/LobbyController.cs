@@ -1,8 +1,6 @@
 using System.Collections;
 using TMPro;
-using Unity.XR.CoreUtils;
 using UnityEngine;
-//using Normal.Realtime;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 

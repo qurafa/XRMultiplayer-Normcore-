@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 public class ExpController : MonoBehaviour
 {
@@ -229,7 +228,8 @@ public class ExpController : MonoBehaviour
 
     public void Initialize()
     {
-        if (!ToRun) return;
+        if (!ToRun || _ready) return;
+
         SetUpRotations();
         //Shuffle the order of the shapes
         ShuffleShapes();

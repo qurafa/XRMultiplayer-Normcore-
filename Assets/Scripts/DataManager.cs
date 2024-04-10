@@ -104,7 +104,7 @@ public class DataManager : MonoBehaviour
     {
         if (!_canTrackObjects) return;
 
-        if (!OBJECT_FILE_READY) return;
+        if (!OBJECT_FILE_READY) CreateObjectsFile();
 
         if (_toTrack.Count <= 0) return;
 
@@ -126,7 +126,7 @@ public class DataManager : MonoBehaviour
                 $"{track.transform.eulerAngles.x},{track.transform.eulerAngles.y},{track.transform.eulerAngles.z}," +
                 $"{status}";
             OBJECT_FILE_TEMP.AppendLine(string.Join(SEPARATOR, update));
-            Debug.Log($"Appending {update}");
+            //Debug.Log($"Appending {update}");
         }
     }
 
@@ -173,16 +173,16 @@ public class DataManager : MonoBehaviour
     public void CreatePlayerFile(int pID)
     {
         if (!_canTrackPlayer) return;
+        //invalid player
+        if(pID < 0) return;
 
-        if (PLAYER_FILE_PATH == null)
-            PLAYER_FILE_PATH = new Dictionary<int, string>();
+        PLAYER_FILE_PATH ??= new Dictionary<int, string>();
 
         if (PLAYER_FILE_PATH.ContainsKey(pID)) return;
 
         string playerFilePath = $"{Application.persistentDataPath}/p{pID}_skeletonData_{System.DateTime.Now.ToString("yyyy-MM-dd-HH_mm_ss")}.csv";
 
-        if(PLAYER_FILE_TEMP == null)
-            PLAYER_FILE_TEMP = new Dictionary<int, StringBuilder>();
+        PLAYER_FILE_TEMP ??= new Dictionary<int, StringBuilder>();
 
         PLAYER_FILE_TEMP[pID] = new StringBuilder();
         PLAYER_FILE_TEMP[pID].AppendLine(string.Join(SEPARATOR, PLAYER_HEADING));
@@ -194,7 +194,8 @@ public class DataManager : MonoBehaviour
 
     public void UpdatePlayerFile(int pID, Transform transform)
     {
-        if (!_canTrackPlayer || !PLAYER_FILE_PATH.ContainsKey(pID)) return;
+        if (!_canTrackPlayer) return;
+        if(PLAYER_FILE_PATH ==  null || !PLAYER_FILE_PATH.ContainsKey(pID)) CreatePlayerFile(pID);
 
         string update = $"{transform.name},{DateTime.Now.TimeOfDay}," +
             $"{transform.position.x},{transform.position.y},{transform.position.z}," +
@@ -205,8 +206,9 @@ public class DataManager : MonoBehaviour
 
     public void UpdatePlayerFile(int pID, Pose pose, string name)
     {
-        if (!_canTrackPlayer || !PLAYER_FILE_PATH.ContainsKey(pID)) return;
-        
+        if (!_canTrackPlayer) return;
+        if (!PLAYER_FILE_PATH.ContainsKey(pID)) CreatePlayerFile(pID);
+
         string update = $"{name},{DateTime.Now.TimeOfDay}," +
             $"{pose.position.x},{pose.position.y},{pose.position.z}," +
             $"{pose.rotation.eulerAngles.x},{pose.rotation.eulerAngles.y},{pose.rotation.eulerAngles.z}";
@@ -301,11 +303,6 @@ public class DataManager : MonoBehaviour
         string entry = $"{trial},{shape}, {size}, {response}, {responseTime}, {time}";
         //Debug.Log($"Updating Entry: {entry}");
         EXP_FILE_TEMP.AppendLine(string.Join(SEPARATOR, entry));
-    }
-
-    public bool ExpFileExists()
-    {
-        return EXP_FILE_READY;
     }
 
     public string GetExpFilePath()

@@ -9,9 +9,6 @@ Script Description : Helper for Normcore Realtime Component
 
 using UnityEngine;
 using Normal.Realtime;
-using System;
-using System.Collections.Generic;
-using UnityEngine.XR;
 using UnityEngine.UI;
 
 public class RealtimeSceneHelper : SceneHelper
@@ -31,7 +28,7 @@ public class RealtimeSceneHelper : SceneHelper
 
     private Realtime m_Realtime;
 
-    void Start()
+    public override void Start()
     {
         m_Realtime = GetComponent<Realtime>();
         if (!m_Realtime)
@@ -41,7 +38,6 @@ public class RealtimeSceneHelper : SceneHelper
         }
 
         m_Realtime.didConnectToRoom += InitializePlayer;
-
         m_Realtime.didDisconnectFromRoom += RealtimeDidDisconnectFromRoom;
         m_ConnectionStatus.material.color = ROOM_NOT_CONNECTED;
     }
@@ -80,13 +76,12 @@ public class RealtimeSceneHelper : SceneHelper
             destroyWhenLastClientLeaves = true,
             useInstance = m_Realtime,
         });
-        //RequestOwnerShip(newPlayer);
         if (newPlayer.TryGetComponent<RealtimeView>(out RealtimeView r))
             r.RequestOwnershipOfSelfAndChildren();
 
-        if (id == 0)
-            AllRequestOwnerShip();
+        if (id == 0) AllRequestOwnerShip();
         m_ConnectionStatus.material.color = ROOM_CONNECTED;
+        PlayerAvatarSetUp();
     }
 
     private void RealtimeDidDisconnectFromRoom(Realtime realtime)
@@ -146,6 +141,14 @@ public class RealtimeSceneHelper : SceneHelper
     {
         SetPlayerOffset(pos, rot);
         m_Realtime.Connect(m_RoomName);
+    }
+
+    public override void PlayerAvatarSetUp()
+    {
+        AvatarInfoPub aPub = FindAnyObjectByType<AvatarInfoPub>();
+
+        if (!aPub) aPub.SetPlayerID(m_Realtime.clientID);
+        m_DataManager.CreatePlayerFile(m_Realtime.clientID);
     }
 
     private void OnDisable()

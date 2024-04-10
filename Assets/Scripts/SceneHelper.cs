@@ -8,12 +8,6 @@ Script Description : Helper for Normcore Realtime Component
 ************************************************************************************/
 
 using UnityEngine;
-using Normal.Realtime;
-using System;
-using System.Collections.Generic;
-using UnityEngine.XR;
-using UnityEngine.UI;
-using static Normal.Realtime.RealtimeAvatar;
 
 public class SceneHelper : MonoBehaviour
 {
@@ -21,8 +15,15 @@ public class SceneHelper : MonoBehaviour
     protected GameObject m_LocalPlayer;
     [SerializeField]
     protected GameObject m_Room; //Percept lab in the second scene
+    [SerializeField]
+    protected DataManager m_DataManager;
 
     protected Transform _spawnTransform;
+
+    public virtual void Start()
+    {
+        PlayerAvatarSetUp();
+    }
 
     //Realtime Event when Connecting to a Room
     public virtual void InitializePlayer()
@@ -65,5 +66,13 @@ public class SceneHelper : MonoBehaviour
     {
         SetPlayerOffset(pos, rot);
         InitializePlayer();
+    }
+
+    public virtual void PlayerAvatarSetUp()
+    {
+        AvatarInfoPub aPub = FindAnyObjectByType<AvatarInfoPub>();
+
+        if(!aPub) aPub.SetPlayerID(0);
+        m_DataManager.CreatePlayerFile(0);
     }
 }
