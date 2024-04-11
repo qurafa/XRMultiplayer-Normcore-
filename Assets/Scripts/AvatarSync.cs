@@ -44,7 +44,7 @@ public class AvatarSync : RealtimeComponent<AvatarSyncModel>
     {
         if (model == null)
             return;
-        Debug.Log($"getting avatar data....{model.avatarData}");
+        //Debug.Log($"Updating avatar data....{model.avatarData}");
         if (model.avatarData == "")
             return;
 
@@ -53,7 +53,7 @@ public class AvatarSync : RealtimeComponent<AvatarSyncModel>
 
     public void SetAvatarData(string value)
     {
-        //Debug.Log($"Sending....{value}");
+        //Debug.Log($"{gameObject}....Sending....{value}");
         model.avatarData = value;
     }
 }

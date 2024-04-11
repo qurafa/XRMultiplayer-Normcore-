@@ -14,15 +14,12 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
     [SerializeField] private RealtimeView m_RealtimeView;
     [SerializeField] private AvatarSync m_AvatarSync;
     [SerializeField] private Transform m_RemoteRoot;
+    [Header("OPTIONAL")]
     [SerializeField] private Transform m_RemoteController;
     [SerializeField] private SkinnedMeshRenderer m_RemoteHandMesh;
-    [Header("TAGS")]
-    [SerializeField] private string m_LocalRootTag;
-    [SerializeField] private string m_CameraOffsetTag;
     [Header("ENUMS")]
     [SerializeField] private Device m_Device;
     [SerializeField] private Type m_Type;
-    [SerializeField] private HandMode m_HandMode;
 
     //Devices and Subsystems
     
@@ -42,6 +39,11 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
 
     private AvatarInfoPub _avatarInfoPublisher;
 
+    private void OnEnable()
+    {
+        SubscribeAvatarInfo();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -51,18 +53,18 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
 
         InitHandJoints(m_RemoteRoot);
         _jointsInit = true;
-
-        SubscribeAvatarInfo();
     }
 
     private void SubscribeAvatarInfo()
     {
+        Debug.Log($"{gameObject} getting publish info");
         _avatarInfoPublisher = FindFirstObjectByType<AvatarInfoPub>();
         if (!_avatarInfoPublisher)
         {
             Debug.Log("Cant find avatar info publisher");
             return;
         }
+
         switch (m_Type)
         {
             case Type.Head:
@@ -75,7 +77,30 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
                 _avatarInfoPublisher.OnPublishRightHandControllerData += UpdateToNormcore;
                 break;
             default: break;
+        }
+    }
 
+    private void UnSubscribeAvatarInfo()
+    {
+        if (!_avatarInfoPublisher)
+        {
+            Debug.Log("Cant find avatar info publisher");
+            return;
+        }
+
+        switch (m_Type)
+        {
+            case Type.Head:
+                _avatarInfoPublisher.OnPublishHeadData -= UpdateToNormcore;
+                break;
+            case Type.LeftHand:
+                _avatarInfoPublisher.OnPublishLeftHandControllerData -= UpdateToNormcore;
+                break;
+            case Type.RightHand:
+                _avatarInfoPublisher.OnPublishRightHandControllerData -= UpdateToNormcore;
+                break;
+            default:
+                break;
         }
     }
 
@@ -130,27 +155,32 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
 
     private void UpdateToNormcore(object sender, AvatarInfoEventArgs args)
     {
+        //DONT SEND ANYTHING TO NORMCORE IF THE REALTIME IS NOT LOCALLY OWNED
         if (m_RealtimeView != null && !m_RealtimeView.isOwnedLocallySelf)
         {
             //Debug.Log($"{this.gameObject.name}...Not sending to Normcore....returning");
             return;
         }
 
-        //Debug.Log($"Receiving from publisher....{args.Value}");
+        //Debug.Log($"{this.gameObject.name} Receiving from publisher....{args.Value}....userID...{m_RealtimeView.ownerIDSelf}");
         m_AvatarSync.SetAvatarData(args.Value);
     }
 
     public void UpdateFromNormcore(string netData)
     {
-        //if (m_RealtimeView != null && m_RealtimeView.isOwnedLocallySelf) return;
-
+        if (m_RealtimeView != null && m_RealtimeView.isOwnedLocallySelf)
+        {
+            m_RemoteRoot.gameObject.SetActive(false);
+            return;
+        }
+/*
         if (netData == null || netData == "")
         {
             //Debug.Log("Empty netData");
             return;
-        }
+        }*/
 
-        Debug.Log($"{this.gameObject.name}...receiving....{netData}");
+        //Debug.Log($"{this.gameObject.name}...receiving....{netData}....userID...{m_RealtimeView.ownerIDSelf}");
 
         string[] netDataArr = netData.Split('|');
 
@@ -163,7 +193,6 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
                 m_RemoteController.gameObject.SetActive(false);
                 m_RemoteRoot.gameObject.SetActive(false);
             }
-            
         }
         else if (netDataArr[0] == "1")
         {
@@ -178,7 +207,8 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
                 float.Parse(netDataArr[5]),
                 float.Parse(netDataArr[6]));
 
-            _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, m_RemoteRoot.transform);
+            if (_dataManager)
+                _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, m_RemoteRoot.transform);
         }
         else if (netDataArr[0] == "2")
         {
@@ -209,8 +239,8 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
                         float.Parse(netDataArr[jTmp + 4]),
                         float.Parse(netDataArr[jTmp + 5]),
                         float.Parse(netDataArr[jTmp + 6]));
-
-                _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, _joints[j].GetWorldPose(), string.Concat((XRHandJointID)(j + 1)));
+                if(_dataManager)
+                    _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, _joints[j].GetWorldPose(), string.Concat((XRHandJointID)(j + 1)));
             }
         }
         else if (netDataArr[0] == "3")
@@ -234,11 +264,17 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
             float grip = float.Parse(netDataArr[8]);
             //you can manipulate things like animator values using grip and trigger above
 
-            _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, m_RemoteController.transform);
+            if (_dataManager)
+                _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, m_RemoteController.transform);
         }
         else
         {
             //Debug.Log("Error reading netdata");
         }
+    }
+
+    private void OnDisable()
+    {
+        UnSubscribeAvatarInfo();
     }
 }

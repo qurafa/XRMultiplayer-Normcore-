@@ -10,15 +10,20 @@ Script Description : Helper for Normcore Realtime Component
 using UnityEngine;
 using Normal.Realtime;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using TMPro;
 
 public class RealtimeSceneHelper : SceneHelper
 {
+    
     [SerializeField]
     protected string m_RoomName;
     [SerializeField]
     private string m_RealtimePlayerPrefab;
     [SerializeField]
     private RawImage m_ConnectionStatus;
+    [SerializeField]
+    List<string> m_InteractablePrefabNames;
     [SerializeField]
     private Color ROOM_NOT_CONNECTED = Color.red;
     [SerializeField]
@@ -81,6 +86,16 @@ public class RealtimeSceneHelper : SceneHelper
 
         if (id == 0) AllRequestOwnerShip();
         m_ConnectionStatus.material.color = ROOM_CONNECTED;
+
+        GameObject o = Realtime.Instantiate("OriginRT", Vector3.zero, Quaternion.identity, new Realtime.InstantiateOptions
+        {
+            ownedByClient = true,
+            preventOwnershipTakeover = true,
+            destroyWhenOwnerLeaves = true,
+            destroyWhenLastClientLeaves = true,
+            useInstance = m_Realtime,
+        });
+        o.GetComponentInChildren<TMP_Text>().text = realtime.room.clientID.ToString();
         PlayerAvatarSetUp();
     }
 

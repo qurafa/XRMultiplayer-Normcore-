@@ -3,6 +3,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using com.perceptlab.armultiplayer;
 
 public class EnvObject : MonoBehaviour
 {
@@ -15,6 +16,9 @@ public class EnvObject : MonoBehaviour
     protected AudioSource _audioSource;
     [SerializeField]
     protected int m_OwnerID = 0;
+
+    private Vector3 m_InitPosition;
+    private Quaternion m_InitRotation;
 
     private bool stopTracking;
     private float stopTrackCount = 0;
@@ -69,6 +73,8 @@ public class EnvObject : MonoBehaviour
     {
         SetUpColliders(transform);
         m_DataManager.AddObjectTrack(gameObject);
+        m_InitPosition = transform.position;
+        m_InitRotation = transform.rotation;
     }
 
     private void SetUpColliders(Transform o)
@@ -98,7 +104,9 @@ public class EnvObject : MonoBehaviour
 
     public virtual void OnGrab(SelectEnterEventArgs args)
     {
+        RLogger.Log("On Grab!!!!");
         m_Rigidbody.constraints = RigidbodyConstraints.None;
+        _audioSource.Play();
         m_Rigidbody.drag = 0;
         m_Rigidbody.angularDrag = 0.05f;
     }
@@ -110,45 +118,18 @@ public class EnvObject : MonoBehaviour
         m_Rigidbody.angularDrag = 0.05f;
     }
 
-/*    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log($".....................Tag entered: {collision.collider.tag}, Object Entered: {collision.collider.name}");
-
-        if (collision.collider.CompareTag("GrabCol"))
+        //_audioSource.Play();
+        if (collision.gameObject.tag == "Floor")
         {
-            colliders?.Add(collision.collider.gameObject);
-            releaseCount = 0;
-            m_rigidbody.useGravity = false;
+            transform.SetPositionAndRotation(m_InitPosition, m_InitRotation);
         }
     }
-
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.collider.CompareTag("GrabCol"))
-        {
-            if (!colliders.Contains(collision.collider.gameObject))
-            {
-                colliders?.Add(collision.collider.gameObject);
-                m_rigidbody.useGravity = false;
-            }
-        }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.collider.CompareTag("GrabCol"))
-        {
-            colliders?.Remove(collision.collider.gameObject);
-            if (colliders.Count <= 0)
-            {
-                touchingCount = 0;
-                m_rigidbody.useGravity = true;
-            }
-        }
-    }*/
 
     private void OnTriggerEnter(Collider other)
     {
+        RLogger.Log("on trigger enter");
         if (other.CompareTag("Trigger"))
         {
             if (other.name.Equals("Box")) _statusWRTBox = "Inside Box";
@@ -162,6 +143,7 @@ public class EnvObject : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        RLogger.Log("on trigger stay");
         if (other.CompareTag("Trigger"))
         {
             if (other.name.Equals("Box")) _statusWRTBox = "Inside Box";
@@ -175,14 +157,15 @@ public class EnvObject : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        RLogger.Log("on trigger exit");
         if (other.CompareTag("Trigger"))
         {
             _statusWRTBox = "Outside Box";
         }
         if (this.CompareTag("Shape") && other.CompareTag("Bottom"))
         {
-            stopTracking = false;
-            stopTrackCount = 0;
+            //stopTracking = false;
+            //stopTrackCount = 0;
         }
     }
 

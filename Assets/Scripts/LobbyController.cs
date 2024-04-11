@@ -137,7 +137,7 @@ public class LobbyController : MonoBehaviour
         
 
         Debug.Log("getting realtime helper");
-        SceneHelper helper = FindObjectOfType<SceneHelper>();
+        var helper = FindObjectOfType<SceneHelper>();
 
         if (!helper)
         {

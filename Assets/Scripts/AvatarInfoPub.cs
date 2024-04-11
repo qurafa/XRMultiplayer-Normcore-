@@ -75,12 +75,12 @@ public class AvatarInfoPub : MonoBehaviour
     //will test and find out...same for LateUpdate()
     void FixedUpdate()
     {
-        UpdateCall();
+        //UpdateCall();
     }
 
     void LateUpdate()
     {
-        UpdateCall();
+        //UpdateCall();
     }
 
     private void UpdateCall()
@@ -281,7 +281,6 @@ public class AvatarInfoPub : MonoBehaviour
                     return _rightXRHand.isTracked;
                 default:
                     return false;
-
             }
         }
         else if (m_Device == Device.HoloLens)
@@ -331,20 +330,26 @@ public class AvatarInfoPub : MonoBehaviour
             return;
         }
 
-        _dataToSend = PublishData(m_HeadRoot);
         //event...
-        OnPublishHeadData(this, new AvatarInfoEventArgs(_dataToSend));
-
-        _dataToSend = PublishHandControllerData(_leftXRHand, _leftXRNode, _leftControllerInput, m_LeftControllerRoot, _leftHandedness);
+        if(OnPublishHeadData != null)
+        {
+            _dataToSend = PublishData(m_HeadRoot);
+            OnPublishHeadData(this, new AvatarInfoEventArgs(_dataToSend));
+        }
+            
         //event...
-        OnPublishLeftHandControllerData(this, new AvatarInfoEventArgs(_dataToSend));
+        if(OnPublishLeftHandControllerData != null)
+        {
+            _dataToSend = PublishHandControllerData(_leftXRHand, _leftXRNode, _leftControllerInput, m_LeftControllerRoot, _leftHandedness);
+            OnPublishLeftHandControllerData(this, new AvatarInfoEventArgs(_dataToSend));
+        }
 
-        _dataToSend = PublishHandControllerData(_rightXRHand, _rightXRNode, _rightControllerInput, m_RightControllerRoot, _rightHandedness);
         //event...
-        OnPublishRightHandControllerData(this, new AvatarInfoEventArgs(_dataToSend));
-
-        //if (_dataToSend.Length <= 2) _dataToSend = DEFAULTSYNC;
-
+        if(OnPublishRightHandControllerData != null)
+        {
+            _dataToSend = PublishHandControllerData(_rightXRHand, _rightXRNode, _rightControllerInput, m_RightControllerRoot, _rightHandedness);
+            OnPublishRightHandControllerData(this, new AvatarInfoEventArgs(_dataToSend));
+        }
     }
 
     private string PublishData(Transform transform)

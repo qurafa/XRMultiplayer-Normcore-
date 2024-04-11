@@ -36,8 +36,7 @@ public class NetworkPlayerManager : MonoBehaviour
         }*/
 
         m_dataManager = FindObjectOfType<DataManager>();
-        if (!rtView.isOwnedLocallySelf && !m_dataManager)
-            m_dataManager.CreatePlayerFile(rtView.ownerIDSelf);
+        m_dataManager.CreatePlayerFile(rtView.ownerIDSelf);
 
         _Init = true;
     }

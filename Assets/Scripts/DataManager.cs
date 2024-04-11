@@ -173,41 +173,33 @@ public class DataManager : MonoBehaviour
     public void CreatePlayerFile(int pID)
     {
         if (!_canTrackPlayer) return;
-        //invalid player
-        if(pID < 0) return;
-
-        PLAYER_FILE_PATH ??= new Dictionary<int, string>();
-
-        if (PLAYER_FILE_PATH.ContainsKey(pID)) return;
+        if (PlayerFileExists(pID) || pID < 0) return;
+        if (PLAYER_FILE_PATH == null) PLAYER_FILE_PATH = new Dictionary<int, string>();
+        if (PLAYER_FILE_TEMP == null) PLAYER_FILE_TEMP = new Dictionary<int, StringBuilder>();
 
         string playerFilePath = $"{Application.persistentDataPath}/p{pID}_skeletonData_{System.DateTime.Now.ToString("yyyy-MM-dd-HH_mm_ss")}.csv";
 
-        PLAYER_FILE_TEMP ??= new Dictionary<int, StringBuilder>();
-
-        PLAYER_FILE_TEMP[pID] = new StringBuilder();
+        PLAYER_FILE_TEMP.Add(pID, new StringBuilder());
         PLAYER_FILE_TEMP[pID].AppendLine(string.Join(SEPARATOR, PLAYER_HEADING));
 
-        //File.WriteAllText(playerFilePath, _playerHeader);
         PLAYER_FILE_PATH.Add(pID, playerFilePath);
         SavePlayerFile(pID);
     }
 
     public void UpdatePlayerFile(int pID, Transform transform)
     {
-        if (!_canTrackPlayer) return;
-        if(PLAYER_FILE_PATH ==  null || !PLAYER_FILE_PATH.ContainsKey(pID)) CreatePlayerFile(pID);
+        if (!CanUpdatePlayerFile(pID)) return;
 
         string update = $"{transform.name},{DateTime.Now.TimeOfDay}," +
             $"{transform.position.x},{transform.position.y},{transform.position.z}," +
             $"{transform.eulerAngles.x},{transform.eulerAngles.y},{transform.eulerAngles.z}";
-
+        //Debug.Log($"{PLAYER_FILE_TEMP[pID]} PLAYER FILE TEMP");
         PLAYER_FILE_TEMP[pID].AppendLine(string.Join(SEPARATOR, update));
     }
 
     public void UpdatePlayerFile(int pID, Pose pose, string name)
     {
-        if (!_canTrackPlayer) return;
-        if (!PLAYER_FILE_PATH.ContainsKey(pID)) CreatePlayerFile(pID);
+        if (!CanUpdatePlayerFile(pID)) return;
 
         string update = $"{name},{DateTime.Now.TimeOfDay}," +
             $"{pose.position.x},{pose.position.y},{pose.position.z}," +
@@ -223,11 +215,7 @@ public class DataManager : MonoBehaviour
     /// <param name="pID"></param>
     public void SavePlayerFile(int pID)
     {
-        if (!_canTrackPlayer) return;
-
-        if (!PLAYER_FILE_PATH.ContainsKey(pID)) return;
-
-        if (PLAYER_FILE_TEMP[pID] == null || PLAYER_FILE_TEMP[pID].Length == 0) return;
+        if (!CanUpdatePlayerFile(pID)) return;
 
         try
         {
@@ -244,17 +232,27 @@ public class DataManager : MonoBehaviour
 
     private void SaveAllPlayerFiles()
     {
-        if (!_canTrackPlayer) return;
-
-        if(PLAYER_FILE_PATH == null) return;
-
+        if (PLAYER_FILE_PATH == null) return;
         foreach (int pID in PLAYER_FILE_PATH.Keys)
             SavePlayerFile(pID);
     }
 
+    private bool CanUpdatePlayerFile(int pID = -1)
+    {
+        if (!_canTrackPlayer) return false;
+
+        if (pID < 0) return false;
+
+        if (PLAYER_FILE_PATH == null || !PLAYER_FILE_PATH.ContainsKey(pID)) return false;
+
+        if (PLAYER_FILE_TEMP == null || !PLAYER_FILE_TEMP.ContainsKey(pID)) return false;
+
+        return true;
+    }
+
     public bool PlayerFileExists(int pID)
     {
-        return PLAYER_FILE_PATH.ContainsKey(pID);
+        return PLAYER_FILE_PATH != null && PLAYER_FILE_PATH.ContainsKey(pID);
     }
 
     public string GetPlayerFilePath(int pID)
