@@ -12,6 +12,7 @@ TagManager:
   - LeftController
   - RightController
   - CameraOffset
+  - Floor
   layers:
   - Default
   - TransparentFX

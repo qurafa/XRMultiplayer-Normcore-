@@ -3,17 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(AvatarSyncImpl))]
+[RequireComponent(typeof(RealtimeAvatarSyncImpl))]
 public class AvatarSync : RealtimeComponent<AvatarSyncModel>
 {
     [SerializeField]
-    private AvatarSyncImpl m_AvatarSyncImpl;
+    private RealtimeAvatarSyncImpl m_AvatarSyncImpl;
 
     // Start is called before the first frame update
     void Start()
     {
         if (m_AvatarSyncImpl == null)
-            m_AvatarSyncImpl = GetComponent<AvatarSyncImpl>();
+            m_AvatarSyncImpl = GetComponent<RealtimeAvatarSyncImpl>();
     }
 
     protected override void OnRealtimeModelReplaced(AvatarSyncModel previousModel, AvatarSyncModel currentModel)
@@ -44,7 +44,7 @@ public class AvatarSync : RealtimeComponent<AvatarSyncModel>
     {
         if (model == null)
             return;
-        //Debug.Log($"getting avatar data....{model.avatarData}");
+        //Debug.Log($"Updating avatar data....{model.avatarData}");
         if (model.avatarData == "")
             return;
 
@@ -53,7 +53,7 @@ public class AvatarSync : RealtimeComponent<AvatarSyncModel>
 
     public void SetAvatarData(string value)
     {
-        //Debug.Log($"set avatar data....{value}");
+        //Debug.Log($"{gameObject}....Sending....{value}");
         model.avatarData = value;
     }
 }

@@ -1,8 +1,6 @@
 using System.Collections;
 using TMPro;
-using Unity.XR.CoreUtils;
 using UnityEngine;
-//using Normal.Realtime;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -10,6 +8,8 @@ public class LobbyController : MonoBehaviour
 {
     [SerializeField]
     private int currentSceneIndex;
+    [SerializeField]
+    private int nextSceneIndex;
     [Header("EXPERIMENT")]
     [SerializeField]
     private bool m_RunExp;
@@ -60,16 +60,16 @@ public class LobbyController : MonoBehaviour
     /// </summary>
     /// <param name="playerTransform"></param>
     /// <param name="id"></param>
-    public void LoadScene(MyTransform playerTransform, int id)
+    public void LoadScene(MyTransform playerTransform)
     {
         if (isLoading) return;
-        if (currentSceneIndex == id) return;
+        if (currentSceneIndex == nextSceneIndex) return;
 
-        Debug.Log($"Loading Scene {id}");
+        Debug.Log($"Loading Scene {nextSceneIndex}");
 
         isLoading = true;
 
-        StartCoroutine(LoadSceneAdditive(playerTransform, id));// calls the coroutine once every frame till it finishes
+        StartCoroutine(LoadSceneAdditive(playerTransform, nextSceneIndex));// calls the coroutine once every frame till it finishes
     }
 
     /// <summary>
@@ -129,25 +129,22 @@ public class LobbyController : MonoBehaviour
                 expCont.SetNumOfShapes(int.MaxValue);
             }
 
-            /*if (m_ExpCondition.value == 0)
-            {
-                
-            }
-            else
-            {
-
-            }*/
-
             float range = float.Parse(m_ExpRange.text) /100.0f;
             expCont.SetScaleDiff(range);
+
+            expCont.Initialize();
         }
+        
 
         Debug.Log("getting realtime helper");
-        realtimeHelper helper = FindObjectOfType<realtimeHelper>();
+        var helper = FindObjectOfType<SceneHelper>();
 
-        if (helper) Debug.Log("Helper Name: " + helper.name);
-        helper.JoinMainRoom(transform);
-
+        if (!helper)
+        {
+            Debug.Log("realtimehelper not present!!");
+            LoadScene(0);
+        }
+        helper.JoinRoom(transform);
         currentSceneIndex = id;
         isLoading = false;
     }

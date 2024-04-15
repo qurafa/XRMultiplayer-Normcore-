@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Text;
+using Unity.VisualScripting;
 
 public class DataManager : MonoBehaviour
 {
@@ -13,8 +14,6 @@ public class DataManager : MonoBehaviour
     private bool _canTrackPlayer;
     [SerializeField]
     private bool _canTrackObjects;
-    [SerializeField]
-    private Realtime _realTime;
     /// <summary>
     /// How often should data be read to the output files in seconds when specified
     /// </summary>
@@ -26,19 +25,23 @@ public class DataManager : MonoBehaviour
     private string PLAYER_HEADING = "Bone,Time,XPos,YPos,ZPos,XRot,YRot,ZRot\n";
     private string EXP_HEADING = "Trial,Shape,Size,Response,ResponseTime,Time";
     private int id = 0;
-    private bool objfileCreated = false;
 
     private float timeCounter = 0;
 
 
     //all file paths
+    private string EXP_FILE_PATH = "";
     private Dictionary<int, string> PLAYER_FILE_PATH;
     private string OBJECT_FILE_PATH = "";
-    private string EXP_FILE_PATH = "";
-    //temporary file informations
+    //temp files
+    private static StringBuilder EXP_FILE_TEMP;
     private static Dictionary<int, StringBuilder> PLAYER_FILE_TEMP;
     private static StringBuilder OBJECT_FILE_TEMP;
-    private static StringBuilder EXP_FILE_TEMP;
+    //flags
+    private bool EXP_FILE_READY = false;
+    //private static Dictionary<int, bool> PLAYER_FILE_READY;
+    private bool OBJECT_FILE_READY = false;
+    private bool _updatingTrackedObjects = false;
     private static string SEPARATOR = ",";
 
     // Start is called before the first frame update
@@ -67,19 +70,23 @@ public class DataManager : MonoBehaviour
 
     public void AddObjectTrack(GameObject g)
     {
+        _updatingTrackedObjects = true;
         _toTrack.Add(g);
+        _updatingTrackedObjects = false;
     }
 
     public void RemoveObjectTrack(GameObject g)
     {
+        _updatingTrackedObjects = true;
         _toTrack.Remove(g);
+        _updatingTrackedObjects = false;
     }
 
     private void CreateObjectsFile()
     {
         if (!_canTrackObjects) return;
 
-        if (OBJECT_FILE_PATH != "") return;
+        if (OBJECT_FILE_READY) return;
 
         OBJECT_FILE_PATH = $"{Application.persistentDataPath}/objectsData_{System.DateTime.Now.ToString("yyyy-MM-dd-HH_mm_ss")}.csv";//something to identify the participant
 
@@ -89,7 +96,7 @@ public class DataManager : MonoBehaviour
 
         //Debug.Log($"Object File Path is: {OBJECT_FILE_PATH}");
 
-        objfileCreated = true;
+        OBJECT_FILE_READY = true;
         SaveObjectsFile();
     }
 
@@ -97,23 +104,30 @@ public class DataManager : MonoBehaviour
     {
         if (!_canTrackObjects) return;
 
-        if (!objfileCreated) return;
+        if (!OBJECT_FILE_READY) CreateObjectsFile();
 
         if (_toTrack.Count <= 0) return;
 
+        if (_updatingTrackedObjects) return;
+
         string update = "";
         int ownerID = -1;
+        string status = "N/A";
+
         foreach (GameObject track in _toTrack)
         {
-            ownerID = track.TryGetComponent<RealtimeView>(out RealtimeView rV) ? rV.ownerIDInHierarchy : ownerID;
-            string status = (track.TryGetComponent<NomcoreObject>(out NomcoreObject nO)) ? nO.GetStatus() : track.name;
-            update += $"{track.name},{ownerID},{DateTime.Now.TimeOfDay}," +
+            if(track.TryGetComponent<EnvObject>(out EnvObject eO))
+            {
+                ownerID = eO.GetOwnerID();
+                status = eO.GetStatus();
+            }
+            update = $"{track.name},{ownerID},{DateTime.Now.TimeOfDay}," +
                 $"{track.transform.position.x},{track.transform.position.y},{track.transform.position.z}," +
                 $"{track.transform.eulerAngles.x},{track.transform.eulerAngles.y},{track.transform.eulerAngles.z}," +
                 $"{status}";
             OBJECT_FILE_TEMP.AppendLine(string.Join(SEPARATOR, update));
+            //Debug.Log($"Appending {update}");
         }
-        //File.AppendAllText(OBJECT_FILE_PATH, update);
     }
 
     public bool ObjectFileExists()
@@ -134,7 +148,7 @@ public class DataManager : MonoBehaviour
     {
         if (!_canTrackObjects) return;
 
-        if (!objfileCreated) return;
+        if (!OBJECT_FILE_READY) return;
 
         if (_toTrack.Count <= 0) return;
 
@@ -159,40 +173,34 @@ public class DataManager : MonoBehaviour
     public void CreatePlayerFile(int pID)
     {
         if (!_canTrackPlayer) return;
-
-        if (PLAYER_FILE_PATH == null)
-            PLAYER_FILE_PATH = new Dictionary<int, string>();
-
-        if (PLAYER_FILE_PATH.ContainsKey(pID)) return;
+        if (PlayerFileExists(pID) || pID < 0) return;
+        if (PLAYER_FILE_PATH == null) PLAYER_FILE_PATH = new Dictionary<int, string>();
+        if (PLAYER_FILE_TEMP == null) PLAYER_FILE_TEMP = new Dictionary<int, StringBuilder>();
 
         string playerFilePath = $"{Application.persistentDataPath}/p{pID}_skeletonData_{System.DateTime.Now.ToString("yyyy-MM-dd-HH_mm_ss")}.csv";
 
-        if(PLAYER_FILE_TEMP == null)
-            PLAYER_FILE_TEMP = new Dictionary<int, StringBuilder>();
-
-        PLAYER_FILE_TEMP[pID] = new StringBuilder();
+        PLAYER_FILE_TEMP.Add(pID, new StringBuilder());
         PLAYER_FILE_TEMP[pID].AppendLine(string.Join(SEPARATOR, PLAYER_HEADING));
 
-        //File.WriteAllText(playerFilePath, _playerHeader);
         PLAYER_FILE_PATH.Add(pID, playerFilePath);
         SavePlayerFile(pID);
     }
 
     public void UpdatePlayerFile(int pID, Transform transform)
     {
-        if (!_canTrackPlayer || !PLAYER_FILE_PATH.ContainsKey(pID)) return;
+        if (!CanUpdatePlayerFile(pID)) return;
 
         string update = $"{transform.name},{DateTime.Now.TimeOfDay}," +
             $"{transform.position.x},{transform.position.y},{transform.position.z}," +
             $"{transform.eulerAngles.x},{transform.eulerAngles.y},{transform.eulerAngles.z}";
-
+        //Debug.Log($"{PLAYER_FILE_TEMP[pID]} PLAYER FILE TEMP");
         PLAYER_FILE_TEMP[pID].AppendLine(string.Join(SEPARATOR, update));
     }
 
     public void UpdatePlayerFile(int pID, Pose pose, string name)
     {
-        if (!_canTrackPlayer || !PLAYER_FILE_PATH.ContainsKey(pID)) return;
-        
+        if (!CanUpdatePlayerFile(pID)) return;
+
         string update = $"{name},{DateTime.Now.TimeOfDay}," +
             $"{pose.position.x},{pose.position.y},{pose.position.z}," +
             $"{pose.rotation.eulerAngles.x},{pose.rotation.eulerAngles.y},{pose.rotation.eulerAngles.z}";
@@ -207,11 +215,7 @@ public class DataManager : MonoBehaviour
     /// <param name="pID"></param>
     public void SavePlayerFile(int pID)
     {
-        if (!_canTrackPlayer) return;
-
-        if (!PLAYER_FILE_PATH.ContainsKey(pID)) return;
-
-        if (PLAYER_FILE_TEMP[pID] == null || PLAYER_FILE_TEMP[pID].Length == 0) return;
+        if (!CanUpdatePlayerFile(pID)) return;
 
         try
         {
@@ -226,9 +230,29 @@ public class DataManager : MonoBehaviour
         }
     }
 
+    private void SaveAllPlayerFiles()
+    {
+        if (PLAYER_FILE_PATH == null) return;
+        foreach (int pID in PLAYER_FILE_PATH.Keys)
+            SavePlayerFile(pID);
+    }
+
+    private bool CanUpdatePlayerFile(int pID = -1)
+    {
+        if (!_canTrackPlayer) return false;
+
+        if (pID < 0) return false;
+
+        if (PLAYER_FILE_PATH == null || !PLAYER_FILE_PATH.ContainsKey(pID)) return false;
+
+        if (PLAYER_FILE_TEMP == null || !PLAYER_FILE_TEMP.ContainsKey(pID)) return false;
+
+        return true;
+    }
+
     public bool PlayerFileExists(int pID)
     {
-        return PLAYER_FILE_PATH.ContainsKey(pID);
+        return PLAYER_FILE_PATH != null && PLAYER_FILE_PATH.ContainsKey(pID);
     }
 
     public string GetPlayerFilePath(int pID)
@@ -238,7 +262,7 @@ public class DataManager : MonoBehaviour
 
     public void CreateExpFile()
     {
-        if(EXP_FILE_PATH != "")
+        if(EXP_FILE_READY)
         {
             //Debug.LogError("Exp File already created");
             return;
@@ -249,11 +273,13 @@ public class DataManager : MonoBehaviour
 
         EXP_FILE_TEMP = new StringBuilder();
         EXP_FILE_TEMP.AppendLine(string.Join(SEPARATOR, EXP_HEADING));
+        SaveExpFile();
+        EXP_FILE_READY = true;
     }
 
     public void CreateExpFile(string extraInfo)
     {
-        if (EXP_FILE_PATH != "")
+        if (EXP_FILE_READY)
         {
             //Debug.LogError("Exp File already created");
             return;
@@ -265,18 +291,16 @@ public class DataManager : MonoBehaviour
         EXP_FILE_TEMP = new StringBuilder();
         EXP_FILE_TEMP.AppendLine(string.Join(SEPARATOR, EXP_HEADING));
         SaveExpFile();
+        EXP_FILE_READY = true;
     }
 
     public void UpdateExpFile(int trial, string shape, float size, string response, string responseTime, string time)
     {
+        if (!EXP_FILE_READY) return;
+
         string entry = $"{trial},{shape}, {size}, {response}, {responseTime}, {time}";
         //Debug.Log($"Updating Entry: {entry}");
         EXP_FILE_TEMP.AppendLine(string.Join(SEPARATOR, entry));
-    }
-
-    public bool ExpFileExists()
-    {
-        return EXP_FILE_PATH != "";
     }
 
     public string GetExpFilePath()
@@ -290,7 +314,7 @@ public class DataManager : MonoBehaviour
     /// </summary>
     public void SaveExpFile()
     {
-        if (EXP_FILE_TEMP == null || EXP_FILE_TEMP.Length == 0) return;
+        if (!EXP_FILE_READY) return;
         try
         {
             File.AppendAllText(EXP_FILE_PATH, EXP_FILE_TEMP.ToString());
@@ -312,8 +336,7 @@ public class DataManager : MonoBehaviour
     {
         SaveExpFile();
         SaveObjectsFile();
-        foreach(int pID in PLAYER_FILE_PATH.Keys)
-            SavePlayerFile(pID);
+        SaveAllPlayerFiles();
     }
     
     private void OnApplicationPause(bool pause)
