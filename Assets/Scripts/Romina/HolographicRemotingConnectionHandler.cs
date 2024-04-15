@@ -26,8 +26,17 @@ namespace com.perceptlab.armultiplayer
         /// </summary>
         public HandlerConnectionState _connectionState { get; private set; } = HandlerConnectionState.Disconnected;
 
-        // port 8265 is the port Holographic Remoting player app on 
-        private RemotingConnectConfiguration remotingConfiguration = new() { RemoteHostName = "192.168.0.103", RemotePort = 8265, MaxBitrateKbps = 20000 };
+        /// <summary>
+        /// set EnableAudio = true to make the audio play from HL2 (rather than the PC)
+        /// port 8265 is the port Holographic Remoting player app on.
+        /// </summary>
+        private RemotingConnectConfiguration remotingConfiguration = new()
+        {
+            RemoteHostName = "192.168.0.103",
+            RemotePort = 8265,
+            EnableAudio = true,
+            MaxBitrateKbps = 20000,
+        };
 
         [SerializeField, Tooltip("Is invoked when connected to Hololens")]
         public UnityEvent onConnectedToDevice;
