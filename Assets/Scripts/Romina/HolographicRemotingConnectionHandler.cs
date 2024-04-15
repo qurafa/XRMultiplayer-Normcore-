@@ -18,7 +18,12 @@ namespace com.perceptlab.armultiplayer
 {
     public class HolographicRemotingConnectionHandler : MonoBehaviour
     {
+
         public enum HandlerConnectionState { Connected, Disconnected, Disconnecting };
+
+        /// <summary>
+        /// The connection state of handler. It is not safe to exit the app while state is Connected or Disconnecting
+        /// </summary>
         public HandlerConnectionState _connectionState { get; private set; } = HandlerConnectionState.Disconnected;
 
         // port 8265 is the port Holographic Remoting player app on 
@@ -27,7 +32,7 @@ namespace com.perceptlab.armultiplayer
         [SerializeField, Tooltip("Is invoked when connected to Hololens")]
         public UnityEvent onConnectedToDevice;
 
-        [SerializeField, Tooltip("Is invoked when connected to Hololens")]
+        [SerializeField, Tooltip("Is invoked when disconnected from Hololens")]
         public UnityEvent<DisconnectReason> onDisconnectedFromDevice;
 
         [SerializeField]
@@ -36,21 +41,6 @@ namespace com.perceptlab.armultiplayer
         int preventedCount = 0;
 
         // connects to port 8265 because HL2 player app listens to this port.
-
-        private void logEditorApplicationState()
-        {
-#if UNITY_EDITOR
-
-            RLogger.Log("EditorApplication.isCompiling? " + EditorApplication.isCompiling);
-            RLogger.Log("EditorApplication.isPaused? " + EditorApplication.isPaused);
-            RLogger.Log("EditorApplication.isPlaying? " + EditorApplication.isPlaying);
-            RLogger.Log("EditorApplication.isPlayingOrWillChangePlaymode? " + EditorApplication.isPlayingOrWillChangePlaymode);
-            RLogger.Log("EditorApplication.isRemoteConnected? " + EditorApplication.isRemoteConnected);
-#else
-            RLogger.Log("EditorApplication is not running");
-#endif
-        }
-
         public void Awake()
         {
             AppRemoting.Connected += onConnected;
@@ -100,7 +90,7 @@ namespace com.perceptlab.armultiplayer
         {
             if (preventedCount >= 10)
             {
-                RLogger.Log("[HolographicRemotingConnectionHandler] QuitCheck allowing quit because has prevented quit for more than ten times");
+                RLogger.Log("[HolographicRemotingConnectionHandler] QuitCheck allowing quit because it has prevented quit for more than ten times");
                 return true;
             }
             RLogger.Log("[HolographicRemotingConnectionHandler] Checking Quit condition");
