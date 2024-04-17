@@ -16403,6 +16403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PlayerID: -1
+  m_SaveToDataManager: 1
   m_DataManager: {fileID: 1580161444}
   m_HeadRoot: {fileID: 723038010}
   m_LeftControllerRoot: {fileID: 389031716}

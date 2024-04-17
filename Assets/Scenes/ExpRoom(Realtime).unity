@@ -1513,6 +1513,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7016241453105390598, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16734,6 +16738,7 @@ MonoBehaviour:
   m_RoomName: Exp Room
   m_RealtimePlayerPrefab: VR Avatar Quest
   m_ConnectionStatus: {fileID: 1587690695}
+  m_InteractablePrefabNames: []
   ROOM_NOT_CONNECTED: {r: 1, g: 0, b: 0, a: 1}
   ROOM_CONNECTING: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   ROOM_CONNECTED: {r: 0, g: 1, b: 0, a: 0}
@@ -16750,6 +16755,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PlayerID: -1
+  m_SaveToDataManager: 0
   m_DataManager: {fileID: 1580161444}
   m_HeadRoot: {fileID: 723038010}
   m_LeftControllerRoot: {fileID: 389031716}
