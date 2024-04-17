@@ -21,10 +21,17 @@ namespace com.perceptlab.armultiplayer
 
         public enum HandlerConnectionState { Connected, Disconnected, Disconnecting };
 
+        public enum ConnectResult { IPUnreachable, SubsystemNotReady, ConnectionStarted };
+
         /// <summary>
         /// The connection state of handler. It is not safe to exit the app while state is Connected or Disconnecting
         /// </summary>
         public HandlerConnectionState _connectionState { get; private set; } = HandlerConnectionState.Disconnected;
+
+        /// <summary>
+        /// If a call to connect returns false, you can check this property to see the reason of failure. Not the best coding practice, but it works for now.
+        /// </summary>
+        public ConnectResult? LastConnectResult { get; private set; }
 
         /// <summary>
         /// set EnableAudio = true to make the audio play from HL2 (rather than the PC)
@@ -32,11 +39,15 @@ namespace com.perceptlab.armultiplayer
         /// </summary>
         private RemotingConnectConfiguration remotingConfiguration = new()
         {
-            RemoteHostName = "192.168.0.103",
+            RemoteHostName = "",
             RemotePort = 8265,
             EnableAudio = true,
             MaxBitrateKbps = 20000,
         };
+
+        [Header("Connection")]
+        [SerializeField]
+        private string _IP = "";
 
         [SerializeField, Tooltip("Is invoked when connected to Hololens")]
         public UnityEvent onConnectedToDevice;
@@ -44,10 +55,29 @@ namespace com.perceptlab.armultiplayer
         [SerializeField, Tooltip("Is invoked when disconnected from Hololens")]
         public UnityEvent<DisconnectReason> onDisconnectedFromDevice;
 
-        [SerializeField]
-        bool drawGUI = false;
+        [Header("GUI")]
+        [SerializeField, Tooltip("The top right corner of the drawn GUI")]
+        public bool drawGUI = false;
+
+        [SerializeField, Tooltip("The top right corner of the drawn GUI")]
+        Vector2 TopRight = new Vector2(0, 0);
 
         int preventedCount = 0;
+
+        public string IP
+        {
+            get
+            {
+                return _IP;
+            }
+            set
+            {
+                if (_connectionState == HandlerConnectionState.Disconnected)
+                {
+                    _IP = value;
+                }
+            }
+        }
 
         // connects to port 8265 because HL2 player app listens to this port.
         public void Awake()
@@ -125,22 +155,25 @@ namespace com.perceptlab.armultiplayer
             return true;
         }
 
-        public void Connect(string IP)
+        public bool Connect()
         {
             remotingConfiguration.RemoteHostName = IP;
-
             if (!isReachable(remotingConfiguration.RemoteHostName, remotingConfiguration.RemotePort))
             {
-                RLogger.Log("[HolographicRemotingConnectionHandler]: The IP address is not reachable, make sure it's entered correclty");
-                return;
+                RLogger.Log("[HolographicRemotingConnectionHandler]: The IP address is not reachable.");
+                LastConnectResult = ConnectResult.IPUnreachable;
+                return false;
             }
             if (AppRemoting.IsReadyToStart == false)
             {
-                RLogger.Log("[HolographicRemotingConnectionHandler] Error: HolographicRemoting is not ready to start. Check App's XR Settings and try again later.");
-                return;
+                RLogger.Log("[HolographicRemotingConnectionHandler] Error: HolographicRemoting is not ready to start. Check App's XR Settings.");
+                LastConnectResult = ConnectResult.SubsystemNotReady;
+                return false;
             }
             RLogger.Log("[HolographicRemotingConnectionHandler]: Ready to start, trying to connect");
+            LastConnectResult = ConnectResult.ConnectionStarted;
             AppRemoting.StartConnectingToPlayer(remotingConfiguration);
+            return true;
         }
 
         private bool isReachable(string ip, int port)
@@ -217,23 +250,55 @@ namespace com.perceptlab.armultiplayer
         {
             if (drawGUI)
             {
+                //if (_connectionState == HandlerConnectionState.Disconnected)
+                //{
+                //    remotingConfiguration.RemoteHostName = GUI.TextField(new Rect(TopRight.x + 155, TopRight.y + 10, 200, 30), remotingConfiguration.RemoteHostName, 25);
+                //    if (GUI.Button(new Rect(TopRight.x + 365, TopRight.y + 10, 100, 30), "Connect"))
+                //    {
+                //        GUI.Label(new Rect(TopRight.x + 365, TopRight.y + 10, 100, 30), "Connecting...");
+                //        Connect(remotingConfiguration.RemoteHostName);
+                //    }
+                //}
+                //else
+                //{
+                //    GUI.Label(new Rect(TopRight.x + 215, TopRight.y + 10, 200, 30), remotingConfiguration.RemoteHostName);
+                //    if (GUI.Button(new Rect(TopRight.x + 430, TopRight.y + 10, 100, 30), "Disconnect"))
+                //    {
+                //        Disconnect();
+                //    }
+
+                //}
+
+                GUI.Label(new Rect(TopRight.x + 10, TopRight.y + 10, 150, 30), "Player's IP:");
                 if (_connectionState == HandlerConnectionState.Disconnected)
                 {
-                    remotingConfiguration.RemoteHostName = GUI.TextField(new Rect(155, 10, 200, 30), remotingConfiguration.RemoteHostName, 25);
-                    if (GUI.Button(new Rect(365, 10, 100, 30), "Connect"))
+                    IP = GUI.TextField(new Rect(TopRight.x + 155, TopRight.y + 10, 200, 30), IP, 25);
+                    if (GUI.Button(new Rect(TopRight.x + 365, TopRight.y + 10, 100, 30), "Connect"))
                     {
-                        GUI.Label(new Rect(365, 10, 100, 30), "Connecting...");
-                        Connect(remotingConfiguration.RemoteHostName);
+                        GUI.Label(new Rect(TopRight.x + 365, TopRight.y + 10, 100, 30), "Connecting...");
+                        Connect();
                     }
                 }
                 else
                 {
-                    GUI.Label(new Rect(215, 10, 200, 30), remotingConfiguration.RemoteHostName);
-                    if (GUI.Button(new Rect(430, 10, 100, 30), "Disconnect"))
+                    GUI.Label(new Rect(TopRight.x + 215, TopRight.y + 10, 200, 30), IP);
+                    if (GUI.Button(new Rect(TopRight.x + 430, TopRight.y + 10, 100, 30), "Disconnect"))
                     {
                         Disconnect();
                     }
-
+                }
+                if (LastConnectResult != null && LastConnectResult != ConnectResult.ConnectionStarted)
+                {
+                    string ErrorMessage = "";
+                    if (LastConnectResult == ConnectResult.IPUnreachable)
+                    {
+                        ErrorMessage = "The IP address is not reachable, make sure it's entered correclty";
+                    }
+                    else if (LastConnectResult == ConnectResult.SubsystemNotReady)
+                    {
+                        ErrorMessage = "Error: HolographicRemoting is not ready to start. If it happens again restart the App. If it's not solved contact Romina";
+                    }
+                    GUI.Label(new Rect(TopRight.x + 10, TopRight.y + 45, 150, 60), ErrorMessage);
                 }
             }
         }
