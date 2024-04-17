@@ -34,7 +34,7 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
 
     //Enums
     public enum Device { MetaQuest, HoloLens, Other }
-    public enum Type { Head, LeftHand, RightHand, Other }
+    public enum Type { Head, LeftHand, RightHand, CenterEye, LeftEye, RightEye, Other }
     public enum HandMode { None, Controller, HandTracking, Both }
 
     private AvatarInfoPub _avatarInfoPublisher;
@@ -75,6 +75,15 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
                 break;
             case Type.RightHand:
                 _avatarInfoPublisher.OnPublishRightHandControllerData += UpdateToNormcore;
+                break;
+            case Type.CenterEye:
+                _avatarInfoPublisher.OnPublishCenterGazeData += UpdateToNormcore;
+                break;
+            case Type.RightEye:
+                _avatarInfoPublisher.OnPublishRightGazeData += UpdateToNormcore;
+                break;
+            case Type.LeftEye:
+                _avatarInfoPublisher.OnPublishLeftGazeData += UpdateToNormcore;
                 break;
             default: break;
         }
@@ -207,8 +216,8 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
                 float.Parse(netDataArr[5]),
                 float.Parse(netDataArr[6]));
 
-            if (_dataManager)
-                _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, m_RemoteRoot.transform);
+/*            if (_dataManager)
+                _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, m_RemoteRoot.transform);*/
         }
         else if (netDataArr[0] == "2")
         {
@@ -239,8 +248,8 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
                         float.Parse(netDataArr[jTmp + 4]),
                         float.Parse(netDataArr[jTmp + 5]),
                         float.Parse(netDataArr[jTmp + 6]));
-                if(_dataManager)
-                    _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, _joints[j].GetWorldPose(), string.Concat((XRHandJointID)(j + 1)));
+/*                if(_dataManager)
+                    _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, _joints[j].GetWorldPose(), string.Concat((XRHandJointID)(j + 1)));*/
             }
         }
         else if (netDataArr[0] == "3")
@@ -264,8 +273,23 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
             float grip = float.Parse(netDataArr[8]);
             //you can manipulate things like animator values using grip and trigger above
 
-            if (_dataManager)
-                _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, m_RemoteController.transform);
+/*            if (_dataManager)
+                _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, m_RemoteController.transform);*/
+        }
+        else if (netDataArr[0] == "4")
+        {
+            if (m_Type == Type.CenterEye)
+            {
+                m_RemoteRoot.gameObject.SetActive(true);
+            }
+            else return;
+
+            m_RemoteRoot.position = new Vector3(float.Parse(netDataArr[1]),
+                float.Parse(netDataArr[2]),
+                float.Parse(netDataArr[3]));
+            m_RemoteRoot.eulerAngles = new Vector3(float.Parse(netDataArr[4]),
+                float.Parse(netDataArr[5]),
+                float.Parse(netDataArr[6]));
         }
         else
         {

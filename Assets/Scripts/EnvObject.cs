@@ -31,7 +31,6 @@ public class EnvObject : MonoBehaviour
     private string _statusWRTBox = "Outside Box";
 
     private Rigidbody m_Rigidbody;
-    private RealtimeView m_RealtimeView;
     private XRGrabInteractable m_GrabInteractable;
 
     private DataManager m_DataManager;
@@ -39,7 +38,6 @@ public class EnvObject : MonoBehaviour
     public virtual void OnEnable()
     {
         m_DataManager = FindAnyObjectByType<DataManager>();
-        m_RealtimeView = GetComponent<RealtimeView>();
         m_GrabInteractable = GetComponent<XRGrabInteractable>();
         m_Rigidbody = GetComponent<Rigidbody>();
     }
@@ -69,7 +67,7 @@ public class EnvObject : MonoBehaviour
             stopTrackCount += Time.deltaTime;
     }
 
-    private void SetUp()
+    public virtual void SetUp()
     {
         SetUpColliders(transform);
         m_DataManager.AddObjectTrack(gameObject);

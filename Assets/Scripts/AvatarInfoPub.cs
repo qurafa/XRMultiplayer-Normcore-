@@ -6,10 +6,12 @@ using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Hands;
 using Handedness = UnityEngine.XR.Hands.Handedness;
+using com.perceptlab.armultiplayer;
 
 public class AvatarInfoPub : MonoBehaviour
 {
     [SerializeField] private int m_PlayerID = -1;
+    [SerializeField] private bool m_SaveToDataManager;
     [SerializeField] private DataManager m_DataManager;
     [Header("ROOTS")]
     [SerializeField] private Transform m_HeadRoot;
@@ -18,20 +20,24 @@ public class AvatarInfoPub : MonoBehaviour
     [SerializeField] private Transform m_CameraOffset;
     [Header("ENUMS")]
     [SerializeField] private Device m_Device;
-
+    
     /*    [SerializeField] private Type m_Type;
         [SerializeField] private HandMode m_HandMode;*/
 
     //Devices and Subsystems
     private InputDevice _leftControllerInput;
     private InputDevice _rightControllerInput;
+    private InputDevice _centerEyeInput;
+    private InputDevice _leftEyeInput;
+    private InputDevice _rightEyeInput;
     private XRHandSubsystem _questHandSubsystem;
     private HandsAggregatorSubsystem _holoHandSubsystem;
     private List<XRHandSubsystem> _subsystems = new();
 
     //Bool checks
     private bool _localRootInit = false;
-    private bool _controllerInit = false;
+    private bool _controllerInputInit = false;
+    private bool _eyeInputInit = false;
     private bool _handSubsysInit = false;
 
     //private bool _controllerTracking = false;
@@ -48,8 +54,8 @@ public class AvatarInfoPub : MonoBehaviour
     //XR
     private XRHand _leftXRHand;
     private XRHand _rightXRHand;
-    private XRNode _leftXRNode;
-    private XRNode _rightXRNode;
+    private XRNode _leftHandXRNode;
+    private XRNode _rightHandXRNode;
     private Handedness _leftHandedness;
     private Handedness _rightHandedness;
 
@@ -63,7 +69,10 @@ public class AvatarInfoPub : MonoBehaviour
     public event EventHandler<AvatarInfoEventArgs>
         OnPublishHeadData,
         OnPublishLeftHandControllerData,
-        OnPublishRightHandControllerData = delegate {};
+        OnPublishRightHandControllerData,
+        OnPublishLeftGazeData,
+        OnPublishRightGazeData,
+        OnPublishCenterGazeData = delegate {};
 
     // Update is called once per frame
     void Update()
@@ -85,11 +94,12 @@ public class AvatarInfoPub : MonoBehaviour
 
     private void UpdateCall()
     {
-        Raise();
+        Publish();
 
         LocalRootInit();
-        InitController();
+        InitControllerInput();
         InitHandSubsystem();
+        InitEyeInput();
         //ControllerTracking();
         //HandTracking();
     }
@@ -120,7 +130,7 @@ public class AvatarInfoPub : MonoBehaviour
             && m_RightControllerRoot != null && m_CameraOffset != null;
     }
 
-    private void InitController()
+    private void InitControllerInput()
     {
 /*        if (m_HandMode != HandMode.Controller && m_HandMode != HandMode.Both)
         {
@@ -153,8 +163,29 @@ public class AvatarInfoPub : MonoBehaviour
                 return;
         }*/
 
-        _controllerInit = _leftControllerInput.isValid && _rightControllerInput.isValid;
+        _controllerInputInit = _leftControllerInput.isValid && _rightControllerInput.isValid;
     }
+
+    private void InitEyeInput()
+    {
+        if(_centerEyeInput == null || !_centerEyeInput.isValid)
+        {
+            _centerEyeInput = InputDevices.GetDeviceAtXRNode(XRNode.CenterEye);
+        }
+
+        if(_leftEyeInput == null || !_leftEyeInput.isValid)
+        {
+            _leftEyeInput = InputDevices.GetDeviceAtXRNode(XRNode.LeftEye);
+        }
+
+        if (_rightEyeInput == null || !_rightEyeInput.isValid)
+        {
+            _rightEyeInput = InputDevices.GetDeviceAtXRNode(XRNode.RightEye);
+        }
+
+        _eyeInputInit = _centerEyeInput.isValid && _leftEyeInput.isValid && _rightEyeInput.isValid;
+    }
+
 
     private void InitHandSubsystem()
     {
@@ -186,8 +217,8 @@ public class AvatarInfoPub : MonoBehaviour
         }
         else if (m_Device == Device.HoloLens)
         {
-            _leftXRNode = XRNode.LeftHand;
-            _rightXRNode = XRNode.RightHand;
+            _leftHandXRNode = XRNode.LeftHand;
+            _rightHandXRNode = XRNode.RightHand;
 
 /*            switch (m_Type)
             {
@@ -234,7 +265,7 @@ public class AvatarInfoPub : MonoBehaviour
 
     private bool ControllerTracking(Handedness hand)
     {
-        if (!_controllerInit)
+        if (!_controllerInputInit)
         {
             //Debug.Log($"{this.gameObject.name}...controller init {_controllerInit}");
             //_controllerTracking = false;
@@ -314,13 +345,13 @@ public class AvatarInfoPub : MonoBehaviour
         if (updateType == XRHandSubsystem.UpdateType.Dynamic)
             return;
 
-        Raise();
+        Publish();
     }
 
-    private void Raise()
+    private void Publish()
     {
         //initializing data to send
-        string _dataToSend = DEFAULTSEND;
+        string _dataToSend;
 
         if (!_localRootInit)
         {
@@ -330,33 +361,49 @@ public class AvatarInfoPub : MonoBehaviour
             return;
         }
 
-        //event...
+        //events......
         if(OnPublishHeadData != null)
         {
-            _dataToSend = PublishData(m_HeadRoot);
+            _dataToSend = PublishTranformData(m_HeadRoot);
             OnPublishHeadData(this, new AvatarInfoEventArgs(_dataToSend));
         }
-            
-        //event...
+
         if(OnPublishLeftHandControllerData != null)
         {
-            _dataToSend = PublishHandControllerData(_leftXRHand, _leftXRNode, _leftControllerInput, m_LeftControllerRoot, _leftHandedness);
+            _dataToSend = PublishHandControllerData(_leftXRHand, _leftHandXRNode, _leftControllerInput, m_LeftControllerRoot, _leftHandedness);
             OnPublishLeftHandControllerData(this, new AvatarInfoEventArgs(_dataToSend));
         }
 
-        //event...
-        if(OnPublishRightHandControllerData != null)
+        if (OnPublishRightHandControllerData != null)
         {
-            _dataToSend = PublishHandControllerData(_rightXRHand, _rightXRNode, _rightControllerInput, m_RightControllerRoot, _rightHandedness);
+            _dataToSend = PublishHandControllerData(_rightXRHand, _rightHandXRNode, _rightControllerInput, m_RightControllerRoot, _rightHandedness);
             OnPublishRightHandControllerData(this, new AvatarInfoEventArgs(_dataToSend));
+        }
+
+        if(OnPublishCenterGazeData != null) 
+        {
+            _dataToSend = PublishEyeData(XRNode.CenterEye);
+            OnPublishCenterGazeData(this, new AvatarInfoEventArgs(_dataToSend));
+        }
+
+        if(OnPublishLeftGazeData != null)
+        {
+            _dataToSend = PublishEyeData(XRNode.LeftEye);
+            OnPublishLeftGazeData(this, new AvatarInfoEventArgs(_dataToSend));
+        }
+
+        if(OnPublishRightGazeData != null)
+        {
+            _dataToSend = PublishEyeData(XRNode.RightEye);
+            OnPublishRightGazeData(this, new AvatarInfoEventArgs(_dataToSend));
         }
     }
 
-    private string PublishData(Transform transform)
+    private string PublishTranformData(Transform transform)
     {
-        string send = $"1|{transform.position.x}|{transform.position.y}|{transform.position.z}|" +
+        string send = $"{1}|{transform.position.x}|{transform.position.y}|{transform.position.z}|" +
             $"{transform.eulerAngles.x}|{transform.eulerAngles.y}|{transform.eulerAngles.z}|";
-        if (m_DataManager)
+        if (m_SaveToDataManager)
             m_DataManager.UpdatePlayerFile(m_PlayerID, transform);
 
         return send;
@@ -372,7 +419,7 @@ public class AvatarInfoPub : MonoBehaviour
                 InitHandSubsystem();
                 return send;
             }
-            send = "2|";
+            send = $"{2}|";
             var cameraOffsetPose = new Pose(m_CameraOffset.position, m_CameraOffset.rotation);
             if (m_Device == Device.MetaQuest)
             {
@@ -412,15 +459,17 @@ public class AvatarInfoPub : MonoBehaviour
             {
                 send = DEFAULTSEND;
             }
-        }else if (ControllerTracking(handedness))
+        }
+        else if (ControllerTracking(handedness))
         {
-            if (!_controllerInit)
+            if (!_controllerInputInit)
             {
-                InitController();
+                InitControllerInput();
+                Debug.Log($"Controller Init Error");
                 return send;
             }
 
-            send = $"3|{controllerRoot.position.x}|{controllerRoot.position.y}|{controllerRoot.position.z}|" +
+            send = $"{3}|{controllerRoot.position.x}|{controllerRoot.position.y}|{controllerRoot.position.z}|" +
                 $"{controllerRoot.eulerAngles.x}|{controllerRoot.eulerAngles.y}|{controllerRoot.eulerAngles.z}|";
 
             if (controllerInput.TryGetFeatureValue(UnityEngine.XR.CommonUsages.trigger, out float triggerValue))
@@ -433,11 +482,65 @@ public class AvatarInfoPub : MonoBehaviour
             else
                 send += $"{0}|";
 
-            if (m_DataManager)
-                
+            if (m_SaveToDataManager)
                 m_DataManager.UpdatePlayerFile(m_PlayerID, controllerRoot);
         }
 
+        return send;
+    }
+
+    private string PublishEyeData(XRNode xrEyeNode)
+    {
+        var inputDeviceList = new List<InputDevice>();
+        InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.EyeTracking, inputDeviceList);
+
+        string send = DEFAULTSEND;
+
+        if (!_eyeInputInit)
+        {
+            InitEyeInput();
+            RLogger.Log($"Eye Init Error...{_leftEyeInput.isValid} {_centerEyeInput.isValid} {_rightEyeInput.isValid}");
+            return send;
+        }
+
+        switch (xrEyeNode)
+        {
+            case XRNode.CenterEye:
+                if (_centerEyeInput.TryGetFeatureValue(UnityEngine.XR.CommonUsages.centerEyePosition, out Vector3 cPos)
+                    && _centerEyeInput.TryGetFeatureValue(UnityEngine.XR.CommonUsages.centerEyeRotation, out Quaternion cRot))
+                {
+                    send += $"{4}|{cPos.x}|{cPos.y}|{cPos.z}|{cRot.eulerAngles.x}|{cRot.eulerAngles.y}|{cRot.eulerAngles.z}|";
+                    if (m_SaveToDataManager)
+                        m_DataManager.UpdatePlayerFile(m_PlayerID, "Center Eye", cPos, cRot.eulerAngles);
+                }
+                else send = DEFAULTSEND;
+                break;
+            case XRNode.LeftEye:
+                if (_leftEyeInput.TryGetFeatureValue(UnityEngine.XR.CommonUsages.leftEyePosition, out Vector3 lPos)
+                    && _leftEyeInput.TryGetFeatureValue(UnityEngine.XR.CommonUsages.leftEyeRotation, out Quaternion lRot))
+                {
+                    send += $"{4}|{lPos.x}|{lPos.y}|{lPos.z}|{lRot.eulerAngles.x}|{lRot.eulerAngles.y}|{lRot.eulerAngles.z}|";
+                    if (m_SaveToDataManager)
+                        m_DataManager.UpdatePlayerFile(m_PlayerID, "Left Eye", lPos, lRot.eulerAngles);
+                }
+                else send = DEFAULTSEND;
+                break;
+            case XRNode.RightEye:
+                if (_rightEyeInput.TryGetFeatureValue(UnityEngine.XR.CommonUsages.rightEyePosition, out Vector3 rPos)
+                    && _rightEyeInput.TryGetFeatureValue(UnityEngine.XR.CommonUsages.rightEyeRotation, out Quaternion rRot))
+                {
+                    send += $"{4}|{rPos.x}|{rPos.y}|{rPos.z}|{rRot.eulerAngles.x}|{rRot.eulerAngles.y}|{rRot.eulerAngles.z}|";
+                    if (m_SaveToDataManager)
+                        m_DataManager.UpdatePlayerFile(m_PlayerID, "Right Eye", rPos, rRot.eulerAngles);
+                }
+                else send = DEFAULTSEND;
+                break;
+            default:
+                send = DEFAULTSEND;
+                break;
+        }
+
+        RLogger.Log($"Publishing EyeData....{xrEyeNode.ToString()}....{send}");
         return send;
     }
 

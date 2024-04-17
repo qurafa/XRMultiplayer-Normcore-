@@ -72,7 +72,8 @@ public class SceneHelper : MonoBehaviour
     {
         AvatarInfoPub aPub = FindAnyObjectByType<AvatarInfoPub>();
 
-        if(!aPub) aPub.SetPlayerID(0);
+        if(aPub) aPub.SetPlayerID(0);
+        if (!m_DataManager) m_DataManager = FindAnyObjectByType<DataManager>();
         m_DataManager.CreatePlayerFile(0);
     }
 }

@@ -15,7 +15,7 @@ using TMPro;
 
 public class RealtimeSceneHelper : SceneHelper
 {
-    
+    [Header("REALTIME")]
     [SerializeField]
     protected string m_RoomName;
     [SerializeField]
@@ -131,7 +131,7 @@ public class RealtimeSceneHelper : SceneHelper
 
         foreach (RealtimeView v in rViews)
         {
-            Debug.Log(v.transform.name);
+            //Debug.Log(v.transform.name);
             if(!v.isOwnedRemotelySelf && !v.isOwnedLocallySelf)
                 v.RequestOwnershipOfSelfAndChildren();
         }
@@ -162,7 +162,7 @@ public class RealtimeSceneHelper : SceneHelper
     {
         AvatarInfoPub aPub = FindAnyObjectByType<AvatarInfoPub>();
 
-        if (!aPub) aPub.SetPlayerID(m_Realtime.clientID);
+        if (aPub) aPub.SetPlayerID(m_Realtime.clientID);
         m_DataManager.CreatePlayerFile(m_Realtime.clientID);
     }
 
