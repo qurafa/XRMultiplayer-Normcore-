@@ -5,8 +5,8 @@
  * 
  * **************************************************/
 
-using MixedReality.Toolkit.Subsystems;
 using MixedReality.Toolkit;
+using MixedReality.Toolkit.Subsystems;
 using UnityEngine;
 using UnityEngine.XR;
 

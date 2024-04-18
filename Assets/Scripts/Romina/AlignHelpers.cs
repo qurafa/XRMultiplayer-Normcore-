@@ -4,7 +4,7 @@ public static class AlignHelpers
 {
     public static void moveDadToMakeChildMatchDestination(GameObject child, GameObject dad, Vector3 destination)
     {
-        Vector3 diff = child.transform.position - dad.transform.position;
+        Vector3 diff = dad.transform.position - child.transform.position;
         dad.transform.position = destination + diff;
     }
 

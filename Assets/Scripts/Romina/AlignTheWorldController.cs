@@ -23,6 +23,9 @@ namespace com.perceptlab.armultiplayer
         // assign the actions asset to this field in the inspector:
         [SerializeField, Tooltip("The action asset with 1D axes: MoveX, MoveY, MoveZ, and RotateY; and buttons: Reset, PauseUnpause, and DoneAlign.")]
         private InputActionAsset actions;
+        // assign the actions asset to this field in the inspector:
+        [SerializeField, Tooltip("The name of the actionMap in the Actions asset that should be used")]
+        private string myActionMaps = "AlignWithKeys";
 
         [Header("Speed")]
         [SerializeField]
@@ -45,13 +48,13 @@ namespace com.perceptlab.armultiplayer
         private void Awake()
         {
             RLogger.Log("Align the world is active");
-            actions.FindActionMap("Align").FindAction("PauseUnpause").performed += OnPauseUnpause;
-            actions.FindActionMap("Align").FindAction("DoneAlign").performed += OnDoneAlign;
-            actions.FindActionMap("Align").FindAction("Reset").performed += OnReset;
-            moveX = actions.FindActionMap("Align").FindAction("MoveX");
-            moveY = actions.FindActionMap("Align").FindAction("MoveY");
-            moveZ = actions.FindActionMap("Align").FindAction("MoveZ");
-            rotateY = actions.FindActionMap("Align").FindAction("RotateY");
+            actions.FindActionMap(myActionMaps).FindAction("PauseUnpause").performed += OnPauseUnpause;
+            actions.FindActionMap(myActionMaps).FindAction("DoneAlign").performed += OnDoneAlign;
+            actions.FindActionMap(myActionMaps).FindAction("Reset").performed += OnReset;
+            moveX = actions.FindActionMap(myActionMaps).FindAction("MoveX");
+            moveY = actions.FindActionMap(myActionMaps).FindAction("MoveY");
+            moveZ = actions.FindActionMap(myActionMaps).FindAction("MoveZ");
+            rotateY = actions.FindActionMap(myActionMaps).FindAction("RotateY");
 
             defaultCameraPosition = (defaultCameraTransform == null) ? player_camera.transform.position : defaultCameraTransform.position;
         }
@@ -183,20 +186,20 @@ namespace com.perceptlab.armultiplayer
         void OnEnable()
         {
             RLogger.Log("Align the world is enabled");
-            actions.FindActionMap("Align").Enable();
+            actions.FindActionMap(myActionMaps).Enable();
             EnableAR();
         }
         void OnDisable()
         {
             RLogger.Log("Align the world is disabled");
-            actions.FindActionMap("Align").Disable();
+            actions.FindActionMap(myActionMaps).Disable();
             DisableAR();
         }
 
         private void OnDestroy()
         {
             RLogger.Log("Align the world is distroyed");
-            actions.FindActionMap("Align").Disable();
+            actions.FindActionMap(myActionMaps).Disable();
             DisableARandRevertChanges();
         }
 
