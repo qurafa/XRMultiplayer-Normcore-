@@ -1509,53 +1509,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4439683997676795880, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8571081528783892354, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 225626365}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
 --- !u!4 &225626363 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 547935186390231739, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
   m_PrefabInstance: {fileID: 225626361}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &225626364 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8571081528783892354, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
-  m_PrefabInstance: {fileID: 225626361}
-  m_PrefabAsset: {fileID: 0}
---- !u!65 &225626365
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 225626364}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.14003, y: 0.14156, z: 0.14009008}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &233986613
 GameObject:
   m_ObjectHideFlags: 0
@@ -16390,6 +16353,9 @@ MonoBehaviour:
   m_LocalPlayer: {fileID: 2001921950}
   m_Room: {fileID: 205605689}
   m_DataManager: {fileID: 1580161444}
+  m_AutoSubToAvatarInfoPub: 1
+  m_AvatarInfo: {fileID: 546984970637287105}
+  m_AvatarSubTo: 000000000100000002000000
 --- !u!114 &546984970637287105
 MonoBehaviour:
   m_ObjectHideFlags: 0

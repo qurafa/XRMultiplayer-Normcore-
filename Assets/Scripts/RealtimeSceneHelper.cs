@@ -96,7 +96,7 @@ public class RealtimeSceneHelper : SceneHelper
             useInstance = m_Realtime,
         });
         o.GetComponentInChildren<TMP_Text>().text = realtime.room.clientID.ToString();
-        PlayerAvatarSetUp();
+        SetUp();
     }
 
     private void RealtimeDidDisconnectFromRoom(Realtime realtime)
@@ -158,7 +158,7 @@ public class RealtimeSceneHelper : SceneHelper
         m_Realtime.Connect(m_RoomName);
     }
 
-    public override void PlayerAvatarSetUp()
+    public override void SetUp()
     {
         AvatarInfoPub aPub = FindAnyObjectByType<AvatarInfoPub>();
 

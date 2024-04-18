@@ -6,7 +6,7 @@ using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Hands;
-using Handedness = UnityEngine.XR.Hands.Handedness;
+using Types = AvatarInfoPub.Types;
 
 public class RealtimeAvatarSyncImpl : MonoBehaviour
 {
@@ -19,7 +19,7 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
     [SerializeField] private SkinnedMeshRenderer m_RemoteHandMesh;
     [Header("ENUMS")]
     [SerializeField] private Device m_Device;
-    [SerializeField] private Type m_Type;
+    [SerializeField] private Types m_Type;
 
     //Devices and Subsystems
     
@@ -34,10 +34,8 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
 
     //Enums
     public enum Device { MetaQuest, HoloLens, Other }
-    public enum Type { Head, LeftHand, RightHand, CenterEye, LeftEye, RightEye, Other }
-    public enum HandMode { None, Controller, HandTracking, Both }
 
-    private AvatarInfoPub _avatarInfoPublisher;
+    private AvatarInfoPub _avatarInfo;
 
     private void OnEnable()
     {
@@ -58,8 +56,8 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
     private void SubscribeAvatarInfo()
     {
         Debug.Log($"{gameObject} getting publish info");
-        _avatarInfoPublisher = FindFirstObjectByType<AvatarInfoPub>();
-        if (!_avatarInfoPublisher)
+        _avatarInfo = FindFirstObjectByType<AvatarInfoPub>();
+        if (!_avatarInfo)
         {
             Debug.Log("Cant find avatar info publisher");
             return;
@@ -67,23 +65,23 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
 
         switch (m_Type)
         {
-            case Type.Head:
-                _avatarInfoPublisher.OnPublishHeadData += UpdateToNormcore;
+            case Types.Head:
+                _avatarInfo.OnPublishHeadData += UpdateToNormcore;
                 break;
-            case Type.LeftHand:
-                _avatarInfoPublisher.OnPublishLeftHandControllerData += UpdateToNormcore;
+            case Types.LeftHand:
+                _avatarInfo.OnPublishLeftHandControllerData += UpdateToNormcore;
                 break;
-            case Type.RightHand:
-                _avatarInfoPublisher.OnPublishRightHandControllerData += UpdateToNormcore;
+            case Types.RightHand:
+                _avatarInfo.OnPublishRightHandControllerData += UpdateToNormcore;
                 break;
-            case Type.CenterEye:
-                _avatarInfoPublisher.OnPublishCenterGazeData += UpdateToNormcore;
+            case Types.CenterEye:
+                _avatarInfo.OnPublishCenterGazeData += UpdateToNormcore;
                 break;
-            case Type.RightEye:
-                _avatarInfoPublisher.OnPublishRightGazeData += UpdateToNormcore;
+            case Types.RightEye:
+                _avatarInfo.OnPublishRightGazeData += UpdateToNormcore;
                 break;
-            case Type.LeftEye:
-                _avatarInfoPublisher.OnPublishLeftGazeData += UpdateToNormcore;
+            case Types.LeftEye:
+                _avatarInfo.OnPublishLeftGazeData += UpdateToNormcore;
                 break;
             default: break;
         }
@@ -91,7 +89,7 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
 
     private void UnSubscribeAvatarInfo()
     {
-        if (!_avatarInfoPublisher)
+        if (!_avatarInfo)
         {
             Debug.Log("Cant find avatar info publisher");
             return;
@@ -99,14 +97,23 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
 
         switch (m_Type)
         {
-            case Type.Head:
-                _avatarInfoPublisher.OnPublishHeadData -= UpdateToNormcore;
+            case Types.Head:
+                _avatarInfo.OnPublishHeadData -= UpdateToNormcore;
                 break;
-            case Type.LeftHand:
-                _avatarInfoPublisher.OnPublishLeftHandControllerData -= UpdateToNormcore;
+            case Types.LeftHand:
+                _avatarInfo.OnPublishLeftHandControllerData -= UpdateToNormcore;
                 break;
-            case Type.RightHand:
-                _avatarInfoPublisher.OnPublishRightHandControllerData -= UpdateToNormcore;
+            case Types.RightHand:
+                _avatarInfo.OnPublishRightHandControllerData -= UpdateToNormcore;
+                break;
+            case Types.CenterEye:
+                _avatarInfo.OnPublishCenterGazeData -= UpdateToNormcore;
+                break;
+            case Types.RightEye:
+                _avatarInfo.OnPublishRightGazeData -= UpdateToNormcore;
+                break;
+            case Types.LeftEye:
+                _avatarInfo.OnPublishLeftGazeData -= UpdateToNormcore;
                 break;
             default:
                 break;
@@ -117,7 +124,7 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
     {
         if(_jointsInit) return;
 
-        if (m_Device == Device.MetaQuest && (m_Type == Type.LeftHand || m_Type == Type.RightHand))
+        if (m_Device == Device.MetaQuest && (m_Type == Types.LeftHand || m_Type == Types.RightHand))
         {
             for (int j = 0; j < _joints.Length; j++)
             {
@@ -128,7 +135,7 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
                 }
             }
         }
-        else if(m_Device == Device.HoloLens && (m_Type == Type.LeftHand || m_Type == Type.RightHand))
+        else if(m_Device == Device.HoloLens && (m_Type == Types.LeftHand || m_Type == Types.RightHand))
         {
             /*if (!_holoHandSubsystem.TryGetEntireHand(_xrNode, out IReadOnlyList<HandJointPose> jp))
             {
@@ -196,7 +203,7 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
         if (netDataArr[0] == "0")
         {
             //Debug.Log($"{this.gameObject.name}...received 0, show nothing");
-            if (m_Type == Type.LeftHand || m_Type == Type.RightHand)
+            if (m_Type == Types.LeftHand || m_Type == Types.RightHand)
             {
                 m_RemoteHandMesh.enabled = false;
                 m_RemoteController.gameObject.SetActive(false);
@@ -205,7 +212,7 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
         }
         else if (netDataArr[0] == "1")
         {
-            if (m_Type != Type.Head && m_Type != Type.Other) return;
+            if (m_Type != Types.Head && m_Type != Types.Other) return;
 
             m_RemoteRoot.gameObject.SetActive(true);
 
@@ -222,7 +229,7 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
         else if (netDataArr[0] == "2")
         {
             
-            if (m_Type == Type.LeftHand || m_Type == Type.RightHand)
+            if (m_Type == Types.LeftHand || m_Type == Types.RightHand)
             {
                 m_RemoteRoot.gameObject.SetActive(true);
                 m_RemoteHandMesh.enabled = true;
@@ -254,7 +261,7 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
         }
         else if (netDataArr[0] == "3")
         {
-            if (m_Type == Type.LeftHand || m_Type == Type.RightHand)
+            if (m_Type == Types.LeftHand || m_Type == Types.RightHand)
             {
                 m_RemoteRoot.gameObject.SetActive(true);
                 m_RemoteController.gameObject.SetActive(true);
@@ -278,7 +285,7 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
         }
         else if (netDataArr[0] == "4")
         {
-            if (m_Type == Type.CenterEye)
+            if (m_Type == Types.CenterEye)
             {
                 m_RemoteRoot.gameObject.SetActive(true);
             }

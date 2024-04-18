@@ -19,7 +19,7 @@ public class AvatarInfoPub : MonoBehaviour
     [SerializeField] private Transform m_RightControllerRoot;
     [SerializeField] private Transform m_CameraOffset;
     [Header("ENUMS")]
-    [SerializeField] private Device m_Device;
+    [SerializeField] private Devices m_Device;
     
     /*    [SerializeField] private Type m_Type;
         [SerializeField] private HandMode m_HandMode;*/
@@ -62,9 +62,8 @@ public class AvatarInfoPub : MonoBehaviour
     private static readonly string DEFAULTSEND = "0|";
 
     //Enums
-    public enum Device { MetaQuest, HoloLens, Other }
-    public enum Type { Head, LeftHand, RightHand, Other }
-    public enum HandMode { None, Controller, HandTracking, Both }
+    public enum Devices { MetaQuest, HoloLens, Other }
+    public enum Types { Head, LeftHand, RightHand, CenterEye, LeftEye, RightEye, Other }
 
     public event EventHandler<AvatarInfoEventArgs>
         OnPublishHeadData,
@@ -189,11 +188,11 @@ public class AvatarInfoPub : MonoBehaviour
 
     private void InitHandSubsystem()
     {
-        if (m_Device == Device.MetaQuest && _questHandSubsystem != null && _questHandSubsystem.running) return;
+        if (m_Device == Devices.MetaQuest && _questHandSubsystem != null && _questHandSubsystem.running) return;
 
-        if (m_Device == Device.HoloLens && _holoHandSubsystem != null && _holoHandSubsystem.running) return;
+        if (m_Device == Devices.HoloLens && _holoHandSubsystem != null && _holoHandSubsystem.running) return;
 
-        if (m_Device == Device.MetaQuest)
+        if (m_Device == Devices.MetaQuest)
         {
             SubsystemManager.GetSubsystems(_subsystems);
             if (_subsystems.Count == 0)
@@ -215,7 +214,7 @@ public class AvatarInfoPub : MonoBehaviour
             InitQuestXRHand();
             _handSubsysInit = true;
         }
-        else if (m_Device == Device.HoloLens)
+        else if (m_Device == Devices.HoloLens)
         {
             _leftHandXRNode = XRNode.LeftHand;
             _rightHandXRNode = XRNode.RightHand;
@@ -301,7 +300,7 @@ public class AvatarInfoPub : MonoBehaviour
             return false;
         }
 
-        if (m_Device == Device.MetaQuest)
+        if (m_Device == Devices.MetaQuest)
         {
             InitQuestXRHand();
             switch(hand)
@@ -314,7 +313,7 @@ public class AvatarInfoPub : MonoBehaviour
                     return false;
             }
         }
-        else if (m_Device == Device.HoloLens)
+        else if (m_Device == Devices.HoloLens)
         {
             return (_holoHandSubsystem != null && _holoHandSubsystem.running);
         }
@@ -403,9 +402,13 @@ public class AvatarInfoPub : MonoBehaviour
     {
         string send = $"{1}|{transform.position.x}|{transform.position.y}|{transform.position.z}|" +
             $"{transform.eulerAngles.x}|{transform.eulerAngles.y}|{transform.eulerAngles.z}|";
+        Debug.Log($"Saving? {send}");
         if (m_SaveToDataManager)
+        {
+            Debug.Log($"Saving {send}");
             m_DataManager.UpdatePlayerFile(m_PlayerID, transform);
-
+        }
+            
         return send;
     }
 
@@ -421,7 +424,7 @@ public class AvatarInfoPub : MonoBehaviour
             }
             send = $"{2}|";
             var cameraOffsetPose = new Pose(m_CameraOffset.position, m_CameraOffset.rotation);
-            if (m_Device == Device.MetaQuest)
+            if (m_Device == Devices.MetaQuest)
             {
                 //because there are 26 joints
                 for (int j = 0; j < 26; j++)
@@ -438,7 +441,7 @@ public class AvatarInfoPub : MonoBehaviour
                         m_DataManager.UpdatePlayerFile(m_PlayerID, jointPose, string.Concat((XRHandJointID)(j + 1)));
                 }
             }
-            else if (m_Device == Device.HoloLens)
+            else if (m_Device == Devices.HoloLens)
             {
                 //float error = 0.0f;
                 for (int j = 0; j < 26; j++)
@@ -499,7 +502,7 @@ public class AvatarInfoPub : MonoBehaviour
         if (!_eyeInputInit)
         {
             InitEyeInput();
-            RLogger.Log($"Eye Init Error...{_leftEyeInput.isValid} {_centerEyeInput.isValid} {_rightEyeInput.isValid}");
+            //RLogger.Log($"Eye Init Error...{_leftEyeInput.isValid} {_centerEyeInput.isValid} {_rightEyeInput.isValid}");
             return send;
         }
 
@@ -546,7 +549,7 @@ public class AvatarInfoPub : MonoBehaviour
 
     private void OnDisable()
     {
-        if (m_Device == Device.MetaQuest)
+        if (m_Device == Devices.MetaQuest)
         {
             UnSubSubsystem();
         }

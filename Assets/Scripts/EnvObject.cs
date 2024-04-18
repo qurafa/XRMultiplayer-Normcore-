@@ -123,7 +123,8 @@ public class EnvObject : MonoBehaviour
         m_Rigidbody.velocity = Vector3.zero;
         m_Rigidbody.angularVelocity = Vector3.zero;
         //so we release it even after reseting position
-        m_GrabInteractable.interactionManager.CancelInteractorSelection(m_GrabInteractable.firstInteractorSelecting);
+        if(m_GrabInteractable.isSelected)
+            m_GrabInteractable.interactionManager.CancelInteractorSelection(m_GrabInteractable.firstInteractorSelecting);
     }
 
     private void OnCollisionEnter(Collision collision)
