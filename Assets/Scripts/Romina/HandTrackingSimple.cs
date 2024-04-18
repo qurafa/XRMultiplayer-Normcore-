@@ -14,8 +14,14 @@ public class HandTrackingSimple : MonoBehaviour
 {
 
     HandsAggregatorSubsystem aggregator;
-    [Tooltip("The GameObject to put where the index finger is.")]
-    [SerializeField] GameObject indexFinger;
+    [SerializeField, Tooltip("The GameObject to put where the index finger is.")]
+    GameObject indexFinger;
+
+
+    [SerializeField, Tooltip("The Hand to follow")]
+    XRNode hand = XRNode.LeftHand;
+    [SerializeField, Tooltip("The joint to follow")]
+    TrackedHandJoint trackedHandJoint = TrackedHandJoint.IndexTip;
 
     void Start()
     {
@@ -34,7 +40,7 @@ public class HandTrackingSimple : MonoBehaviour
         {
             HandJointPose jointPose;
             //TrackedHandJoin enum has 26 different joint/palm/writs positions with their names
-            if (aggregator.TryGetJoint(TrackedHandJoint.IndexTip, XRNode.LeftHand, out jointPose))
+            if (aggregator.TryGetJoint(trackedHandJoint, hand, out jointPose))
             {
                 indexFinger.SetActive(true);
                 indexFinger.transform.position = jointPose.Position;

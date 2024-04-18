@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.ARFoundation;
 
-public class AlignTheWorldFinger : AlignTheWorld
+public class AlignTheWorldFinger2 : AlignTheWorld
 {
     private ARSession _ARSession;
 
@@ -18,19 +18,23 @@ public class AlignTheWorldFinger : AlignTheWorld
     [SerializeField, Tooltip("When reset is pressed the camera's position will be set to this transform's position, if not provided, the starting position will be used")]
     private Transform defaultCameraTransform;
 
-    [Header("Finger and TableCorner")]
-    [SerializeField, Tooltip("The Finger GameObject, must be a child of player")]
-    GameObject Finger;
-    [SerializeField, Tooltip("The TableCorner GameObject")]
-    GameObject TableCorner;
+    [Header("Finger and TableCorners")]
+    [SerializeField, Tooltip("The Left Finger GameObject, must be a child of player")]
+    GameObject LFinger;
+    [SerializeField, Tooltip("The Right Finger GameObject, must be a child of player")]
+    GameObject RFinger;
+    [SerializeField, Tooltip("The Left TableCorner GameObject")]
+    GameObject LTableCorner;
+    [SerializeField, Tooltip("The Right TableCorner GameObject")]
+    GameObject RTableCorner;
 
     [Header("Input")]
     // assign the actions asset to this field in the inspector:
-    [SerializeField, Tooltip("The action asset buttons: Set, Reset, and DoneAlign.")]
+    [SerializeField, Tooltip("The action asset buttons: Left, Right, Reset, and DoneAlign")]
     private InputActionAsset actions;
     // assign the actions asset to this field in the inspector:
     [SerializeField, Tooltip("The name of the actionMap in the Actions asset that should be used")]
-    private string myActionMaps = "AlignWithFinger";
+    private string myActionMaps = "AlignWithTwoFingers";
 
     private Vector3 defaultCameraPosition;
 
@@ -38,8 +42,8 @@ public class AlignTheWorldFinger : AlignTheWorld
     {
         RLogger.Log("FingerAlign the world is awake");
         actions.FindActionMap(myActionMaps).FindAction("DoneAlign").performed += OnDoneAlign;
-        actions.FindActionMap(myActionMaps).FindAction("Reset").performed += OnReset;
-        actions.FindActionMap(myActionMaps).FindAction("Set").performed += OnSet;
+        actions.FindActionMap(myActionMaps).FindAction("Left").performed += OnLeft;
+        actions.FindActionMap(myActionMaps).FindAction("Right").performed += OnRight;
         defaultCameraPosition = (defaultCameraTransform == null) ? player_camera.transform.position : defaultCameraTransform.position;
     }
 
@@ -94,40 +98,22 @@ public class AlignTheWorldFinger : AlignTheWorld
         //actions.FindActionMap("Align").Disable();
     }
 
-    private void OnReset(InputAction.CallbackContext context)
+    private void OnLeft(InputAction.CallbackContext context)
     {
-        RLogger.Log("Reset was pressed");
-        moveCameraToDestination(defaultCameraPosition);
-        makeCameraFaceDirection(Vector3.right);
-    }
-
-    private void OnSet(InputAction.CallbackContext context)
-    {
-        RLogger.Log($"Set was pressed, Finger forward: {Finger.transform.forward}, tablecormer forward: {TableCorner.transform.forward}.");
-        float angle = Vector3.SignedAngle(Finger.transform.forward, TableCorner.transform.forward, Vector3.up);
-        player.transform.RotateAround(player_camera.transform.position, Vector3.up, angle);
-        RLogger.Log($"-------Rotated, Finger forward: {Finger.transform.forward}, tablecormer forward: {TableCorner.transform.forward}.");
-
-        RLogger.Log($"Set was pressed, Finger pose: {Finger.transform.position}, tablecormer pose: {TableCorner.transform.position}.");
-        AlignHelpers.moveDadToMakeChildMatchDestination(Finger, player, TableCorner.transform.position);
-        RLogger.Log($"-------Moved, Finger pose: {Finger.transform.position}, tablecormer pose: {TableCorner.transform.position}.");
+        RLogger.Log($"Set was pressed, Finger pose: {LFinger.transform.position}, tablecormer pose: {LTableCorner.transform.position}.");
+        AlignHelpers.moveDadToMakeChildMatchDestination(LFinger, player, LTableCorner.transform.position);
+        RLogger.Log($"-------Moved, Finger pose: {LFinger.transform.position}, tablecormer pose: {LTableCorner.transform.position}.");
 
     }
 
-    private void moveCameraToDestination(Vector3 destination)
+    private void OnRight(InputAction.CallbackContext context)
     {
-        //Vector3 diff = player_camera.transform.position - player.transform.position;
-        //player.transform.position = destination + diff;
-        AlignHelpers.moveDadToMakeChildMatchDestination(player_camera, player, destination);
-    }
-
-    private void makeCameraFaceDirection(Vector3 direction)
-    {
-        //direction.y = 0; direction.Normalize();
-        //Vector3 cameraFacing = player_camera.transform.forward; cameraFacing.y = 0; cameraFacing.Normalize();
-        //float angle = Vector3.SignedAngle(cameraFacing, direction, Vector3.up);
-        //player.transform.RotateAround(player_camera.transform.position, Vector3.up, angle);
-        AlignHelpers.rotateDadtoMakeChildFaceDirection(player_camera, player, direction);
+        RLogger.Log($"Set was pressed, Right Finger pose: {RFinger.transform.position}, Rtablecormer pose: {RTableCorner.transform.position}.");
+        Vector3 actualTableEdge = RFinger.transform.position - LTableCorner.transform.position;
+        Vector3 virtualTableEdge = RTableCorner.transform.position - LTableCorner.transform.position;
+        float angle = Vector3.SignedAngle(actualTableEdge, virtualTableEdge, Vector3.up);
+        player.transform.RotateAround(LTableCorner.transform.position, Vector3.up, angle);
+        RLogger.Log($"-------Rotated, Right Finger pose: {RFinger.transform.position}, Rtablecormer pose: {RTableCorner.transform.position}.");
     }
 
     void OnEnable()
@@ -155,16 +141,16 @@ public class AlignTheWorldFinger : AlignTheWorld
         if (drawGUI)
         {
             GUI.Label(new Rect(GUITopRight.x + 10, GUITopRight.y + 100, 400, 90),
-                "Align the left finger's object with the left corner of the table.\n" +
-                "Press 's' on the keyboard or X on joystick to move the blue grid, repeat untill the grid looks good.\n" +
+                "Put your left finger on the left corner of the table and press L.\n" +
+                "Then, put your right finger on the right corner of the table and press R.\n" +
                 "When grid matches the table press Enter to finish.");
         }
     }
 
     /*********************************************
     * list of all required defined buttons and axes:
-    * Set : button      [moves the table to your finger]
+    * L : button      [matches the left corner of the table to your left finger]
+    * R : button      [matches the right corner of the table to your right finger]
     * DoneAlign: button
-    * Reset: button 
     *********************************************/
 }
