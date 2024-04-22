@@ -7,13 +7,25 @@ using UnityEngine.InputSystem;
 
 public class ExpController : MonoBehaviour
 {
+    /// <summary>
+    /// Whether to run the experiment or not
+    /// </summary>
     [Header("SCENE VARIABLES")]
     [SerializeField]
     protected bool ToRun = false;
+    /// <summary>
+    /// DataManager to help monitor and save experiment data
+    /// </summary>
     [SerializeField]
     protected DataManager m_DataManager;
+    /// <summary>
+    /// Player Camera
+    /// </summary>
     [SerializeField]
     protected Camera m_PlayerCamera;
+    /// <summary>
+    /// Experiment set up Transform
+    /// </summary>
     [SerializeField]
     protected Transform m_ExpSetUp;
     [SerializeField]
@@ -21,32 +33,58 @@ public class ExpController : MonoBehaviour
     [SerializeField]
     protected Transform m_CubeSpawn;
     [SerializeField]
-    protected Transform m_ShapeSpawn;
+    protected Transform[] m_ShapeSpawn = new Transform[] { };
     [SerializeField]
     protected AudioSource m_SaveAudio;
-    [Header("EXPERIMENT VARIABLES")]
     /// <summary>
     /// Name of the shapes we'll be using, ensure they're in the Resource folder
     /// </summary>
+    [Header("EXPERIMENT VARIABLES")]
     [SerializeField]
     protected GameObject[] m_Shapes = new GameObject[] { };
     /// <summary>
-    /// Whether the shape and the box should face towards the player's position or not
+    /// Whether the shapes and the box should face towards the player's position or not
     /// </summary>
     [SerializeField]
     protected bool m_FacePlayer = false;
+    /// <summary>
+    /// Whether to spawn the shapes in random locations or not
+    /// </summary>
+    [SerializeField]
+    protected bool m_RandomShapeLocation = false;
+    /// <summary>
+    /// Minimum amount of time to show blank/nothing to the participant
+    /// </summary>
     [SerializeField]
     protected float m_MinBlankTimeLimit = 3.0f;
+    /// <summary>
+    /// Maximum amount of time to show blank/nothing to the participant
+    /// </summary>
     [SerializeField]
     protected float m_MaxBlankTimeLimit = 300.0f;
+    /// <summary>
+    /// Time limit for each trial
+    /// </summary>
     [SerializeField]
     protected float m_TrialTimeLimit = 5.0f;
+    /// <summary>
+    /// Number of sizes smaller from the original size for each shape
+    /// </summary>
     [SerializeField]
     protected int m_NumberSmaller = 3;
+    /// <summary>
+    /// Number of sizes larger from the original size for each shape
+    /// </summary>
     [SerializeField]
     protected int m_NumberLarger = 3;
+    /// <summary>
+    /// Particicpant ID
+    /// </summary>
     [SerializeField]
     protected string m_PID = "0";
+    /// <summary>
+    /// What condition are we testing the participants on
+    /// </summary>
     [SerializeField]
     protected string m_Condition = "test";
     /// <summary>
@@ -65,15 +103,23 @@ public class ExpController : MonoBehaviour
     [SerializeField]
     protected int m_NumOfShapes = 4;
 
+    /// <summary>
+    /// Button for larger input response
+    /// </summary>
     [Header("INPUT ACTIONS")]
     [SerializeField]
     protected InputAction largerButton;
+    /// <summary>
+    /// Button for smaller input response
+    /// </summary>
     [SerializeField]
     protected InputAction smallerButton;
     [SerializeField]
     protected InputAction resetButton;
-    [Header("-----------")]
 
+    /// <summary>
+    /// List of order of the experiment. Contains string in format "shapeNumber|shapeName|scale|spawnLocation";
+    /// </summary>
     protected List<string> _order;
     /// <summary>
     /// Next trial number, where trials go from 0 to n
@@ -122,6 +168,17 @@ public class ExpController : MonoBehaviour
 
     protected Dictionary<string, Vector3> _shapeToBoxRotation0;
     protected Dictionary<string, Vector3[]> _shapeToBoxRotation1;
+
+    private int randomShapeLoc
+    {
+        get
+        {
+            if (m_RandomShapeLocation)
+                return UnityEngine.Random.Range(0, m_ShapeSpawn.Length);
+            else
+                return 0;
+        }
+    }
 
     virtual protected void OnEnable()
     {
@@ -258,7 +315,10 @@ public class ExpController : MonoBehaviour
         float zDiff = m_PlayerCamera.transform.position.z - m_ExpSetUp.transform.position.z;
         m_ExpSetUp.Translate(new Vector3(xDiff + 0.8f, yDiff, zDiff));
 
-        string shape = GetNextTrial().Split('|')[1];
+        string trial = GetNextTrial();
+        string shape = trial.Split('|')[1];
+        int loc = int.Parse(trial.Split('|')[3]);
+
         m_SortingCube.position = m_CubeSpawn.position;
 
         if(m_SortingCube.TryGetComponent<Rigidbody>(out Rigidbody r)){
@@ -270,12 +330,12 @@ public class ExpController : MonoBehaviour
             m_SortingCube.LookAt(_playerTransform.position, _shapeToBoxRotation1[shape][0]);
             m_SortingCube.Rotate(_shapeToBoxRotation1[shape][1]);
 
-            m_ShapeSpawn.transform.LookAt(_playerTransform.position, Vector3.up);
+            m_ShapeSpawn[loc].transform.LookAt(_playerTransform.position, Vector3.up);
         }
         else
         {
             m_SortingCube.eulerAngles = _shapeToBoxRotation0[shape];
-            m_ShapeSpawn.eulerAngles = new Vector3(90, 90, 0);
+            m_ShapeSpawn[loc].eulerAngles = new Vector3(90, 90, 0);
         }
     }
 
@@ -328,19 +388,19 @@ public class ExpController : MonoBehaviour
             //for every repeat for each shape
             for (int r = 0; r < m_Repeats; r++)
             {
-                entry = $"{i}|{m_Shapes[i].name}|{1}";//mid scale
-                _order.Add(entry);
                 //smaller sizes
                 for (int zS = 1; zS <= m_NumberSmaller; zS++)
                 {
-                    entry = $"{i}|{m_Shapes[i].name}|{1 - (m_ScaleDiff * zS)}";//smaller scales
+                    entry = $"{i}|{m_Shapes[i].name}|{1 - (m_ScaleDiff * zS)}|{randomShapeLoc}";//smaller scales
                     _order.Add(entry);
                 }
-
+                //mid size
+                entry = $"{i}|{m_Shapes[i].name}|{1}|{randomShapeLoc}";
+                _order.Add(entry);
                 //larger sizes
                 for (int zL = 1; zL <= m_NumberLarger; zL++)
                 {
-                    entry = $"{i}|{m_Shapes[i].name}|{1 + (m_ScaleDiff * zL)}";//larger scales
+                    entry = $"{i}|{m_Shapes[i].name}|{1 + (m_ScaleDiff * zL)}|{randomShapeLoc}";//larger scales
                     _order.Add(entry);
                 }
             }
@@ -348,6 +408,8 @@ public class ExpController : MonoBehaviour
 
         return true;
     }
+
+    
 
     public List<string> GetOrder()
     { 
@@ -504,8 +566,9 @@ public class ExpController : MonoBehaviour
         int index = int.Parse(trial.Split('|')[0]);
         string shape = trial.Split('|')[1];
         float size = float.Parse(trial.Split('|')[2]);
+        int loc = int.Parse(trial.Split('|')[0]);
 
-        spawn = Instantiate(m_Shapes[index], m_ShapeSpawn.transform);
+        spawn = Instantiate(m_Shapes[index], m_ShapeSpawn[loc].transform);
         spawn.transform.localScale = new Vector3(spawn.transform.localScale.x * size,
             spawn.transform.localScale.y * 1,
             spawn.transform.localScale.z * size);
@@ -539,7 +602,7 @@ public class ExpController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns string representation of the current trial
+    /// Returns string representation of the current trial. In format "shapeNumber|shapeName|scale|spawnLocation";
     /// </summary>
     /// <returns></returns>
     public string GetCurTrial()
@@ -548,7 +611,7 @@ public class ExpController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns string representation of the next trial
+    /// Returns string representation of the next trial. In format "shapeNumber|shapeName|scale|spawnLocation";
     /// </summary>
     /// <returns></returns>
     public string GetNextTrial()
@@ -557,7 +620,7 @@ public class ExpController : MonoBehaviour
     }
 
     /// <summary>
-    /// Returns the string representation of the trial based on the given trialNumber
+    /// Returns the string representation of the trial based on the given trialNumber. In format "shapeNumber|shapeName|scale|spawnLocation";
     /// </summary>
     /// <param name="trialNumber"></param>
     /// <returns></returns>

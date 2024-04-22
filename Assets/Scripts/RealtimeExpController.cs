@@ -40,8 +40,9 @@ public class RealtimeExpController : ExpController
 
         string shape = trial.Split('|')[1];
         float size = float.Parse(trial.Split('|')[2]);
+        int loc = int.Parse(trial.Split('|')[3]);
 
-        spawn = Realtime.Instantiate(shape, m_ShapeSpawn.position, m_ShapeSpawn.rotation, new Realtime.InstantiateOptions
+        spawn = Realtime.Instantiate(shape, m_ShapeSpawn[loc].position, m_ShapeSpawn[loc].rotation, new Realtime.InstantiateOptions
         {
             ownedByClient = true,
             preventOwnershipTakeover = true,
