@@ -183,6 +183,7 @@ public class DataManager : MonoBehaviour
         PLAYER_FILE_TEMP[pID].AppendLine(string.Join(SEPARATOR, PLAYER_HEADING));
 
         PLAYER_FILE_PATH.Add(pID, playerFilePath);
+        Debug.Log($"Player {pID} file created");
         SavePlayerFile(pID);
     }
 
@@ -193,7 +194,18 @@ public class DataManager : MonoBehaviour
         string update = $"{transform.name},{DateTime.Now.TimeOfDay}," +
             $"{transform.position.x},{transform.position.y},{transform.position.z}," +
             $"{transform.eulerAngles.x},{transform.eulerAngles.y},{transform.eulerAngles.z}";
-        //Debug.Log($"{PLAYER_FILE_TEMP[pID]} PLAYER FILE TEMP");
+        //Debug.Log($"updating player file....{update}");
+        PLAYER_FILE_TEMP[pID].AppendLine(string.Join(SEPARATOR, update));
+    }
+
+    public void UpdatePlayerFile(int pID, string name, Vector3 pos, Vector3 rot)
+    {
+        if (!CanUpdatePlayerFile(pID)) return;
+
+        string update = $"{name},{DateTime.Now.TimeOfDay}," +
+            $"{pos.x},{pos.y},{pos.z}," +
+            $"{rot.x},{rot.y},{rot.z}";
+        Debug.Log($"updating player file....{update}");
         PLAYER_FILE_TEMP[pID].AppendLine(string.Join(SEPARATOR, update));
     }
 
@@ -204,7 +216,7 @@ public class DataManager : MonoBehaviour
         string update = $"{name},{DateTime.Now.TimeOfDay}," +
             $"{pose.position.x},{pose.position.y},{pose.position.z}," +
             $"{pose.rotation.eulerAngles.x},{pose.rotation.eulerAngles.y},{pose.rotation.eulerAngles.z}";
-
+        Debug.Log($"updating player file....{update}");
         PLAYER_FILE_TEMP[pID].AppendLine(string.Join(SEPARATOR, update));
     }
 
@@ -221,17 +233,18 @@ public class DataManager : MonoBehaviour
         {
             File.AppendAllText(PLAYER_FILE_PATH[pID], PLAYER_FILE_TEMP[pID].ToString());
             PLAYER_FILE_TEMP[pID].Clear();
-            //Debug.Log($"Player {pID} file saved to {PLAYER_FILE_PATH[pID]}");
+            Debug.Log($"Player {pID} file saved to {PLAYER_FILE_PATH[pID]}");
         }
         catch (Exception e)
         {
-            //Debug.Log($"Player {pID} data could not be written to file due to exception: {e}");
+            Debug.Log($"Player {pID} data could not be written to file due to exception: {e}");
             return;
         }
     }
 
     private void SaveAllPlayerFiles()
     {
+        Debug.Log($"Saving all player files....");
         if (PLAYER_FILE_PATH == null) return;
         foreach (int pID in PLAYER_FILE_PATH.Keys)
             SavePlayerFile(pID);

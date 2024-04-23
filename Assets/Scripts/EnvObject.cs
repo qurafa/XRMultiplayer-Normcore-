@@ -31,7 +31,6 @@ public class EnvObject : MonoBehaviour
     private string _statusWRTBox = "Outside Box";
 
     private Rigidbody m_Rigidbody;
-    private RealtimeView m_RealtimeView;
     private XRGrabInteractable m_GrabInteractable;
 
     private DataManager m_DataManager;
@@ -39,7 +38,6 @@ public class EnvObject : MonoBehaviour
     public virtual void OnEnable()
     {
         m_DataManager = FindAnyObjectByType<DataManager>();
-        m_RealtimeView = GetComponent<RealtimeView>();
         m_GrabInteractable = GetComponent<XRGrabInteractable>();
         m_Rigidbody = GetComponent<Rigidbody>();
     }
@@ -69,7 +67,7 @@ public class EnvObject : MonoBehaviour
             stopTrackCount += Time.deltaTime;
     }
 
-    private void SetUp()
+    public virtual void SetUp()
     {
         SetUpColliders(transform);
         m_DataManager.AddObjectTrack(gameObject);
@@ -118,12 +116,23 @@ public class EnvObject : MonoBehaviour
         m_Rigidbody.angularDrag = 0.05f;
     }
 
+    private void ResetToStartPos()
+    {
+        transform.SetPositionAndRotation(m_InitPosition, m_InitRotation);
+        //so it doesn't keep moving with it's current velocity
+        m_Rigidbody.velocity = Vector3.zero;
+        m_Rigidbody.angularVelocity = Vector3.zero;
+        //so we release it even after reseting position
+        if(m_GrabInteractable.isSelected)
+            m_GrabInteractable.interactionManager.CancelInteractorSelection(m_GrabInteractable.firstInteractorSelecting);
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         //_audioSource.Play();
         if (collision.gameObject.tag == "Floor")
         {
-            transform.SetPositionAndRotation(m_InitPosition, m_InitRotation);
+            ResetToStartPos();//transform.SetPositionAndRotation(m_InitPosition, m_InitRotation);
         }
     }
 
@@ -132,6 +141,12 @@ public class EnvObject : MonoBehaviour
         RLogger.Log("on trigger enter");
         if (other.CompareTag("Trigger"))
         {
+            if (other.name.ToLower().Contains("reset"))
+            {
+                ResetToStartPos();
+                return;
+            }
+
             if (other.name.Equals("Box")) _statusWRTBox = "Inside Box";
             else _statusWRTBox = $"Entering {other.name}";
         }

@@ -7,7 +7,13 @@ Script Description : Helper for Normcore Realtime Component
 
 ************************************************************************************/
 
+using System;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor;
+using UnityEditor.TerrainTools;
 using UnityEngine;
+using Types = AvatarInfoPub.Types;
 
 public class SceneHelper : MonoBehaviour
 {
@@ -17,12 +23,68 @@ public class SceneHelper : MonoBehaviour
     protected GameObject m_Room; //Percept lab in the second scene
     [SerializeField]
     protected DataManager m_DataManager;
+    [Header("OPTIONAL")]
+    [Header("AVATAR PUBLISH INFO")]
+    /// <summary>
+    /// Check this if you want to automatically to AvatarInfoPub present in the scene
+    /// This is best if you don't have any implementation already subscribed to AvatarInfoPub or if you want to add more
+    /// </summary>
+    [SerializeField]
+    private bool m_AutoSubToAvatarInfoPub;
+    [SerializeField] AvatarInfoPub m_AvatarInfo;
+    /// <summary>
+    /// What we want to subscribe to, if we checked the box above
+    /// </summary>
+    [SerializeField]
+    private Types[] m_AvatarSubTo;
 
     protected Transform _spawnTransform;
 
     public virtual void Start()
     {
-        PlayerAvatarSetUp();
+        SetUp();
+    }
+
+    public virtual void SetUp()
+    {
+        if (m_AutoSubToAvatarInfoPub && m_AvatarInfo != null)
+        {
+            //ensure no duplicates
+            HashSet<Types> types = new HashSet<Types>(m_AvatarSubTo);
+            foreach (var type in types)
+            {
+                switch (type)
+                {
+                    case Types.Head:
+                        m_AvatarInfo.OnPublishHeadData += AutoSub;
+                        break;
+                    case Types.LeftHand:
+                        m_AvatarInfo.OnPublishLeftHandControllerData += AutoSub;
+                        break;
+                    case Types.RightHand:
+                        m_AvatarInfo.OnPublishRightHandControllerData += AutoSub;
+                        break;
+                    case Types.CenterEye:
+                        m_AvatarInfo.OnPublishCenterGazeData += AutoSub;
+                        break;
+                    case Types.RightEye:
+                        m_AvatarInfo.OnPublishRightGazeData += AutoSub;
+                        break;
+                    case Types.LeftEye:
+                        m_AvatarInfo.OnPublishLeftGazeData += AutoSub;
+                        break;
+                    default: break;
+                }
+            }
+            m_AvatarInfo.SetPlayerID(0);
+            if (!m_DataManager) m_DataManager = FindAnyObjectByType<DataManager>();
+            m_DataManager.CreatePlayerFile(0);
+        }
+    }
+
+    private void AutoSub(object sender, EventArgs args)
+    {
+        //currently being used to ensure data is saved to the data manager in non realtime/multiplayer
     }
 
     //Realtime Event when Connecting to a Room
@@ -66,13 +128,5 @@ public class SceneHelper : MonoBehaviour
     {
         SetPlayerOffset(pos, rot);
         InitializePlayer();
-    }
-
-    public virtual void PlayerAvatarSetUp()
-    {
-        AvatarInfoPub aPub = FindAnyObjectByType<AvatarInfoPub>();
-
-        if(!aPub) aPub.SetPlayerID(0);
-        m_DataManager.CreatePlayerFile(0);
     }
 }

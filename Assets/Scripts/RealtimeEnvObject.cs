@@ -1,6 +1,4 @@
 using Normal.Realtime;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -16,9 +14,16 @@ public class RealtimeEnvObject : EnvObject
         base.OnEnable();
     }
 
+    public override void SetUp()
+    {
+        m_OwnerID = m_RealtimeView.ownerIDSelf;
+        base.SetUp();
+    }
+
     public override void OnGrab(SelectEnterEventArgs args)
     {
         m_RealtimeView.RequestOwnershipOfSelfAndChildren();
+        m_OwnerID = m_RealtimeView.ownerIDSelf;
         base.OnGrab(args);
     }
 }
