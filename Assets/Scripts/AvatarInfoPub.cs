@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Hands;
 using Handedness = UnityEngine.XR.Hands.Handedness;
-using com.perceptlab.armultiplayer;
 
 public class AvatarInfoPub : MonoBehaviour
 {
@@ -20,7 +19,7 @@ public class AvatarInfoPub : MonoBehaviour
     [SerializeField] private Transform m_CameraOffset;
     [Header("ENUMS")]
     [SerializeField] private Devices m_Device;
-    
+
     /*    [SerializeField] private Type m_Type;
         [SerializeField] private HandMode m_HandMode;*/
 
@@ -71,7 +70,7 @@ public class AvatarInfoPub : MonoBehaviour
         OnPublishRightHandControllerData,
         OnPublishLeftGazeData,
         OnPublishRightGazeData,
-        OnPublishCenterGazeData = delegate {};
+        OnPublishCenterGazeData = delegate { };
 
     // Update is called once per frame
     void Update()
@@ -110,32 +109,32 @@ public class AvatarInfoPub : MonoBehaviour
 
     private void LocalRootInit()
     {
-/*        if (_localHeadRoot != null && _cameraOffset != null) return;
+        /*        if (_localHeadRoot != null && _cameraOffset != null) return;
 
-        GameObject lhr = GameObject.FindWithTag(m_LocalHeadRootTag);
-        GameObject cO = GameObject.FindWithTag(m_CameraOffsetTag);
+                GameObject lhr = GameObject.FindWithTag(m_LocalHeadRootTag);
+                GameObject cO = GameObject.FindWithTag(m_CameraOffsetTag);
 
-        if (lhr)
-            _localHeadRoot = lhr.transform;
-        //else
-        //Debug.Log($"{this.gameObject.name}...Cant find {m_LocalRootTag}");
+                if (lhr)
+                    _localHeadRoot = lhr.transform;
+                //else
+                //Debug.Log($"{this.gameObject.name}...Cant find {m_LocalRootTag}");
 
-        if (cO)
-            _cameraOffset = cO.transform;
-        //else
-        //Debug.Log($"{this.gameObject.name}...Cant find {m_CameraOffsetTag}");*/
+                if (cO)
+                    _cameraOffset = cO.transform;
+                //else
+                //Debug.Log($"{this.gameObject.name}...Cant find {m_CameraOffsetTag}");*/
 
-        _localRootInit = m_HeadRoot != null && m_LeftControllerRoot != null 
+        _localRootInit = m_HeadRoot != null && m_LeftControllerRoot != null
             && m_RightControllerRoot != null && m_CameraOffset != null;
     }
 
     private void InitControllerInput()
     {
-/*        if (m_HandMode != HandMode.Controller && m_HandMode != HandMode.Both)
-        {
-            //Debug.Log($"{this.gameObject.name}...Controllers not supported");
-            return;
-        }*/
+        /*        if (m_HandMode != HandMode.Controller && m_HandMode != HandMode.Both)
+                {
+                    //Debug.Log($"{this.gameObject.name}...Controllers not supported");
+                    return;
+                }*/
 
         if (_leftControllerInput == null || !_leftControllerInput.isValid)
         {
@@ -149,30 +148,30 @@ public class AvatarInfoPub : MonoBehaviour
             _rightHandedness = Handedness.Right;
         }
 
-/*        switch (m_Type)
-        {
-            case Type.LeftHand:
+        /*        switch (m_Type)
+                {
+                    case Type.LeftHand:
 
-                break;
-            case Type.RightHand:
+                        break;
+                    case Type.RightHand:
 
-                break;
-            default:
-                //Debug.Log($"{this.gameObject.name}...Avatar Type set does not need controllers");
-                return;
-        }*/
+                        break;
+                    default:
+                        //Debug.Log($"{this.gameObject.name}...Avatar Type set does not need controllers");
+                        return;
+                }*/
 
         _controllerInputInit = _leftControllerInput.isValid && _rightControllerInput.isValid;
     }
 
     private void InitEyeInput()
     {
-        if(_centerEyeInput == null || !_centerEyeInput.isValid)
+        if (_centerEyeInput == null || !_centerEyeInput.isValid)
         {
             _centerEyeInput = InputDevices.GetDeviceAtXRNode(XRNode.CenterEye);
         }
 
-        if(_leftEyeInput == null || !_leftEyeInput.isValid)
+        if (_leftEyeInput == null || !_leftEyeInput.isValid)
         {
             _leftEyeInput = InputDevices.GetDeviceAtXRNode(XRNode.LeftEye);
         }
@@ -219,18 +218,18 @@ public class AvatarInfoPub : MonoBehaviour
             _leftHandXRNode = XRNode.LeftHand;
             _rightHandXRNode = XRNode.RightHand;
 
-/*            switch (m_Type)
-            {
-                case Type.LeftHand:
-                    _xrNode = XRNode.LeftHand;
-                    break;
-                case Type.RightHand:
-                    _xrNode = XRNode.RightHand;
-                    break;
-                default:
-                    //Debug.Log($"{this.gameObject.name}...Avatar Type set does not need _xrNode");
-                    return;
-            }*/
+            /*            switch (m_Type)
+                        {
+                            case Type.LeftHand:
+                                _xrNode = XRNode.LeftHand;
+                                break;
+                            case Type.RightHand:
+                                _xrNode = XRNode.RightHand;
+                                break;
+                            default:
+                                //Debug.Log($"{this.gameObject.name}...Avatar Type set does not need _xrNode");
+                                return;
+                        }*/
 
             _holoHandSubsystem = XRSubsystemHelpers.GetFirstRunningSubsystem<HandsAggregatorSubsystem>();
             _handSubsysInit = _holoHandSubsystem != null && _holoHandSubsystem.running;
@@ -248,18 +247,18 @@ public class AvatarInfoPub : MonoBehaviour
     {
         _leftXRHand = _questHandSubsystem.leftHand;
         _rightXRHand = _questHandSubsystem.rightHand;
-/*        switch (m_Type)
-        {
-            case Type.LeftHand:
-                _leftXRHand = _questHandSubsystem.leftHand;
-                break;
-            case Type.RightHand:
-                _rightXRHand = _questHandSubsystem.rightHand;
-                break;
-            default:
-                //Debug.Log($"{this.gameObject.name}...Avatar type does not need XRHand");
-                return;
-        }*/
+        /*        switch (m_Type)
+                {
+                    case Type.LeftHand:
+                        _leftXRHand = _questHandSubsystem.leftHand;
+                        break;
+                    case Type.RightHand:
+                        _rightXRHand = _questHandSubsystem.rightHand;
+                        break;
+                    default:
+                        //Debug.Log($"{this.gameObject.name}...Avatar type does not need XRHand");
+                        return;
+                }*/
     }
 
     private bool ControllerTracking(Handedness hand)
@@ -303,7 +302,7 @@ public class AvatarInfoPub : MonoBehaviour
         if (m_Device == Devices.MetaQuest)
         {
             InitQuestXRHand();
-            switch(hand)
+            switch (hand)
             {
                 case Handedness.Left:
                     return _leftXRHand.isTracked;
@@ -317,7 +316,7 @@ public class AvatarInfoPub : MonoBehaviour
         {
             return (_holoHandSubsystem != null && _holoHandSubsystem.running);
         }
-        else 
+        else
             return false;
     }
 
@@ -361,13 +360,13 @@ public class AvatarInfoPub : MonoBehaviour
         }
 
         //events......
-        if(OnPublishHeadData != null)
+        if (OnPublishHeadData != null)
         {
             _dataToSend = PublishTranformData(m_HeadRoot);
             OnPublishHeadData(this, new AvatarInfoEventArgs(_dataToSend));
         }
 
-        if(OnPublishLeftHandControllerData != null)
+        if (OnPublishLeftHandControllerData != null)
         {
             _dataToSend = PublishHandControllerData(_leftXRHand, _leftHandXRNode, _leftControllerInput, m_LeftControllerRoot, _leftHandedness);
             OnPublishLeftHandControllerData(this, new AvatarInfoEventArgs(_dataToSend));
@@ -379,19 +378,19 @@ public class AvatarInfoPub : MonoBehaviour
             OnPublishRightHandControllerData(this, new AvatarInfoEventArgs(_dataToSend));
         }
 
-        if(OnPublishCenterGazeData != null) 
+        if (OnPublishCenterGazeData != null)
         {
             _dataToSend = PublishEyeData(XRNode.CenterEye);
             OnPublishCenterGazeData(this, new AvatarInfoEventArgs(_dataToSend));
         }
 
-        if(OnPublishLeftGazeData != null)
+        if (OnPublishLeftGazeData != null)
         {
             _dataToSend = PublishEyeData(XRNode.LeftEye);
             OnPublishLeftGazeData(this, new AvatarInfoEventArgs(_dataToSend));
         }
 
-        if(OnPublishRightGazeData != null)
+        if (OnPublishRightGazeData != null)
         {
             _dataToSend = PublishEyeData(XRNode.RightEye);
             OnPublishRightGazeData(this, new AvatarInfoEventArgs(_dataToSend));
@@ -408,7 +407,7 @@ public class AvatarInfoPub : MonoBehaviour
             Debug.Log($"Saving {send}");
             m_DataManager.UpdatePlayerFile(m_PlayerID, transform);
         }
-            
+
         return send;
     }
 
@@ -437,7 +436,7 @@ public class AvatarInfoPub : MonoBehaviour
                     send += $"{jointPose.position.x}|{jointPose.position.y}|{jointPose.position.z}|" +
                         $"{jointPose.rotation.eulerAngles.x}|{jointPose.rotation.eulerAngles.y}|{jointPose.rotation.eulerAngles.z}|";
 
-                    if(m_DataManager)
+                    if (m_DataManager)
                         m_DataManager.UpdatePlayerFile(m_PlayerID, jointPose, string.Concat((XRHandJointID)(j + 1)));
                 }
             }
@@ -543,7 +542,7 @@ public class AvatarInfoPub : MonoBehaviour
                 break;
         }
 
-        RLogger.Log($"Publishing EyeData....{xrEyeNode.ToString()}....{send}");
+        //RLogger.Log($"Publishing EyeData....{xrEyeNode.ToString()}....{send}");
         return send;
     }
 
@@ -572,12 +571,12 @@ public class AvatarInfoPub : MonoBehaviour
         _questHandSubsystem.trackingLost -= OnHandTrackingLost;
         _questHandSubsystem.updatedHands -= OnUpdatedHands;
     }
-    
+
 }
 
-public class AvatarInfoEventArgs: EventArgs
+public class AvatarInfoEventArgs : EventArgs
 {
-    public string Value { get;}
+    public string Value { get; }
 
     public AvatarInfoEventArgs(string value)
     {

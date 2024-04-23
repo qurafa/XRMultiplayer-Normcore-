@@ -14,15 +14,28 @@ public class GUIHandler : MonoBehaviour
     [SerializeField]
     private HolographicRemotingConnectionHandler remotingHandler;
     [SerializeField]
-    private AlignTheWorld align;
+    private GameObject alignGameObject;
+    AlignTheWorld _align;
+
 
     //string IP = "";
     //string disconnectReason = "";
 
     private void Awake()
     {
-        align.onDoneAlign.AddListener(() => { aligned = true; Destroy(align); });
-        align.enabled = false;
+        _align.onDoneAlign.AddListener(() => { aligned = true; alignGameObject.SetActive(false); });
+        _align.drawGUI = true;
+        alignGameObject.SetActive(false);
+    }
+
+    // This method will be called when the component is validated or applied
+    private void OnValidate()
+    {
+        // Check if the targetGameObject is not null and doesn't have the required component
+        if (alignGameObject == null || !alignGameObject.TryGetComponent<AlignTheWorld>(out _align))
+        {
+            Debug.LogError("[GUIHandler]: The align GameObject must have the AlignTheWorld component.");
+        }
     }
 
     private void Start()
@@ -50,13 +63,12 @@ public class GUIHandler : MonoBehaviour
         //{
         //    RemotingConnectionInput();
         //}
-        if (!aligned && align != null && !align.enabled && (haveRemoting == 0 || (haveRemoting == 1 && remotingConnected)))
+        if (!aligned && !_align.isActiveAndEnabled && (haveRemoting == 0 || (haveRemoting == 1 && remotingConnected)))
         {
             RLogger.Log("setting align the world active");
-            align.enabled = true;
-            align.drawGUI = true;
+            alignGameObject.SetActive(true);
         }
-        if (align == null && !aligned)
+        if (_align == null && !aligned)
         {
             RLogger.Log("[GUIHandler] Error: haven't aligned but align is null");
         }

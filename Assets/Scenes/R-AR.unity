@@ -505,7 +505,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 66e2fed4db3edf14ba03a767f74c5d79, type: 2}
     - target: {fileID: 919132149155446097, guid: 2bd7034377fe91545b15418bc2dd5c48, type: 3}
       propertyPath: m_Name
-      value: Percept-Lab_2024_02_15
+      value: Percept-Lab
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 2bd7034377fe91545b15418bc2dd5c48, type: 3}
       propertyPath: m_IsActive
@@ -1049,7 +1049,79 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onDoneAlign:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1529315919}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 205605689}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1581223498}
+        m_TargetAssemblyTypeName: VisibilityControl, Assembly-CSharp
+        m_MethodName: setVisible
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 546984970637287104}
+        m_TargetAssemblyTypeName: com.perceptlab.armultiplayer.NetworkManager, Assembly-CSharp
+        m_MethodName: Connect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1705168568}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1931145440}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   drawGUI: 1
   GUITopRight: {x: 0, y: 0}
   player: {fileID: 1417148835}
@@ -1507,7 +1579,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 66e2fed4db3edf14ba03a767f74c5d79, type: 2}
     - target: {fileID: 919132149155446097, guid: 2bd7034377fe91545b15418bc2dd5c48, type: 3}
       propertyPath: m_Name
-      value: Partial-Percept-Lab_2024_02_15 (1)
+      value: Calibration-Percept-Lab
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 2bd7034377fe91545b15418bc2dd5c48, type: 3}
       propertyPath: m_IsActive
@@ -2029,7 +2101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   remotingHandler: {fileID: 764639275}
-  align: {fileID: 1188877225}
+  alignGameObject: {fileID: 1188877221}
 --- !u!4 &1936076429
 Transform:
   m_ObjectHideFlags: 0
@@ -2199,6 +2271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_PlayerID: -1
+  m_SaveToDataManager: 0
   m_DataManager: {fileID: 1724173400}
   m_HeadRoot: {fileID: 1417148837}
   m_LeftControllerRoot: {fileID: 1417148838}

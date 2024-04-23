@@ -109,8 +109,8 @@ public class AlignTheWorldFinger2 : AlignTheWorld
     private void OnRight(InputAction.CallbackContext context)
     {
         RLogger.Log($"Set was pressed, Right Finger pose: {RFinger.transform.position}, Rtablecormer pose: {RTableCorner.transform.position}.");
-        Vector3 actualTableEdge = RFinger.transform.position - LTableCorner.transform.position;
-        Vector3 virtualTableEdge = RTableCorner.transform.position - LTableCorner.transform.position;
+        Vector3 actualTableEdge = RFinger.transform.position - LTableCorner.transform.position; actualTableEdge.y = 0;
+        Vector3 virtualTableEdge = RTableCorner.transform.position - LTableCorner.transform.position; virtualTableEdge.y = 0;
         float angle = Vector3.SignedAngle(actualTableEdge, virtualTableEdge, Vector3.up);
         player.transform.RotateAround(LTableCorner.transform.position, Vector3.up, angle);
         RLogger.Log($"-------Rotated, Right Finger pose: {RFinger.transform.position}, Rtablecormer pose: {RTableCorner.transform.position}.");
