@@ -566,7 +566,7 @@ public class ExpController : MonoBehaviour
         int index = int.Parse(trial.Split('|')[0]);
         string shape = trial.Split('|')[1];
         float size = float.Parse(trial.Split('|')[2]);
-        int loc = int.Parse(trial.Split('|')[0]);
+        int loc = int.Parse(trial.Split('|')[3]);
 
         spawn = Instantiate(m_Shapes[index], m_ShapeSpawn[loc].transform);
         spawn.transform.localScale = new Vector3(spawn.transform.localScale.x * size,

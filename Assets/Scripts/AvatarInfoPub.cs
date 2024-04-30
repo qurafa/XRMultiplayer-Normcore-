@@ -401,10 +401,10 @@ public class AvatarInfoPub : MonoBehaviour
     {
         string send = $"{1}|{transform.position.x}|{transform.position.y}|{transform.position.z}|" +
             $"{transform.eulerAngles.x}|{transform.eulerAngles.y}|{transform.eulerAngles.z}|";
-        Debug.Log($"Saving? {send}");
+        //Debug.Log($"Saving? {send}");
         if (m_SaveToDataManager)
         {
-            Debug.Log($"Saving {send}");
+            //Debug.Log($"Saving {send}");
             m_DataManager.UpdatePlayerFile(m_PlayerID, transform);
         }
 

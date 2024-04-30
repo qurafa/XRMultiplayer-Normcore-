@@ -73,8 +73,9 @@ public class ControllerFollow : MonoBehaviour
         if (mode == Mode.Calibrate)
         {
             AlignHelpers.moveDadToMakeChildMatchDestination(VirtualVisual, Room, ControllerVisual.transform.position);
-            RLogger.Log($"rotating, virtualvisual is {VirtualVisual.transform.eulerAngles}");
+            RLogger.Log($"rotating, rotation of virtualvisual is {VirtualVisual.transform.eulerAngles}, controllervisual is {ControllerVisual.transform.eulerAngles}");
             AlignHelpers.rotateDadtoMakeChildFaceDirection(VirtualVisual, Room, ControllerVisual.transform.eulerAngles);
+            RLogger.Log($"rotated, rotation of virtualvisual is {VirtualVisual.transform.eulerAngles}, controllervisual is {ControllerVisual.transform.eulerAngles}");
         }
     }
 

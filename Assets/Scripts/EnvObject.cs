@@ -1,8 +1,5 @@
-using Normal.Realtime;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine;
-using System;
-using System.Collections.Generic;
 using com.perceptlab.armultiplayer;
 
 public class EnvObject : MonoBehaviour
