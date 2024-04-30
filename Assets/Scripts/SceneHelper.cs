@@ -9,9 +9,7 @@ Script Description : Helper for Normcore Realtime Component
 
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.TerrainTools;
+//using UnityEditor.TerrainTools;
 using UnityEngine;
 using Types = AvatarInfoPub.Types;
 

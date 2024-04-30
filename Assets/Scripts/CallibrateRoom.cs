@@ -5,9 +5,7 @@ using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 using UnityEngine.XR.ARFoundation;
-using UnityEngine.XR.Hands;
 
 [RequireComponent(typeof(Rigidbody))]
 public class CallibrateRoom : MonoBehaviour
@@ -31,6 +29,11 @@ public class CallibrateRoom : MonoBehaviour
     /// </summary>
     [SerializeField]
     private GameObject _playerCenterReference;
+    /// <summary>
+    /// Reference to the center of the table in the room (to rotate the room about it's center)
+    /// </summary>
+    [SerializeField]
+    private GameObject _tableCenterReference;
     /// <summary>
     /// ARSession to manage and toggle ar in the scene
     /// </summary>
@@ -110,13 +113,15 @@ public class CallibrateRoom : MonoBehaviour
     private InputAction rightHandSB;
     [SerializeField]
     private InputAction rightJS;
+    [SerializeField]
+    private InputAction rotateY;
 
     /// <summary>
     /// What we send to the SceneLoader as we move to the next scene
     /// </summary>
     private MyTransform _send;
     GameObject _rotRef;
-    
+
     enum Vision
     {
         Normal,
@@ -171,6 +176,7 @@ public class CallibrateRoom : MonoBehaviour
         rightHandPB.Enable(); rightHandPB.performed += TeleportAction;
         //rightHandSB.Enable(); rightHandSB.performed += RightRotateAction;
         rightJS.Enable(); rightJS.performed += HPositioningAction;
+        rotateY.Enable();
     }
 
     void Start()
@@ -203,6 +209,12 @@ public class CallibrateRoom : MonoBehaviour
 
             if (mode == Mode.CalibratingRot)
                 _roomRB.transform.RotateAround(_rotationReference.transform.position, Vector3.up, rotFactor * direction);
+
+            if (mode == Mode.CalibratingPos)
+            {
+                float rotatey = rotateY.ReadValue<float>();
+                _roomRB.transform.RotateAround(_tableCenterReference.transform.position, Vector3.up, rotatey * rotFactor);
+            }
         }
     }
 
@@ -238,10 +250,11 @@ public class CallibrateRoom : MonoBehaviour
                 return;
         }
     }
-    
+
     private void VPositioningAction(InputAction.CallbackContext obj)
     {
-        if(mode == Mode.CalibratingPos) {
+        if (mode == Mode.CalibratingPos)
+        {
             Vector2 val = leftJS.ReadValue<Vector2>();
 
             _rotRef.transform.eulerAngles = new Vector3(0, _rotationReference.transform.eulerAngles.y, 0);
@@ -251,7 +264,8 @@ public class CallibrateRoom : MonoBehaviour
 
     private void HPositioningAction(InputAction.CallbackContext obj)
     {
-        if (mode == Mode.CalibratingPos) {
+        if (mode == Mode.CalibratingPos)
+        {
             Vector2 val = rightJS.ReadValue<Vector2>();
 
             _rotRef.transform.eulerAngles = new Vector3(0, _rotationReference.transform.eulerAngles.y, 0);
@@ -283,7 +297,7 @@ public class CallibrateRoom : MonoBehaviour
                 return;
         }
     }
-    
+
     private void VisionToggleAction(InputAction.CallbackContext obj)
     {
         switch (vision)
@@ -446,12 +460,12 @@ public class CallibrateRoom : MonoBehaviour
         {
             mode.color = UI_NOT_SELECTED;
         }
-            
+
         if ((int)mode < _modes.Length)
         {
             _modes[(int)mode].color = UI_SELECTED;
         }
-            
+
     }
 
     private void OnDisable()

@@ -2159,8 +2159,9 @@ MonoBehaviour:
   _room: {fileID: 195320452}
   _player: {fileID: 9132913291359597517}
   _playerSpawn: {fileID: 1390830153}
-  _rotationReference: {fileID: 7990873190370814736}
+  _rotationReference: {fileID: 0}
   _playerCenterReference: {fileID: 7990873190421362483}
+  _tableCenterReference: {fileID: 919132148475650207}
   _ARSession: {fileID: 2114889823}
   _doneEvent:
     m_PersistentCalls:
@@ -2366,6 +2367,39 @@ MonoBehaviour:
       m_Groups: 
       m_Action: Right JS
       m_Flags: 0
+    m_Flags: 0
+  rotateY:
+    m_Name: Rotate Y
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: e1f4041e-4e10-45dd-ae81-bad8118e5765
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 1D Axis
+      m_Id: ebf6998e-525c-4b21-9d9a-5e2c644be595
+      m_Path: 1DAxis
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Rotate Y
+      m_Flags: 4
+    - m_Name: negative
+      m_Id: 697db293-2ee9-42fd-a01b-98c357b0911c
+      m_Path: <XRController>{LeftHand}/trigger
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Rotate Y
+      m_Flags: 8
+    - m_Name: positive
+      m_Id: 70c7ca4f-e3bc-43d1-9246-c732b6565de9
+      m_Path: <XRController>{RightHand}/trigger
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Rotate Y
+      m_Flags: 8
     m_Flags: 0
   direction: 0
 --- !u!54 &195320455
@@ -5470,6 +5504,7 @@ MonoBehaviour:
   _playerSpawn: {fileID: 0}
   _rotationReference: {fileID: 7990873190370814736}
   _playerCenterReference: {fileID: 7990873190421362483}
+  _tableCenterReference: {fileID: 0}
   _ARSession: {fileID: 2114889823}
   _doneEvent:
     m_PersistentCalls:
@@ -5618,6 +5653,15 @@ MonoBehaviour:
       m_Groups: 
       m_Action: Right JS
       m_Flags: 0
+    m_Flags: 0
+  rotateY:
+    m_Name: Rotate Y
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 136a1189-4bac-4e7f-b0f6-2f3772666617
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
     m_Flags: 0
   direction: 0
 --- !u!54 &782628378
@@ -9954,6 +9998,7 @@ MonoBehaviour:
   _playerSpawn: {fileID: 0}
   _rotationReference: {fileID: 7990873190370814736}
   _playerCenterReference: {fileID: 7990873190421362483}
+  _tableCenterReference: {fileID: 0}
   _ARSession: {fileID: 2114889823}
   _doneEvent:
     m_PersistentCalls:
@@ -10102,6 +10147,15 @@ MonoBehaviour:
       m_Groups: 
       m_Action: Right JS
       m_Flags: 0
+    m_Flags: 0
+  rotateY:
+    m_Name: Rotate Y
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: ca3f5b46-14ae-498f-9527-1cfe028b6bed
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
     m_Flags: 0
   direction: 0
 --- !u!54 &1640097511
