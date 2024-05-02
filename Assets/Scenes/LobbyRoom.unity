@@ -7895,7 +7895,7 @@ MonoBehaviour:
   RVirtualVisual: {fileID: 265459406}
   Room: {fileID: 195320452}
   UsePreviousSetup: 1
-  mode: 0
+  mode: 1
 --- !u!4 &1239036360
 Transform:
   m_ObjectHideFlags: 0
