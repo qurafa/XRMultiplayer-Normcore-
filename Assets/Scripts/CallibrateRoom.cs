@@ -141,7 +141,8 @@ public class CallibrateRoom : MonoBehaviour
     [SerializeField]
     private float direction = 0.0f;
     public readonly float rotFactor = 0.05f;
-    public readonly float posFactor = 0.00625f;
+    //public readonly float posFactor = 0.00625f;
+    public readonly float posFactor = 0.002f;
 
     [SerializeField]
     Mode mode
