@@ -27,7 +27,7 @@ public class FastCalibration : MonoBehaviour
     enum Mode { SingleControllerCalibrate, DoubleControllerCalibrate };
 
     [SerializeField]
-    Mode mode = Mode.SingleControllerCalibrate;
+    Mode mode = Mode.DoubleControllerCalibrate;
 
     InputAction x;
     InputAction y;
@@ -46,6 +46,31 @@ public class FastCalibration : MonoBehaviour
         {
             AlignControllerVisualsBasedOnFileData();
         }
+    }
+
+    void onX(InputAction.CallbackContext context)
+    {
+        RLogger.Log("X pressed");
+        if (mode == Mode.SingleControllerCalibrate)
+        {
+            alignSingle();
+        }
+        if (mode == Mode.DoubleControllerCalibrate)
+        {
+            alignDouble();
+        }
+    }
+    void alignSingle()
+    {
+        AlignHelpers.moveDadToMakeChildMatchDestination(RVirtualVisual, Room, RightControllerVisual.transform.position);
+        AlignHelpers.rotateDadtoMakeChildFaceDirection(RVirtualVisual, Room, RightControllerVisual.transform.forward);
+    }
+    void alignDouble()
+    {
+        AlignHelpers.moveDadToMakeChildMatchDestination(RVirtualVisual, Room, RightControllerVisual.transform.position);
+        Vector3 vv = LVirtualVisual.transform.position - RVirtualVisual.transform.position;
+        Vector3 av = LeftControllerVisual.transform.position - RightControllerVisual.transform.position;
+        AlignHelpers.rotateDadtoAlignVirtualActualVectors(RVirtualVisual, Room, vv, av);
     }
 
     private void AlignControllerVisualsBasedOnFileData()
@@ -93,31 +118,6 @@ public class FastCalibration : MonoBehaviour
         return new Vector3(x, y, z);
     }
 
-    void onX(InputAction.CallbackContext context)
-    {
-        RLogger.Log("X pressed");
-        if (mode == Mode.SingleControllerCalibrate)
-        {
-            alignSingle();
-        }
-        if (mode == Mode.DoubleControllerCalibrate)
-        {
-            alignDouble();
-        }
-    }
-    void alignSingle()
-    {
-        AlignHelpers.moveDadToMakeChildMatchDestination(RVirtualVisual, Room, RightControllerVisual.transform.position);
-        AlignHelpers.rotateDadtoMakeChildFaceDirection(RVirtualVisual, Room, RightControllerVisual.transform.forward);
-    }
-    void alignDouble()
-    {
-        AlignHelpers.moveDadToMakeChildMatchDestination(RVirtualVisual, Room, RightControllerVisual.transform.position);
-        Vector3 vv = LVirtualVisual.transform.position - RVirtualVisual.transform.position;
-        Vector3 av = LeftControllerVisual.transform.position - RightControllerVisual.transform.position;
-        AlignHelpers.rotateDadtoAlignVirtualActualVectors(RVirtualVisual, Room, vv, av);
-    }
-
     void onY(InputAction.CallbackContext context)
     {
         RLogger.Log("Y pressed");
@@ -158,7 +158,7 @@ public class FastCalibration : MonoBehaviour
 
     void OnYPressedThreeTimes()
     {
-        RLogger.Log("X pressed 3 times");
+        RLogger.Log("Y pressed 3 times");
         saveTransformInfo();
     }
 }

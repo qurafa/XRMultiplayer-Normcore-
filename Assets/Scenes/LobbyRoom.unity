@@ -5138,31 +5138,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.004544515
+      value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.074193835
+      value: -0.08
       objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.11434437
+      value: -0.08
       objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7588223
+      value: -0.78581244
       objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.21831709
+      value: -0.18405885
       objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.4498389
+      value: 0.4082651
       objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.41733843
+      value: -0.42654514
       objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -6058,31 +6058,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.004389979
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.089381285
+      value: -0.13
       objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.10291604
+      value: -0.06
       objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.43144497
+      value: 0.41682076
       objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.42703485
+      value: -0.42927858
       objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.7681015
+      value: -0.7786628
       objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.20375635
+      value: -0.18885037
       objectReference: {fileID: 0}
     - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -7894,35 +7894,8 @@ MonoBehaviour:
   LVirtualVisual: {fileID: 1403422278}
   RVirtualVisual: {fileID: 265459406}
   Room: {fileID: 195320452}
-  UsePreviousSetup: 0
+  UsePreviousSetup: 1
   mode: 0
-  SaveTransformInfoForSetup:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1989933399}
-        m_TargetAssemblyTypeName: FollowController, Assembly-CSharp
-        m_MethodName: saveTransformInfo
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2077800128}
-        m_TargetAssemblyTypeName: FollowController, Assembly-CSharp
-        m_MethodName: saveTransformInfo
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!4 &1239036360
 Transform:
   m_ObjectHideFlags: 0
