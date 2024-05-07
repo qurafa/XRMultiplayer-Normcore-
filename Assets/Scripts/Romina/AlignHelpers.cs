@@ -46,4 +46,24 @@ public static class AlignHelpers
         dad.transform.RotateAround(child.transform.position, axis, angle);
         RLogger.Log($"rotated dad");
     }
+
+    /// <summary>
+    /// Assumption: child adn virtualVector as under dad in the Hierarchy.
+    /// Rotates dad around child object to make virtual vector face the same direction as actual vector on the xz plane.
+    /// The result of this operation is that the actual and virtual vector will face the same direction while keeping the global position of child the same
+    /// </summary>
+    /// <param name="child"></param>
+    /// <param name="dad"></param>
+    /// <param name="virtualVector"></param>
+    /// <param name="actualVector"></param>
+    public static void rotateDadtoAlignVirtualActualVectorsOnGroundPlane(GameObject child, GameObject dad, Vector3 virtualVector, Vector3 actualVector)
+    {
+        RLogger.Log($"[AlignHelpers:rotateDadtoAlignVirtualVector] called.");
+        virtualVector.y = 0; actualVector.y = 0;
+        Quaternion rotation = Quaternion.FromToRotation(virtualVector, actualVector);
+        float angle; Vector3 axis;
+        rotation.ToAngleAxis(out angle, out axis);
+        dad.transform.RotateAround(child.transform.position, axis, angle);
+        RLogger.Log($"rotated dad");
+    }
 }

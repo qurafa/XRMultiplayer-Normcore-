@@ -70,7 +70,7 @@ public class FastCalibration : MonoBehaviour
         AlignHelpers.moveDadToMakeChildMatchDestination(RVirtualVisual, Room, RightControllerVisual.transform.position);
         Vector3 vv = LVirtualVisual.transform.position - RVirtualVisual.transform.position;
         Vector3 av = LeftControllerVisual.transform.position - RightControllerVisual.transform.position;
-        AlignHelpers.rotateDadtoAlignVirtualActualVectors(RVirtualVisual, Room, vv, av);
+        AlignHelpers.rotateDadtoAlignVirtualActualVectorsOnGroundPlane(RVirtualVisual, Room, vv, av);
     }
 
     private void AlignControllerVisualsBasedOnFileData()
