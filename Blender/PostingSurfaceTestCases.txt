@@ -1,0 +1,140 @@
+Posting surface test cases
+
+Tests:
+(0,0,0)
+(0,1,0)
+(0,0,1)
+(1,0,0)
+(1,1,1)
+(0.44, 2, 0)
+(0.44, 2, 0.25)
+(0, 2, 0.25)
+(0,-1,0)
+(0,0,-1)
+(-1,0,0)
+(1,1,-1)
+(1,-1,1)
+(-1,1,1)
+(-1,-1,1)
+(-1,1,-1)
+(1,-1,-1)
+(-1,-1,-1)
+(0.44, -2, 0)
+(1,1,0)
+(1,0,1)
+(0,1,1)
+(-0.44, 2, 0)
+(-0.44, -2, 0)
+
+Cube.230
+Romina's script, extruding more
+
+Pass:
+(0,1,0)
+(0,0,1)
+(1,0,0)
+(1,1,1)
+(0.44, 2, 0)
+(0.44, 2, 0.25)
+(0, 2, 0.25)
+(0,-1,0)
+(0,0,-1)
+(-1,0,0)
+(1,1,-1)
+(1,-1,1)
+(-1,1,1)
+(-1,-1,1)
+(-1,1,-1)
+(1,-1,-1)
+(-1,-1,-1)
+(0.44, -2, 0)
+
+Fail:
+(0,0,0)
+(1,1,0)
+(1,0,1)
+(0,1,1)
+(-0.44, 2, 0)
+(-0.44, -2, 0)
+
+Cube.230
+Extrude face in positive z direction, rotate shape instead of plane, not hole tolerant
+Pass:
+(0,0,0)
+(0,0,1)
+(0,1,0)
+(1,0,0)
+(1,1,0)
+(1,0,1)
+(0,1,1)
+(1,1,1)
+(0.44, 2, 0)
+(0.44, 2, 0.25)
+(0,-1,0)
+
+Fail:
+
+
+Cube.230
+Extrude all faces along normals, rotate shape instead of plane
+Pass:
+(0,0,1)
+(0,1,0)
+(0,1,1)
+
+Fail:
+(0,1,0)
+(1,1,0)
+(1,0,1)
+
+Cube. 13
+max_angle_limit = 0
+
+Pass:
+(0, 0, 1)
+(0.44, 2, 0)
+
+Fail:
+(0, 1, 1)
+(0.44, 2, 0.25)
+(1, 1, 0)
+
+    ###################
+    bpy.ops.object.select_all(action='DESELECT')
+    plane.select_set(True)
+    bpy.context.view_layer.objects.active = plane
+    bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked":False, "mode":'TRANSLATION'}, TRANSFORM_OT_translate={"value":(0, 0, 0), "orient_type":'GLOBAL', "orient_matrix":((0, 0, 0), (0, 0, 0), (0, 0, 0)), "orient_matrix_type":'GLOBAL', "constraint_axis":(False, False, False), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_elements":{'INCREMENT'}, "use_snap_project":False, "snap_target":'CLOSEST', "use_snap_self":True, "use_snap_edit":True, "use_snap_nonedit":True, "use_snap_selectable":False, "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "use_duplicated_keyframes":False, "view2d_edge_pan":False, "release_confirm":False, "use_accurate":False, "alt_navigation":False, "use_automerge_and_split":False})
+    plane1 = bpy.context.active_object
+    plane1_bool_mod = plane1.modifiers.new("plane1_bool_mod", 'BOOLEAN')
+    plane1_bool_mod.operation = 'INTERSECT'
+    plane1_bool_mod.use_hole_tolerant = True
+    plane1_bool_mod.object = shape
+    bpy.ops.object.modifier_apply(modifier="plane1_bool_mod", report=True)
+    
+    bpy.ops.object.select_all(action='DESELECT')
+    shape.select_set(True)
+    bpy.context.view_layer.objects.active = shape
+    bpy.ops.object.delete(use_global=False, confirm=False)
+    
+    plane1.select_set(True)
+    bpy.context.view_layer.objects.active = plane1
+    bpy.ops.object.mode_set(mode = 'EDIT')
+    plane1_mesh = bmesh.from_edit_mesh(plane1.data)
+    
+    bpy.ops.mesh.select_all(action='DESELECT')
+    #through trial and error, works best for x or y or z being 1
+    #you may get more issues if you try to use x, y, or z values
+    max_angle_limit = 0#.21554996073246002#through trial and error, works best for x or y or z being 1, 
+    for f in plane1_mesh.faces:
+        f.normal_update()
+        f_normal = f.normal.normalized()
+        if f_normal.length != 0 and (dir_normal.angle(f_normal) <= max_angle_limit or dir_normal_neg.angle(f_normal) <= max_angle_limit):# or dir.angle(f_normal) > 1:
+            f.select_set(True)
+        else:
+            if f_normal.length != 0:
+                print(dir_normal.angle(f_normal))
+    #extrude
+#    bpy.ops.mesh.extrude_faces_move(MESH_OT_extrude_faces_indiv={"mirror":False}, TRANSFORM_OT_shrink_fatten={"value":3, "use_even_offset":False, "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "release_confirm":True, "use_accurate":False, "alt_navigation":False})
+
+#    bpy.ops.object.mode_set(mode = 'OBJECT')
+    ####################
