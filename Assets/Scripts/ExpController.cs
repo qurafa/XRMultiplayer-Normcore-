@@ -1,9 +1,13 @@
 ﻿using com.perceptlab.armultiplayer;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit;
+using static UnityEngine.ParticleSystem;
 
 public class ExpController : MonoBehaviour
 {
@@ -52,6 +56,16 @@ public class ExpController : MonoBehaviour
     /// </summary>
     [SerializeField]
     protected bool m_RandomShapeLocation = false;
+    /// <summary>
+    /// Whether we want to be able to grab the box or not
+    /// </summary>
+    [SerializeField]
+    protected bool m_CanGrabBox = false;
+    /// <summary>
+    /// Whether we want to be able to grab the shapes or not
+    /// </summary>
+    [SerializeField]
+    protected bool m_CanGrabShapes = false;
     /// <summary>
     /// Minimum amount of time to show blank/nothing to the participant
     /// </summary>
@@ -174,9 +188,15 @@ public class ExpController : MonoBehaviour
         get
         {
             if (m_RandomShapeLocation)
+            {
+                Debug.Log("Random Shape Location");
                 return UnityEngine.Random.Range(0, m_ShapeSpawn.Length);
+            }
             else
+            {
+                Debug.Log("Non Random Shape Location");
                 return 0;
+            }
         }
     }
 
@@ -321,8 +341,12 @@ public class ExpController : MonoBehaviour
 
         m_SortingCube.position = m_CubeSpawn.position;
 
+        if(m_SortingCube.TryGetComponent<XRGrabInteractable>(out XRGrabInteractable g))
+        {
+            g.enabled = m_CanGrabBox;
+        }
         if(m_SortingCube.TryGetComponent<Rigidbody>(out Rigidbody r)){
-            r.constraints = RigidbodyConstraints.FreezeAll;
+            r.constraints = m_CanGrabBox ? RigidbodyConstraints.None : RigidbodyConstraints.FreezeAll;
         }
 
         if (m_FacePlayer)
@@ -565,10 +589,18 @@ public class ExpController : MonoBehaviour
 
         int index = int.Parse(trial.Split('|')[0]);
         string shape = trial.Split('|')[1];
-        float size = float.Parse(trial.Split('|')[2]);
-        int loc = int.Parse(trial.Split('|')[0]);
+        
+        int loc = int.Parse(trial.Split('|')[3]);
 
         spawn = Instantiate(m_Shapes[index], m_ShapeSpawn[loc].transform);
+        InitShapeSpawn();
+    }
+
+    protected virtual void InitShapeSpawn()
+    {
+        string trial = GetNextTrial();
+        float size = float.Parse(trial.Split('|')[2]);
+
         spawn.transform.localScale = new Vector3(spawn.transform.localScale.x * size,
             spawn.transform.localScale.y * 1,
             spawn.transform.localScale.z * size);
@@ -580,6 +612,11 @@ public class ExpController : MonoBehaviour
             r.constraints = RigidbodyConstraints.FreezeRotation;
             r.drag = 1000;
             r.angularDrag = 0;
+        }
+
+        if (spawn.TryGetComponent<XRGrabInteractable>(out XRGrabInteractable g))
+        {
+            g.enabled = m_CanGrabShapes;
         }
     }
 

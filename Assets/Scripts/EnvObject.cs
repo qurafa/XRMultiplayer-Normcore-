@@ -158,7 +158,7 @@ public class EnvObject : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        RLogger.Log("on trigger stay");
+        //RLogger.Log("on trigger stay");
         if (other.CompareTag("Trigger"))
         {
             if (other.name.Equals("Box")) _statusWRTBox = "Inside Box";
