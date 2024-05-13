@@ -3,14 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 
 
-public class FastCalibration : MonoBehaviour
+public class FastCalibrationController : MonoBehaviour
 {
+    enum Mode { SingleControllerCalibrate, DoubleControllerCalibrate };
+
     string SETUP_FILE_PATH;
 
+    [Header("Required GameObjects")]
     [SerializeField]
     GameObject RightControllerVisual;
     [SerializeField]
@@ -21,34 +25,60 @@ public class FastCalibration : MonoBehaviour
     GameObject RVirtualVisual;
     [SerializeField]
     GameObject Room;
+
+    [Header("Settings")]
     [SerializeField]
     bool UsePreviousSetup;
-
-    enum Mode { SingleControllerCalibrate, DoubleControllerCalibrate };
-
     [SerializeField]
     Mode mode = Mode.DoubleControllerCalibrate;
+    [SerializeField]
+    UnityEvent onDoneAlign;
 
-    InputAction x;
-    InputAction y;
+    // InputAction bindings: https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.0/manual/xr-controller-action-based.html
+    [Header("Input Actions")]
+    [SerializeField, Tooltip("Aligns the controller and virtual visuals. Default is X")]
+    InputAction align;
+    [SerializeField, Tooltip("If pressed three times, moves the controller visuals to match virtual visuals and saves the setting. Default is Y")]
+    InputAction saveVisuals;
+    [SerializeField, Tooltip("Invokes onDoneAlign. Default is B")]
+    InputAction doneAlign;
+
     int counter = 0;
     bool timerRunning = false;
     void Start()
     {
         SETUP_FILE_PATH = $"{Application.persistentDataPath}/CalibrationSetup.csv";
-        x = new InputAction("X", binding: "<XRController>{LeftHand}/primaryButton"); //https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.0/manual/xr-controller-action-based.html
-        x.Enable();
-        y = new InputAction("Y", binding: "<XRController>{LeftHand}/secondaryButton"); //https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.0/manual/xr-controller-action-based.html
-        y.Enable();
-        x.performed += onX;
-        y.performed += onY;
+        mapAndEnableInputActions();
+        align.performed += onAlign;
+        saveVisuals.performed += onSaveVisuals;
+        doneAlign.performed += delegate (InputAction.CallbackContext context) { onDoneAlign?.Invoke(); };
         if (UsePreviousSetup && File.Exists(SETUP_FILE_PATH))
         {
             AlignControllerVisualsBasedOnFileData();
         }
     }
 
-    void onX(InputAction.CallbackContext context)
+    void mapAndEnableInputActions()
+    {
+        if (align.bindings.Count == 0)
+        {
+            RLogger.Log("align was null, mapping");
+            align = new InputAction("X", binding: "<XRController>{LeftHand}/primaryButton"); //https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.0/manual/xr-controller-action-based.html
+        }
+        align.Enable();
+        if (saveVisuals.bindings.Count == 0)
+        {
+            saveVisuals = new InputAction("Y", binding: "<XRController>{LeftHand}/secondaryButton"); //https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.0/manual/xr-controller-action-based.html
+        }
+        saveVisuals.Enable();
+        if (doneAlign.bindings.Count == 0)
+        {
+            doneAlign = new InputAction("Y", binding: "<XRController>{RightHand}/secondaryButton"); //https://docs.unity3d.com/Packages/com.unity.xr.interaction.toolkit@2.0/manual/xr-controller-action-based.html
+        }
+        saveVisuals.Enable();
+    }
+
+    void onAlign(InputAction.CallbackContext context)
     {
         RLogger.Log("X pressed");
         if (mode == Mode.SingleControllerCalibrate)
@@ -118,9 +148,9 @@ public class FastCalibration : MonoBehaviour
         return new Vector3(x, y, z);
     }
 
-    void onY(InputAction.CallbackContext context)
+    void onSaveVisuals(InputAction.CallbackContext context)
     {
-        RLogger.Log("Y pressed");
+        RLogger.Log("SaveVisuals pressed");
         counter += 1;
         if (!timerRunning)
         {
@@ -160,5 +190,14 @@ public class FastCalibration : MonoBehaviour
     {
         RLogger.Log("Y pressed 3 times");
         saveTransformInfo();
+    }
+
+
+    public void distroyVisuals()
+    {
+        GameObject.Destroy(RightControllerVisual);
+        GameObject.Destroy(LeftControllerVisual);
+        GameObject.Destroy(RVirtualVisual);
+        GameObject.Destroy(LVirtualVisual);
     }
 }

@@ -48,8 +48,8 @@ public static class AlignHelpers
     }
 
     /// <summary>
-    /// Assumption: child adn virtualVector as under dad in the Hierarchy.
-    /// Rotates dad around child object to make virtual vector face the same direction as actual vector on the xz plane.
+    /// Rotates dad around the child object to make virtual vector face the same direction as actual vector on the xz plane.<br />
+    /// Assumption: child and virtualVector are under dad in the Hierarchy.<br />
     /// The result of this operation is that the actual and virtual vector will face the same direction while keeping the global position of child the same
     /// </summary>
     /// <param name="child"></param>
