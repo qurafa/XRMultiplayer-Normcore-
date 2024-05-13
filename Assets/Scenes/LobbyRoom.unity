@@ -1699,12 +1699,6 @@ PrefabInstance:
       addedObject: {fileID: 1605620545}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2bd7034377fe91545b15418bc2dd5c48, type: 3}
       insertIndex: 2
-      addedObject: {fileID: 265459405}
-    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2bd7034377fe91545b15418bc2dd5c48, type: 3}
-      insertIndex: 3
-      addedObject: {fileID: 683788923}
-    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2bd7034377fe91545b15418bc2dd5c48, type: 3}
-      insertIndex: 4
       addedObject: {fileID: 543450652130949669}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2bd7034377fe91545b15418bc2dd5c48, type: 3}
       insertIndex: -1
@@ -2323,7 +2317,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 195320452}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6e4ebe51aba91dd4bb808cd09443c5be, type: 3}
   m_Name: 
@@ -2331,7 +2325,7 @@ MonoBehaviour:
   _room: {fileID: 195320452}
   _player: {fileID: 9132913291359597517}
   _playerSpawn: {fileID: 1390830153}
-  _rotationReference: {fileID: 0}
+  _rotationReference: {fileID: 919132148475650207}
   _playerCenterReference: {fileID: 7990873190421362483}
   _tableCenterReference: {fileID: 919132148475650207}
   _ARSession: {fileID: 2114889823}
@@ -2840,89 +2834,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 229255537}
   m_Mesh: {fileID: -1451218337330505211, guid: 1cd289abf0ad1ad438f14ce251c2aac4, type: 3}
---- !u!1001 &265459404
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 153291123}
-    m_Modifications:
-    - target: {fileID: 860112557457928965, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_Name
-      value: RVirtualVisual
-      objectReference: {fileID: 0}
-    - target: {fileID: 899610029302701863, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1708113950286314669, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.8425
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.860865
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 2.2815
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7783526685131385748, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7811396766344728911, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8627947629242279170, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 8578801462195951140, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
---- !u!4 &265459405 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-  m_PrefabInstance: {fileID: 265459404}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &281179353
 GameObject:
   m_ObjectHideFlags: 0
@@ -5194,89 +5105,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 667007009}
   m_Mesh: {fileID: -2228417370725966487, guid: 1cd289abf0ad1ad438f14ce251c2aac4, type: 3}
---- !u!1001 &683788922
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 153291123}
-    m_Modifications:
-    - target: {fileID: 860112557457928965, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_Name
-      value: LVirtualVisual
-      objectReference: {fileID: 0}
-    - target: {fileID: 899610029302701863, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1708113950286314669, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.8415
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.860865
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 2.7902
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7783526685131385748, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7811396766344728911, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8627947629242279170, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 8578801462195951140, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
---- !u!4 &683788923 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5981020594823291430, guid: 50664bb5ea10d614782d54f98d81c244, type: 3}
-  m_PrefabInstance: {fileID: 683788922}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &706671598
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7187,7 +7015,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.78}
   m_SizeDelta: {x: 10, y: 2.57}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1061592739
@@ -7210,8 +7038,20 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'WARNING: Calibration is in setup mode. Press the left Joystick to toggle
-    to calibration mode.'
+  m_text: 'WARNING: You are Setting up calibration.
+
+    Press the B button to calibrate.
+
+    For
+    setup, use joysticks and triggers to move and rotate the room
+
+    press joysticks
+    to start moving the HMD visual
+
+    Align the HMD visual with your realworld
+    visual using the joysticks
+
+    When you''re done, press ''Y'' three times.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -7238,8 +7078,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 4
-  m_fontSizeBase: 4
+  m_fontSize: 1
+  m_fontSizeBase: 1
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -8235,19 +8075,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 482ef4a73ef2c3540a7958b066852689, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _ARSession: {fileID: 2114889823}
   HMDMarker: {fileID: 1427686417}
   FixedHMDMarkerPosition: {fileID: 118693381}
   FixedHMDPosition: {fileID: 157522449}
   MainCamera: {fileID: 7990873190370814736}
   Player: {fileID: 8733093506721182284}
-  UsePreviousSetup: 0
+  UsePreviousSetup: 1
   mode: 1
   DoneAlign:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1372793800}
+        m_TargetAssemblyTypeName: LobbyController, Assembly-CSharp
+        m_MethodName: LoadScene
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1239036361}
+        m_TargetAssemblyTypeName: FastCalibrationHMD, Assembly-CSharp
+        m_MethodName: cleanup
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   WarningText: {fileID: 1061592739}
-  move_speed: 0.03
-  rotatoin_speed: 1
+  move_speed: 0.001
+  rotatoin_speed: 0.03
   Actions: {fileID: -944628639613478452, guid: a7b624942bc99cb42a85cbba1340da85, type: 3}
   MovingActionsName: MovingActions
   SetupActionsName: HMDSetup

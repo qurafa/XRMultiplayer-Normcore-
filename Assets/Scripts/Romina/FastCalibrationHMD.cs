@@ -6,6 +6,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.XR.ARFoundation;
 
 
 
@@ -17,6 +18,8 @@ public class FastCalibrationHMD : MonoBehaviour
     string SETUP_FILE_PATH;
 
     [Header("Required GameObjects")]
+    [SerializeField, Tooltip("Only for Quest")]
+    private ARSession _ARSession;
     [SerializeField, Tooltip("Must be a under the MainCamera in the hierarchy.")]
     GameObject HMDMarker;
     [SerializeField]
@@ -42,9 +45,9 @@ public class FastCalibrationHMD : MonoBehaviour
 
     [Header("Movement Speed for Setup")]
     [SerializeField]
-    private float move_speed = 0.03f;
+    private float move_speed = 0.001f;
     [SerializeField]
-    private float rotatoin_speed = 1f;
+    private float rotatoin_speed = 0.03f;
 
 
     [Header("Input")]
@@ -84,6 +87,7 @@ public class FastCalibrationHMD : MonoBehaviour
             positionVisualsBasedOnFileData();
         }
         setWarning();
+        EnableAR();
     }
 
     private void OnDisable()
@@ -231,18 +235,21 @@ public class FastCalibrationHMD : MonoBehaviour
         Dictionary<string, Dictionary<string, Vector3>> data;
         data = parseInputFile();
 
-        Dictionary<string, GameObject> map = new Dictionary<string, GameObject>();
-        map["FixedHMDMarkerPosition"] = FixedHMDMarkerPosition;
-        map["FixedHMDPosition"] = FixedHMDPosition;
-        map["HMDMarker"] = HMDMarker;
-
-        foreach (string objectName in new string[] { "FixedHMDMarkerPosition", "FixedHMDPosition", "HMDMarker" })
+        Dictionary<string, Vector3> transformInfo;
+        if (data.TryGetValue("FixedHMDMarkerPosition", out transformInfo))
         {
-            if (data.TryGetValue(objectName, out Dictionary<string, Vector3> transformInfo))
-            {
-                map[objectName].transform.position = transformInfo["pos"];
-                map[objectName].transform.rotation = Quaternion.Euler(transformInfo["euler"]);
-            }
+            FixedHMDMarkerPosition.transform.position = transformInfo["pos"];
+            FixedHMDMarkerPosition.transform.rotation = Quaternion.Euler(transformInfo["euler"]);
+        }
+        if (data.TryGetValue("FixedHMDPosition", out transformInfo))
+        {
+            FixedHMDPosition.transform.position = transformInfo["pos"];
+            FixedHMDPosition.transform.rotation = Quaternion.Euler(transformInfo["euler"]);
+        }
+        if (data.TryGetValue("HMDMarker", out transformInfo))
+        {
+            HMDMarker.transform.localPosition = transformInfo["pos"];
+            HMDMarker.transform.localRotation = Quaternion.Euler(transformInfo["euler"]);
         }
     }
 
@@ -306,15 +313,15 @@ public class FastCalibrationHMD : MonoBehaviour
 
     void saveTransformInfo()
     {
-        RLogger.Log(
-            $"[FastCalibrationHMD] -- " +
-            $"In the previous settings saved, Fixed HMD Marker Position was {FixedHMDMarkerPosition.transform.position}; " +
-            $"it is now {HMDMarker.transform.position}.\n" +
-            $"The difference is {(FixedHMDMarkerPosition.transform.position - HMDMarker.transform.position).magnitude}" +
-            $"In the previous settings saved, Fixed HMD Position was {FixedHMDPosition.transform.position} " +
-            $"it is now {MainCamera.transform.position}.\n" +
-            $"The difference is {(FixedHMDPosition.transform.position - MainCamera.transform.position).magnitude}"
-            );
+        string log = $"#[FastCalibrationHMD] ------ \n" +
+            $"#In the previous settings saved Fixed HMD Marker Position was \"{FixedHMDMarkerPosition.transform.position}\" " +
+            $"#now it is \"{HMDMarker.transform.position}\".---" +
+            $"#The difference is {(FixedHMDMarkerPosition.transform.position - HMDMarker.transform.position).magnitude}\n" +
+            $"#In the previous settings saved Fixed HMD Position was \"{FixedHMDPosition.transform.position}\" " +
+            $"#now it is \"{MainCamera.transform.position}\".---" +
+            $"#The difference is {(FixedHMDPosition.transform.position - MainCamera.transform.position).magnitude}\n" +
+            $"#-----------------------------\n";
+        RLogger.Log(log);
         FixedHMDMarkerPosition.transform.position = HMDMarker.transform.position;
         FixedHMDMarkerPosition.transform.eulerAngles = HMDMarker.transform.eulerAngles;
         FixedHMDPosition.transform.position = MainCamera.transform.position;
@@ -329,6 +336,7 @@ public class FastCalibrationHMD : MonoBehaviour
             $"\"FixedHMDPosition\",\"Vector3{FixedHMDPosition.transform.position}\",\"Vector3{FixedHMDPosition.transform.eulerAngles}\"\n";
         File.AppendAllText(SETUP_FILE_PATH, txt);
         File.AppendAllText(SETUP_FILE_PATH, "#End\n");
+        File.AppendAllText(SETUP_FILE_PATH, log);
     }
 
     void onSaveSettingsThreeTimes()
@@ -342,5 +350,38 @@ public class FastCalibrationHMD : MonoBehaviour
         GameObject.Destroy(HMDMarker);
         GameObject.Destroy(FixedHMDMarkerPosition);
         GameObject.Destroy(FixedHMDPosition);
+        GameObject.Destroy(WarningText);
+    }
+    private void DisableAR()
+    {
+        if (_ARSession != null)
+        {
+            _ARSession.enabled = false;
+        }
+    }
+
+    public void cleanup()
+    {
+        distroyVisuals();
+        DisableARandRevertChanges();
+    }
+
+    private void EnableAR()
+    {
+        if (_ARSession != null)
+        {
+            _ARSession.enabled = true;
+        }
+
+    }
+    private void DisableARandRevertChanges()
+    {
+        if (_ARSession != null)
+        {
+            _ARSession.enabled = false;
+            // revert the changes caused by _ARSession.MatchFrameRate = True
+            Application.targetFrameRate = 0;
+            QualitySettings.vSyncCount = 1;
+        }
     }
 }

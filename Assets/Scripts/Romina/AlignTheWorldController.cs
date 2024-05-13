@@ -151,12 +151,6 @@ namespace com.perceptlab.armultiplayer
         // Moves the player instead of the world. Player is in the same real position, thus, the virtual world is being moved!
         void Update()
         {
-            //if (done)
-            //{
-            //    RLogger.Log("align the world is disabled cause: done");
-            //    enabled = false;
-            //    //Destroy(this);
-            //}
             if (!paused)
             {
                 movePlayer();

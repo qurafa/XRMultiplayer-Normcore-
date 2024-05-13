@@ -129,12 +129,12 @@ public class LobbyController : MonoBehaviour
                 expCont.SetNumOfShapes(int.MaxValue);
             }
 
-            float range = float.Parse(m_ExpRange.text) /100.0f;
+            float range = float.Parse(m_ExpRange.text) / 100.0f;
             expCont.SetScaleDiff(range);
 
             expCont.Initialize();
         }
-        
+
 
         Debug.Log("getting realtime helper");
         var helper = FindObjectOfType<SceneHelper>();
