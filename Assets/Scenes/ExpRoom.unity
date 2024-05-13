@@ -5651,7 +5651,7 @@ MonoBehaviour:
   m_CanGrabShapes: 0
   m_MinBlankTimeLimit: 3
   m_MaxBlankTimeLimit: 300
-  m_TrialTimeLimit: 5
+  m_TrialTimeLimit: 2.5
   m_NumberSmaller: 3
   m_NumberLarger: 3
   m_PID: 0

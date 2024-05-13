@@ -65,7 +65,7 @@ public class RealtimeExpController : ExpController
         }*/
     }
 
-    protected override void DestroyShape()
+    protected override void DestroySpawnShape()
     {
         Realtime.Destroy(spawn);
         spawn = null;

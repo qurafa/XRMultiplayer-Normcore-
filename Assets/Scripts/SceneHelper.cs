@@ -81,7 +81,8 @@ public class SceneHelper : MonoBehaviour
 
     private void AutoSub(object sender, EventArgs args)
     {
-        //currently being used to ensure data is saved to the data manager in non realtime/multiplayer
+        //currently being used to automatically subscribe to avatar info publisher
+        //to ensure data is saved to the data manager in non realtime/multiplayer
     }
 
     //Realtime Event when Connecting to a Room
