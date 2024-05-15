@@ -257,7 +257,31 @@ public class ExpController : MonoBehaviour
     {
         if (m_FacePlayer)
         {
-            _shapeToBoxRotation1 = new Dictionary<string, Vector3[]>
+            _shapeToBoxRotation1 = new Dictionary<string, Vector3[]>();
+            foreach (GameObject s in m_Shapes)
+            {
+                if (s.name.ToLower().Contains("trapezoid") || s.name.ToLower().Contains("oval") || s.name.ToLower().Contains("diamond"))
+                {
+                    _shapeToBoxRotation1.Add(s.name, new[] { Vector3.up, new Vector3(0, -90, 0) });
+                }
+                else if (s.name.ToLower().Contains("quatrefoil") || s.name.ToLower().Contains("square") || s.name.ToLower().Contains("triangle"))
+                {
+                    _shapeToBoxRotation1.Add(s.name, new[] { Vector3.down, new Vector3(90, 0, 0) });
+                }
+                else if (s.name.ToLower().Contains("octagon") || s.name.ToLower().Contains("parallelogram") || s.name.ToLower().Contains("star"))
+                {
+                    _shapeToBoxRotation1.Add(s.name, new[] { Vector3.up, new Vector3(90, 0, 0) });
+                }
+                else if (s.name.ToLower().Contains("hexagon") || s.name.ToLower().Contains("rectangle") || s.name.ToLower().Contains("pentagon"))
+                {
+                    _shapeToBoxRotation1.Add(s.name, new[] { Vector3.up, new Vector3(0, 90, 0) });
+                }
+                else
+                {
+                    Debug.Log("SHAPE NAME NOT RECOGNIZED!!!");
+                }
+            }
+/*            _shapeToBoxRotation1 = new Dictionary<string, Vector3[]>
             {
                 //set from trying it out with the box in teh editor and setting it here,
                 //you'll have to do that again on your end if you want to change the values for whatever reason
@@ -276,11 +300,36 @@ public class ExpController : MonoBehaviour
                 { "Hexagon", new[] { Vector3.up, new Vector3(0, 90, 0) } },
                 { "Rectangle", new[] { Vector3.up, new Vector3(0, 90, 0) } },
                 { "Pentagon", new[] { Vector3.up, new Vector3(0, 90, 0) } }
-            };
+            };*/
         }
         else
         {
-            _shapeToBoxRotation0 = new Dictionary<string, Vector3>
+            _shapeToBoxRotation0 = new Dictionary<string, Vector3>();
+            foreach (GameObject s in m_Shapes)
+            {
+                Debug.Log($"Shape Name {s.name}");
+                if(s.name.ToLower().Contains("trapezoid") || s.name.ToLower().Contains("oval") || s.name.ToLower().Contains("diamond"))
+                {
+                    _shapeToBoxRotation0.Add(s.name, new Vector3(0, 180, 0));
+                }
+                else if (s.name.ToLower().Contains("quatrefoil") || s.name.ToLower().Contains("square") || s.name.ToLower().Contains("triangle"))
+                {
+                    _shapeToBoxRotation0.Add(s.name, new Vector3(-90, 0, 90));
+                }
+                else if (s.name.ToLower().Contains("octagon") || s.name.ToLower().Contains("parallelogram") || s.name.ToLower().Contains("star"))
+                {
+                    _shapeToBoxRotation0.Add(s.name, new Vector3(0, -90, 0));
+                }
+                else if (s.name.ToLower().Contains("hexagon") || s.name.ToLower().Contains("rectangle") || s.name.ToLower().Contains("pentagon"))
+                {
+                    _shapeToBoxRotation0.Add(s.name, new Vector3(0, 0, 0));
+                }
+                else
+                {
+                    Debug.Log("SHAPE NAME NOT RECOGNIZED!!!");
+                }
+            }
+/*            _shapeToBoxRotation0 = new Dictionary<string, Vector3>
             {
                 //without LookAt vector, euler angles is....new Vector3(0, 180, 0)
                 { "Trapezoid", new Vector3(0, 180, 0) },
@@ -301,7 +350,7 @@ public class ExpController : MonoBehaviour
                 { "Hexagon", new Vector3(0, 0, 0) },
                 { "Rectangle", new Vector3(0, 0, 0) },
                 { "Pentagon", new Vector3(0, 0, 0) }
-            };
+            };*/
         }
     }
 
@@ -361,7 +410,8 @@ public class ExpController : MonoBehaviour
         else
         {
             m_SortingCube.eulerAngles = _shapeToBoxRotation0[shape];
-            m_ShapeSpawn[loc].eulerAngles = new Vector3(90, 90, 0);
+            //m_ShapeSpawn[loc].eulerAngles = new Vector3(90, 90, 0);
+            m_ShapeSpawn[loc].eulerAngles = new Vector3(90, -90, 0);
         }
     }
 

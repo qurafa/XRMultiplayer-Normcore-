@@ -228,6 +228,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tracking: 1
   _audioSource: {fileID: 0}
+  m_OwnerID: 0
 --- !u!1 &4455522085148023818
 GameObject:
   m_ObjectHideFlags: 0

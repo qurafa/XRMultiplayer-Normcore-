@@ -115,7 +115,7 @@ public class LobbyController : MonoBehaviour
 
             expCont.SetPID(m_pID.text);
 
-            expCont.SetExpType(m_ExpType.value);
+            expCont.SetExpType(m_ExpType.value + 1);
 
             if (m_ExpCondition.value == 0)
                 expCont.SetCondition("Monocular");
@@ -139,7 +139,6 @@ public class LobbyController : MonoBehaviour
             expCont.Initialize();
         }
         
-
         Debug.Log("getting realtime helper");
         var helper = FindObjectOfType<SceneHelper>();
 
