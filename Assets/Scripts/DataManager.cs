@@ -1,30 +1,33 @@
 using System.IO;
-using Normal.Realtime;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Text;
-using Unity.VisualScripting;
 
 public class DataManager : MonoBehaviour
 {
     [SerializeField]
     HashSet<GameObject> _toTrack = new HashSet<GameObject>();
+    /// <summary>
+    /// Whether or not we can track the player hands, head, etc. in the scene
+    /// </summary>
     [SerializeField]
     private bool _canTrackPlayer;
+    /// <summary>
+    /// Whether or not we can track "EnvObjects" in the scene
+    /// </summary>
     [SerializeField]
     private bool _canTrackObjects;
     /// <summary>
     /// How often should data be read to the output files in seconds when specified
     /// </summary>
     [SerializeField]
-    private float _timeInterval;
+    private float _timeInterval = 0.1f;
 
     //heading for csv's
     private string OBJECT_HEADING = "Object,Owner,Time,XPos,Ypos,ZPos,XRot,YRot,ZRot,Status\n";
     private string PLAYER_HEADING = "Bone,Time,XPos,YPos,ZPos,XRot,YRot,ZRot\n";
     private string EXP_HEADING = "Trial,Shape,Size,Response,ResponseTime,Time";
-    private int id = 0;
 
     private float timeCounter = 0;
 
@@ -61,11 +64,6 @@ public class DataManager : MonoBehaviour
         }
 
         timeCounter += Time.deltaTime;
-    }
-
-    public void SetID(int id)
-    {
-        this.id = id;
     }
 
     public void AddObjectTrack(GameObject g)

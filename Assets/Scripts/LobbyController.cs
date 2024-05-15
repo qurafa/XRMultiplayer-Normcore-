@@ -18,6 +18,8 @@ public class LobbyController : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI m_pID;
     [SerializeField]
+    private Dropdown m_ExpType;
+    [SerializeField]
     private Dropdown m_ExpCondition;
     [SerializeField]
     private Dropdown m_ExpMode;
@@ -112,6 +114,8 @@ public class LobbyController : MonoBehaviour
             ExpController expCont = FindObjectOfType<ExpController>();
 
             expCont.SetPID(m_pID.text);
+
+            expCont.SetExpType(m_ExpType.value);
 
             if (m_ExpCondition.value == 0)
                 expCont.SetCondition("Monocular");

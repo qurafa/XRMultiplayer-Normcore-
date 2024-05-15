@@ -1,9 +1,14 @@
 ﻿using com.perceptlab.armultiplayer;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR.Interaction.Toolkit;
+using static UnityEngine.ParticleSystem;
 
 public class ExpController : MonoBehaviour
 {
@@ -52,6 +57,16 @@ public class ExpController : MonoBehaviour
     /// </summary>
     [SerializeField]
     protected bool m_RandomShapeLocation = false;
+    /// <summary>
+    /// Whether we want to be able to grab the box or not
+    /// </summary>
+    [SerializeField]
+    protected bool m_CanGrabBox = false;
+    /// <summary>
+    /// Whether we want to be able to grab the shapes or not
+    /// </summary>
+    [SerializeField]
+    protected bool m_CanGrabShapes = false;
     /// <summary>
     /// Minimum amount of time to show blank/nothing to the participant
     /// </summary>
@@ -117,6 +132,7 @@ public class ExpController : MonoBehaviour
     [SerializeField]
     protected InputAction resetButton;
 
+    protected int _expType;
     /// <summary>
     /// List of order of the experiment. Contains string in format "shapeNumber|shapeName|scale|spawnLocation";
     /// </summary>
@@ -174,9 +190,15 @@ public class ExpController : MonoBehaviour
         get
         {
             if (m_RandomShapeLocation)
+            {
+                Debug.Log("Random Shape Location");
                 return UnityEngine.Random.Range(0, m_ShapeSpawn.Length);
+            }
             else
+            {
+                Debug.Log("Non Random Shape Location");
                 return 0;
+            }
         }
     }
 
@@ -321,8 +343,12 @@ public class ExpController : MonoBehaviour
 
         m_SortingCube.position = m_CubeSpawn.position;
 
+        if(m_SortingCube.TryGetComponent<XRGrabInteractable>(out XRGrabInteractable g))
+        {
+            g.enabled = m_CanGrabBox;
+        }
         if(m_SortingCube.TryGetComponent<Rigidbody>(out Rigidbody r)){
-            r.constraints = RigidbodyConstraints.FreezeAll;
+            r.constraints = m_CanGrabBox ? RigidbodyConstraints.None : RigidbodyConstraints.FreezeAll;
         }
 
         if (m_FacePlayer)
@@ -343,6 +369,30 @@ public class ExpController : MonoBehaviour
     {
         m_PID = id;
         Debug.Log($"set id to {id}");
+    }
+
+    public void SetExpType(int type)
+    {
+        _expType = type;
+
+        switch(type)
+        {
+            case 0:
+                m_FacePlayer = false;
+                m_RandomShapeLocation = false;
+                m_CanGrabBox= false; m_CanGrabShapes = false;
+                m_MinBlankTimeLimit = 3; m_MaxBlankTimeLimit = 300; m_TrialTimeLimit = 2.5f;
+                m_NumberSmaller = 3; m_NumberLarger = 3; m_NumOfShapes = 4;
+                break;
+            case 1:
+                m_FacePlayer = false;
+                m_RandomShapeLocation = false;
+                m_CanGrabBox = false; m_CanGrabShapes = true;
+                m_MinBlankTimeLimit = 3; m_MaxBlankTimeLimit = 300; m_TrialTimeLimit = 5f;
+                m_NumberSmaller = 3; m_NumberLarger = 3; m_NumOfShapes = 4;
+                break;
+            default: break;
+        }
     }
 
     /// <summary>
@@ -469,9 +519,12 @@ public class ExpController : MonoBehaviour
         NextTrial();
     }
 
+    /// <summary>
+    /// Creates the experiment file
+    /// </summary>
     protected void CreateExpFile()
     {
-        m_DataManager.CreateExpFile($"{m_PID}_{m_Condition}_{m_Repeats}Reps_{m_ScaleDiff}Range");
+        m_DataManager.CreateExpFile($"Exp{_expType}_{m_PID}_{m_Condition}_{m_Repeats}Reps_{m_ScaleDiff}Range");
 /*        FILE_PATH = $"{Application.persistentDataPath}/ExpEntry_{System.DateTime.Now:yyyy-MM-dd-HH_mm_ss}.csv";
         Debug.Log("fILE PATH IS: " + FILE_PATH);
 
@@ -479,6 +532,10 @@ public class ExpController : MonoBehaviour
         FILE_TEMP.AppendLine(string.Join(SEPARATOR, HEADING));*/
     }
 
+    /// <summary>
+    /// Saves the current/last entry from the user
+    /// </summary>
+    /// <param name="response"></param>
     protected void SaveEntry(string response)
     {
         if (SaveWait()) return;
@@ -500,11 +557,17 @@ public class ExpController : MonoBehaviour
         _savingEntry = false;
     }
 
+    /// <summary>
+    /// Save the experiment file
+    /// </summary>
     protected void SaveExpFile()
     {   
         m_DataManager.SaveExpFile();
     }
 
+    /// <summary>
+    /// Sets up the next trial
+    /// </summary>
     protected void NextTrial()
     {
         if (NextWait()) return;
@@ -539,7 +602,7 @@ public class ExpController : MonoBehaviour
         if (spawn != null)
         {
             m_DataManager.RemoveObjectTrack(spawn);
-            DestroyShape();
+            DestroySpawnShape();
         }
 
         SpawnShape();
@@ -559,16 +622,30 @@ public class ExpController : MonoBehaviour
         _nextLoading = false;
     }
 
+    /// <summary>
+    /// Spawns the next "spawn" shape
+    /// </summary>
     protected virtual void SpawnShape()
     {
         string trial = GetNextTrial();
 
         int index = int.Parse(trial.Split('|')[0]);
         string shape = trial.Split('|')[1];
-        float size = float.Parse(trial.Split('|')[2]);
+        
         int loc = int.Parse(trial.Split('|')[3]);
 
         spawn = Instantiate(m_Shapes[index], m_ShapeSpawn[loc].transform);
+        InitShapeSpawn();
+    }
+
+    /// <summary>
+    /// Initializes values for the current "spawn" shape
+    /// </summary>
+    protected virtual void InitShapeSpawn()
+    {
+        string trial = GetNextTrial();
+        float size = float.Parse(trial.Split('|')[2]);
+
         spawn.transform.localScale = new Vector3(spawn.transform.localScale.x * size,
             spawn.transform.localScale.y * 1,
             spawn.transform.localScale.z * size);
@@ -581,20 +658,36 @@ public class ExpController : MonoBehaviour
             r.drag = 1000;
             r.angularDrag = 0;
         }
+
+        if (spawn.TryGetComponent<XRGrabInteractable>(out XRGrabInteractable g))
+        {
+            g.enabled = m_CanGrabShapes;
+        }
     }
 
-    protected virtual void DestroyShape()
+    /// <summary>
+    /// Destroys the current "spawn" shape
+    /// </summary>
+    protected virtual void DestroySpawnShape()
     {
         Destroy(spawn);
         spawn = null;
     }
 
+    /// <summary>
+    /// Returns whether we can move to next trial or not
+    /// </summary>
+    /// <returns></returns>
     protected bool NextWait()
     {
         Debug.Log("Unable to proceed to Next.......waiting");
         return (!ToRun || !_ready || _nextLoading || _minBlankLoading || _trialLoading);
     }
 
+    /// <summary>
+    /// Returns whether we can save now or not
+    /// </summary>
+    /// <returns></returns>
     protected bool SaveWait()
     {
         Debug.Log("Unable to proceed to Save.......waiting");

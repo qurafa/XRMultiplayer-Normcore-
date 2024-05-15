@@ -43,7 +43,8 @@ public class RealtimeExpController : ExpController
             destroyWhenLastClientLeaves = true,
             useInstance = m_Realtime,
         });
-        spawn.transform.localScale = new Vector3(spawn.transform.localScale.x * size,
+        InitShapeSpawn();
+/*        spawn.transform.localScale = new Vector3(spawn.transform.localScale.x * size,
             spawn.transform.localScale.y * 1,
             spawn.transform.localScale.z * size);
         if (m_FacePlayer)
@@ -54,10 +55,10 @@ public class RealtimeExpController : ExpController
             r.constraints = RigidbodyConstraints.FreezeRotation;
             r.drag = 1000;
             r.angularDrag = 0;
-        }
+        }*/
     }
 
-    protected override void DestroyShape()
+    protected override void DestroySpawnShape()
     {
         Realtime.Destroy(spawn);
         spawn = null;

@@ -164,6 +164,7 @@ public class RealtimeSceneHelper : SceneHelper
 
         if (aPub) aPub.SetPlayerID(m_Realtime.clientID);
         m_DataManager.CreatePlayerFile(m_Realtime.clientID);
+        //no need to subscribe here, because the avatars subscribe
     }
 
     private void OnDisable()

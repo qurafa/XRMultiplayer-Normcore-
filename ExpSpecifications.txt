@@ -1,0 +1,29 @@
+Experiment 2(ee)
+Shape Spawn Position: ShapeSpawn[0]
+Shapes: Quatrefoil, Square, Triangle, Pentagon
+Face Player: False
+Random Shape Location: False
+Can Grab Box: False
+Can Grab Shapes: True
+Min Blank Time Limit: 3 seconds
+Max Blank Time Limit: 300 seconds
+Trial Time Limit: 5 seconds
+Number Smaller: 3
+Number Larger: 3
+Num Of Shapes: 4
+Tracking/Saving: Player Data, Object Data, Trial Responses
+
+Experiment 1(e)
+Shape Spawn Positions: ShapeSpawn[0]
+Shapes: Quatrefoil, Square, Triangle, Pentagon
+Face Player: False
+Random Shape Location: False
+Can Grab Box: False
+Can Grab Shapes: False
+Min Blank Time Limit: 3 seconds
+Max Blank Time Limit: 300 seconds
+Trial Time Limit: 2.5 seconds
+Number Smaller: 3
+Number Larger: 3
+Num Of Shapes: 4
+Tracking/Saving: Player Data, Object Data, Trial Responses
