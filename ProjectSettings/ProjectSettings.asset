@@ -801,7 +801,7 @@ PlayerSettings:
     Android: NORMCORE;USE_INPUT_SYSTEM_POSE_CONTROL
     PS5: NORMCORE
     Standalone: USE_INPUT_SYSTEM_POSE_CONTROL;NORMCORE
-    Windows Store Apps: USE_INPUT_SYSTEM_POSE_CONTROL
+    Windows Store Apps: USE_INPUT_SYSTEM_POSE_CONTROL;NORMCORE
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

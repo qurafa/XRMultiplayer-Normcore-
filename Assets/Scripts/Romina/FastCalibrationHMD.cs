@@ -120,9 +120,16 @@ public class FastCalibrationHMD : MonoBehaviour
 
         Actions.FindActionMap(SetupActionsName).FindAction("ToggleTheMovingObject").performed += toggleTheMovingObject;
         Actions.FindActionMap(SetupActionsName).FindAction("SaveSettings").performed += onSaveSettings;
+        Actions.FindActionMap(SetupActionsName).FindAction("SaveSettings").canceled += myTestFunction;
         Actions.FindActionMap(CalibrateActionsName).FindAction("Calibrate").performed += onAlign;
         Actions.FindActionMap(CalibrateActionsName).FindAction("Done").performed += onDoneAlign;
 
+    }
+
+    void myTestFunction(InputAction.CallbackContext callbackContext)
+    {
+        RLogger.Log("saveSettings cenceled called");
+        RLogger.Log("saveSettings was helf for? (callbackContext.duration): " + callbackContext.duration);
     }
 
     void toggleTheMovingObject(InputAction.CallbackContext callbackContext)

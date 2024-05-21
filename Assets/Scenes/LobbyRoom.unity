@@ -8080,7 +8080,7 @@ MonoBehaviour:
   FixedHMDMarkerPosition: {fileID: 118693381}
   FixedHMDPosition: {fileID: 157522449}
   MainCamera: {fileID: 7990873190370814736}
-  Player: {fileID: 8733093506721182284}
+  Player: {fileID: 865075386241626312}
   UsePreviousSetup: 1
   mode: 1
   DoneAlign:
@@ -8089,15 +8089,15 @@ MonoBehaviour:
       - m_Target: {fileID: 1372793800}
         m_TargetAssemblyTypeName: LobbyController, Assembly-CSharp
         m_MethodName: LoadScene
-        m_Mode: 3
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Player#Room
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
       - m_Target: {fileID: 1239036361}
         m_TargetAssemblyTypeName: FastCalibrationHMD, Assembly-CSharp
         m_MethodName: cleanup
@@ -8109,7 +8109,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
   WarningText: {fileID: 1061592739}
   move_speed: 0.001
   rotatoin_speed: 0.03
@@ -8941,6 +8941,7 @@ MonoBehaviour:
   m_RunExp: 1
   m_ExpCanvas: {fileID: 4025449299479621227}
   m_pID: {fileID: 1953658321}
+  m_ExpType: {fileID: 0}
   m_ExpCondition: {fileID: 592678257}
   m_ExpMode: {fileID: 7622448590415999479}
   m_ExpRange: {fileID: 3014176135503138594}
