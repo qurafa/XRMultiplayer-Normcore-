@@ -16,14 +16,14 @@ public class RealtimeEnvObject : EnvObject
 
     public override void SetUp()
     {
-        m_OwnerID = m_RealtimeView.ownerIDSelf;
+        _ownerID = m_RealtimeView.ownerIDSelf;
         base.SetUp();
     }
 
     public override void OnGrab(SelectEnterEventArgs args)
     {
         m_RealtimeView.RequestOwnershipOfSelfAndChildren();
-        m_OwnerID = m_RealtimeView.ownerIDSelf;
+        _ownerID = m_RealtimeView.ownerIDSelf;
         base.OnGrab(args);
     }
 }

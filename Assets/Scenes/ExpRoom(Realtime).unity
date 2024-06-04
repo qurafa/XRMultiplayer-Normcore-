@@ -1509,6 +1509,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3497183794493870900, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4439683997676795880, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -5452,7 +5456,8 @@ MonoBehaviour:
   m_ExpSetUp: {fileID: 687863474}
   m_SortingCube: {fileID: 225626363}
   m_CubeSpawn: {fileID: 1621413177}
-  m_ShapeSpawn: {fileID: 213492968}
+  m_ShapeSpawn:
+  - {fileID: 0}
   m_SaveAudio: {fileID: 687863478}
   m_Shapes:
   - {fileID: 6906252785099467498, guid: 17481dd1bc1e643408dd702c87ade6ba, type: 3}
@@ -5460,6 +5465,9 @@ MonoBehaviour:
   - {fileID: 8081281336320705225, guid: 824a3e96c28662245be4dc1b18790b93, type: 3}
   - {fileID: 3324249360952219856, guid: 6d3c81769df9fd648a633796b1847c01, type: 3}
   m_FacePlayer: 0
+  m_RandomShapeLocation: 0
+  m_CanGrabBox: 0
+  m_CanGrabShapes: 0
   m_MinBlankTimeLimit: 3
   m_MaxBlankTimeLimit: 300
   m_TrialTimeLimit: 5
@@ -16735,6 +16743,9 @@ MonoBehaviour:
   m_LocalPlayer: {fileID: 2001921950}
   m_Room: {fileID: 205605689}
   m_DataManager: {fileID: 1580161444}
+  m_AutoSubToAvatarInfoPub: 0
+  m_AvatarInfo: {fileID: 0}
+  m_AvatarSubTo: 
   m_RoomName: Exp Room
   m_RealtimePlayerPrefab: VR Avatar Quest
   m_ConnectionStatus: {fileID: 1587690695}

@@ -115,7 +115,7 @@ public class LobbyController : MonoBehaviour
 
             expCont.SetPID(m_pID.text);
 
-            expCont.SetExpType(m_ExpType.value + 1);
+            expCont.SetExpType(m_ExpType.value);
 
             if (m_ExpCondition.value == 0)
                 expCont.SetCondition("Monocular");

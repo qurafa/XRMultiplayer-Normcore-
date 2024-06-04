@@ -1,6 +1,7 @@
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine;
 using com.perceptlab.armultiplayer;
+using System.Collections.Generic;
 
 public class EnvObject : MonoBehaviour
 {
@@ -12,70 +13,106 @@ public class EnvObject : MonoBehaviour
     [SerializeField]
     protected AudioSource _audioSource;
     [SerializeField]
-    protected int m_OwnerID = 0;
+    protected int _ownerID = 0;
 
-    private Vector3 m_InitPosition;
-    private Quaternion m_InitRotation;
+    private Vector3 _initPosition;
+    private Quaternion _initRotation;
 
-    private bool stopTracking;
-    private float stopTrackCount = 0;
-    private float stopTrackLimit = 1.5f;
+    private bool _stopTracking;
+    private float _stopTrackCount = 0;
+    private float _stopTrackLimit = 1.5f;
+
+    /// <summary>
+    /// Whether the EnvObject is colliding with a the posting box or not
+    /// </summary>
+    private bool _boxColliding = false;
+    /// <summary>
+    /// Time when the EnvObject collides with the box in total
+    /// </summary>
+    private float _boxColTime = 0;
+    /// <summary>
+    /// Time when the EnvObject collides with the box while entering or being posted into the box
+    /// </summary>
+    private float _boxColTimeWhilePosting = 0;
+    /// <summary>
+    /// Colliders interacting with the EnvObject
+    /// </summary>
+    private HashSet<GameObject> _boxTriggers;
+
+    public enum StatusWRTBox
+    {
+        OutsideBox,
+        EnteringBoxRight,
+        EnteringBoxWrong,
+        InsideBox
+    }
 
     /// <summary>
     /// Status of the object with reference to the box.
     /// Either "Outside Box" or "Inside Box" or "Entering {hole name}"
     /// </summary>
-    private string _statusWRTBox = "Outside Box";
+    private StatusWRTBox _statusWRTBox = StatusWRTBox.OutsideBox;
 
-    private Rigidbody m_Rigidbody;
-    private XRGrabInteractable m_GrabInteractable;
+    private Rigidbody _rigidbody;
+    private XRGrabInteractable _grabInteractable;
 
-    private DataManager m_DataManager;
+    private DataManager _dataManager;
     //add a listener to the selectEntered so it requests ownership when the object is grabbed
     public virtual void OnEnable()
     {
-        m_DataManager = FindAnyObjectByType<DataManager>();
-        m_GrabInteractable = GetComponent<XRGrabInteractable>();
-        m_Rigidbody = GetComponent<Rigidbody>();
+        _dataManager = FindAnyObjectByType<DataManager>();
+        _grabInteractable = GetComponent<XRGrabInteractable>();
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
     private void Start()
     {
-        if (m_GrabInteractable != null)
+        if (_grabInteractable != null)
         {
-            m_GrabInteractable.selectEntered.AddListener(OnGrab);
-            m_GrabInteractable.selectExited.AddListener(OnRelease);
+            _grabInteractable.selectEntered.AddListener(OnGrab);
+            _grabInteractable.selectExited.AddListener(OnRelease);
         }
         SetUp();
     }
 
     private void FixedUpdate()
     {
-        if (!tracking) return;
+        //don't update stuff for the box for now
+        if (CompareTag("Box") || !tracking) return;
 
-        if (stopTrackCount >= stopTrackLimit)
+        if (_stopTrackCount >= _stopTrackLimit)
         {
-            m_DataManager.RemoveObjectTrack(gameObject);
+            _dataManager.RemoveObjectTrack(gameObject);
             tracking = false;
             gameObject.SetActive(false);
         }
 
-        if (stopTracking)
-            stopTrackCount += Time.deltaTime;
+        if (_stopTracking)
+            _stopTrackCount += Time.deltaTime;
+
+        if (_boxColliding)
+        {
+            _boxColTime += Time.deltaTime;
+            if (_statusWRTBox == StatusWRTBox.EnteringBoxRight)
+                _boxColTimeWhilePosting += Time.deltaTime;
+        }
+        //RLogger.Log($"{name} Box Col Time {_boxColTime}");
     }
 
     public virtual void SetUp()
     {
         SetUpColliders(transform);
-        m_DataManager.AddObjectTrack(gameObject);
-        m_InitPosition = transform.position;
-        m_InitRotation = transform.rotation;
+        _dataManager.AddObjectTrack(gameObject);
+        _initPosition = transform.position;
+        _initRotation = transform.rotation;
+
+        _boxTriggers = new HashSet<GameObject>();
     }
 
     private void SetUpColliders(Transform o)
     {
-        if(o.TryGetComponent<Collider>(out Collider col) && !m_GrabInteractable.colliders.Contains(col))
-            m_GrabInteractable.colliders.Add(col);
+        if(o.TryGetComponent<Collider>(out Collider col) && !_grabInteractable.colliders.Contains(col))
+            _grabInteractable.colliders.Add(col);
 
         foreach(Transform child in o)
             SetUpColliders(child);
@@ -87,69 +124,101 @@ public class EnvObject : MonoBehaviour
     /// Get the status of the object with respect to the box
     /// </summary>
     /// <returns>The status of the object with respect to the box</returns>
-    public string GetStatus()
+    public StatusWRTBox GetStatus()
     {
         return _statusWRTBox;
     }
 
     public int GetOwnerID()
     {
-        return m_OwnerID;
+        return _ownerID;
     }
 
     public virtual void OnGrab(SelectEnterEventArgs args)
     {
-        RLogger.Log("On Grab!!!!");
-        m_Rigidbody.constraints = RigidbodyConstraints.None;
+        //RLogger.Log("On Grab!!!!");
+        _rigidbody.constraints = RigidbodyConstraints.None;
         _audioSource.Play();
-        m_Rigidbody.drag = 0;
-        m_Rigidbody.angularDrag = 0.05f;
+        _rigidbody.drag = 0;
+        _rigidbody.angularDrag = 0.05f;
     }
 
     public virtual void OnRelease(SelectExitEventArgs args)
     {
-        m_Rigidbody.constraints = RigidbodyConstraints.None;
-        m_Rigidbody.drag = 0;
-        m_Rigidbody.angularDrag = 0.05f;
+        _rigidbody.constraints = RigidbodyConstraints.None;
+        _rigidbody.drag = 0;
+        _rigidbody.angularDrag = 0.05f;
     }
 
     private void ResetToStartPos()
     {
-        transform.SetPositionAndRotation(m_InitPosition, m_InitRotation);
+        transform.SetPositionAndRotation(_initPosition, _initRotation);
         //so it doesn't keep moving with it's current velocity
-        m_Rigidbody.velocity = Vector3.zero;
-        m_Rigidbody.angularVelocity = Vector3.zero;
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
         //so we release it even after reseting position
-        if(m_GrabInteractable.isSelected)
-            m_GrabInteractable.interactionManager.CancelInteractorSelection(m_GrabInteractable.firstInteractorSelecting);
+        if(_grabInteractable.isSelected)
+            _grabInteractable.interactionManager.CancelInteractorSelection(_grabInteractable.firstInteractorSelecting);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         //_audioSource.Play();
-        if (collision.gameObject.tag == "Floor")
+        if (collision.collider.CompareTag("Floor"))
         {
             ResetToStartPos();//transform.SetPositionAndRotation(m_InitPosition, m_InitRotation);
         }
+/*        if(collision.collider.CompareTag("BoxCollider"))
+        {
+            //Debug.Log($"BoxCollider OnCollisionEnter {collision.collider}");
+            _boxColliding = true;
+            _boxTriggers.Add(collision.gameObject);
+        }*/
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        //_audioSource.Play();
+        if (collision.collider.CompareTag("Floor"))
+        {
+            ResetToStartPos();//transform.SetPositionAndRotation(m_InitPosition, m_InitRotation);
+        }
+/*        if (collision.collider.CompareTag("BoxCollider"))
+        {
+            _boxColliding = true;
+            _boxTriggers.Add(collision.gameObject);
+        }*/
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+/*        if (collision.collider.CompareTag("BoxCollider"))
+        {
+            _boxTriggers.Remove(collision.gameObject);
+            if(_boxTriggers.Count <= 0)
+                _boxColliding = false;
+        }*/
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        RLogger.Log("on trigger enter");
+        //RLogger.Log($"on trigger enter {other.name}, Tag {other.tag}");
         if (other.CompareTag("Trigger"))
         {
-            if (other.name.ToLower().Contains("reset"))
-            {
-                ResetToStartPos();
-                return;
-            }
+            if (other.name.ToLower().Contains("reset")) ResetToStartPos();
+            if (other.name.ToLower().Contains("box")) _statusWRTBox = StatusWRTBox.InsideBox;
+            else if (other.name.ToLower().Contains("hole")) _statusWRTBox = StatusWRTBox.EnteringBoxRight;
 
-            if (other.name.Equals("Box")) _statusWRTBox = "Inside Box";
-            else _statusWRTBox = $"Entering {other.name}";
+            if (other.name.ToLower().Contains("bottom"))
+            {
+                Debug.Log("Stopping Tracking True");
+                _stopTracking = true;
+            }
         }
-        if (this.CompareTag("Shape") && other.CompareTag("Bottom"))
+        else if (other.CompareTag("BoxTrigger"))
         {
-            stopTracking = true;
+            _boxColliding = true;
+            _boxTriggers.Add(other.gameObject);
         }
     }
 
@@ -158,26 +227,41 @@ public class EnvObject : MonoBehaviour
         //RLogger.Log("on trigger stay");
         if (other.CompareTag("Trigger"))
         {
-            if (other.name.Equals("Box")) _statusWRTBox = "Inside Box";
-            else _statusWRTBox = $"Entering {other.name}";
+            if (other.name.ToLower().Contains("box")) _statusWRTBox = StatusWRTBox.InsideBox;
+            else if (other.name.ToLower().Contains("hole")) _statusWRTBox = StatusWRTBox.EnteringBoxRight;
+
+            if (other.name.ToLower().Contains("bottom"))
+            {
+                Debug.Log("Stopping Tracking True");
+                _stopTracking = true;
+            }
+                
         }
-        if (this.CompareTag("Shape") && other.CompareTag("Bottom"))
+        else if (other.CompareTag("BoxTrigger"))
         {
-            stopTracking = true;
+            _boxColliding = true;
+            _boxTriggers.Add(other.gameObject);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        RLogger.Log("on trigger exit");
+        //RLogger.Log("on trigger exit");
         if (other.CompareTag("Trigger"))
         {
-            _statusWRTBox = "Outside Box";
+            _statusWRTBox = StatusWRTBox.OutsideBox;
+
+            if (other.name.ToLower().Contains("bottom"))
+            {
+                Debug.Log("Stopping Tracking False");
+                _stopTracking = false;
+            }
         }
-        if (this.CompareTag("Shape") && other.CompareTag("Bottom"))
+        if (other.CompareTag("BoxTrigger"))
         {
-            //stopTracking = false;
-            //stopTrackCount = 0;
+            _boxTriggers.Remove(other.gameObject);
+            if (_boxTriggers.Count <= 0)
+                _boxColliding = false;
         }
     }
 

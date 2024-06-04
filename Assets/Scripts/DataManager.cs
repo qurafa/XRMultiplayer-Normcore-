@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Text;
+using static EnvObject;
 
 public class DataManager : MonoBehaviour
 {
@@ -25,12 +26,11 @@ public class DataManager : MonoBehaviour
     private float _timeInterval = 0.1f;
 
     //heading for csv's
-    private string OBJECT_HEADING = "Object,Owner,Time,XPos,Ypos,ZPos,XRot,YRot,ZRot,Status\n";
-    private string PLAYER_HEADING = "Bone,Time,XPos,YPos,ZPos,XRot,YRot,ZRot\n";
-    private string EXP_HEADING = "Trial,Shape,Size,Response,ResponseTime,Time";
+    private readonly string OBJECT_HEADING = "Object,Owner,Time,XPos,Ypos,ZPos,XRot,YRot,ZRot,XScale,YScale,ZScale,Status\n";
+    private readonly string PLAYER_HEADING = "Bone,Time,XPos,YPos,ZPos,XRot,YRot,ZRot\n";
+    private readonly string EXP_HEADING = "Trial,Shape,Size,Response,ResponseTime,Time";
 
     private float timeCounter = 0;
-
 
     //all file paths
     private string EXP_FILE_PATH = "";
@@ -45,7 +45,7 @@ public class DataManager : MonoBehaviour
     //private static Dictionary<int, bool> PLAYER_FILE_READY;
     private bool OBJECT_FILE_READY = false;
     private bool _updatingTrackedObjects = false;
-    private static string SEPARATOR = ",";
+    private static readonly string SEPARATOR = ",";
 
     // Start is called before the first frame update
     void Start()
@@ -107,10 +107,8 @@ public class DataManager : MonoBehaviour
         if (_toTrack.Count <= 0) return;
 
         if (_updatingTrackedObjects) return;
-
-        string update = "";
         int ownerID = -1;
-        string status = "N/A";
+        StatusWRTBox status = StatusWRTBox.OutsideBox;
 
         foreach (GameObject track in _toTrack)
         {
@@ -119,10 +117,11 @@ public class DataManager : MonoBehaviour
                 ownerID = eO.GetOwnerID();
                 status = eO.GetStatus();
             }
-            update = $"{track.name},{ownerID},{DateTime.Now.TimeOfDay}," +
-                $"{track.transform.position.x},{track.transform.position.y},{track.transform.position.z}," +
-                $"{track.transform.eulerAngles.x},{track.transform.eulerAngles.y},{track.transform.eulerAngles.z}," +
-                $"{status}";
+            string update = $"{track.name},{ownerID},{DateTime.Now.TimeOfDay}," +
+        $"{track.transform.position.x},{track.transform.position.y},{track.transform.position.z}," +
+        $"{track.transform.eulerAngles.x},{track.transform.eulerAngles.y},{track.transform.eulerAngles.z}," +
+        $"{track.transform.lossyScale.x},{track.transform.lossyScale.y},{track.transform.lossyScale.z}," +
+        $"{status}";
             OBJECT_FILE_TEMP.AppendLine(string.Join(SEPARATOR, update));
             //Debug.Log($"Appending {update}");
         }

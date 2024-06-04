@@ -13,6 +13,8 @@ TagManager:
   - RightController
   - CameraOffset
   - Floor
+  - BoxCollider
+  - BoxTrigger
   layers:
   - Default
   - TransparentFX

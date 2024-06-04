@@ -423,7 +423,7 @@ public class ExpController : MonoBehaviour
 
     public void SetExpType(int type)
     {
-        _expType = type;
+        _expType = type+1;
 
         switch(type)
         {
@@ -438,7 +438,7 @@ public class ExpController : MonoBehaviour
                 m_FacePlayer = false;
                 m_RandomShapeLocation = false;
                 m_CanGrabBox = false; m_CanGrabShapes = true;
-                m_MinBlankTimeLimit = 3; m_MaxBlankTimeLimit = 300; m_TrialTimeLimit = 5f;
+                m_MinBlankTimeLimit = 3; m_MaxBlankTimeLimit = 300; m_TrialTimeLimit = 10f;// 5f;
                 m_NumberSmaller = 3; m_NumberLarger = 3; m_NumOfShapes = 4;
                 break;
             default: break;
@@ -508,8 +508,6 @@ public class ExpController : MonoBehaviour
 
         return true;
     }
-
-    
 
     public List<string> GetOrder()
     { 
@@ -680,11 +678,11 @@ public class ExpController : MonoBehaviour
         string trial = GetNextTrial();
 
         int index = int.Parse(trial.Split('|')[0]);
-        string shape = trial.Split('|')[1];
         
         int loc = int.Parse(trial.Split('|')[3]);
 
         spawn = Instantiate(m_Shapes[index], m_ShapeSpawn[loc].transform);
+        spawn.name = $"{m_Shapes[index].name}_Trial{_nTrialNumber}";
         InitShapeSpawn();
     }
 
