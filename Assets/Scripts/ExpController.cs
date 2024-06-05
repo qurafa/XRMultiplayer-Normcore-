@@ -42,11 +42,16 @@ public class ExpController : MonoBehaviour
     [SerializeField]
     protected AudioSource m_SaveAudio;
     /// <summary>
-    /// Name of the shapes we'll be using, ensure they're in the Resource folder
+    /// The regular shapes that we can use, ensure to specify them if you plan on using them
     /// </summary>
     [Header("EXPERIMENT VARIABLES")]
     [SerializeField]
-    protected GameObject[] m_Shapes = new GameObject[] { };
+    protected GameObject[] m_RegularShapes = new GameObject[] { };
+    /// <summary>
+    /// The complex shapes that we can use, ensure to specify them if you plan on using them
+    /// </summary>
+    [SerializeField]
+    protected GameObject[] m_ComplexShapes = new GameObject[] { };
     /// <summary>
     /// Whether the shapes and the box should face towards the player's position or not
     /// </summary>
@@ -184,6 +189,11 @@ public class ExpController : MonoBehaviour
 
     protected Dictionary<string, Vector3> _shapeToBoxRotation0;
     protected Dictionary<string, Vector3[]> _shapeToBoxRotation1;
+
+    /// <summary>
+    /// The shapes being used in this run of the experiment
+    /// </summary>
+    protected GameObject[] m_Shapes;
 
     private int randomShapeLoc
     {
@@ -425,23 +435,35 @@ public class ExpController : MonoBehaviour
     {
         _expType = type+1;
 
-        switch(type)
+        if(type == 0 || type == 2)
         {
-            case 0:
-                m_FacePlayer = false;
-                m_RandomShapeLocation = false;
-                m_CanGrabBox= false; m_CanGrabShapes = false;
-                m_MinBlankTimeLimit = 3; m_MaxBlankTimeLimit = 300; m_TrialTimeLimit = 2.5f;
-                m_NumberSmaller = 3; m_NumberLarger = 3; m_NumOfShapes = 4;
-                break;
-            case 1:
-                m_FacePlayer = false;
-                m_RandomShapeLocation = false;
-                m_CanGrabBox = false; m_CanGrabShapes = true;
-                m_MinBlankTimeLimit = 3; m_MaxBlankTimeLimit = 300; m_TrialTimeLimit = 10f;// 5f;
-                m_NumberSmaller = 3; m_NumberLarger = 3; m_NumOfShapes = 4;
-                break;
-            default: break;
+            m_FacePlayer = false;
+            m_RandomShapeLocation = false;
+            m_CanGrabBox = false; m_CanGrabShapes = false;
+            m_MinBlankTimeLimit = 3; m_MaxBlankTimeLimit = 300; m_TrialTimeLimit = 2.5f;
+            m_NumberSmaller = 3; m_NumberLarger = 3; m_NumOfShapes = 4;
+
+            if (type == 0)
+                m_Shapes = m_RegularShapes;
+            if (type == 2)
+                m_Shapes = m_ComplexShapes;
+        }
+        else if(type == 1 || type == 3)
+        {
+            m_FacePlayer = false;
+            m_RandomShapeLocation = false;
+            m_CanGrabBox = false; m_CanGrabShapes = true;
+            m_MinBlankTimeLimit = 3; m_MaxBlankTimeLimit = 300; m_TrialTimeLimit = 10f;// 5f;
+            m_NumberSmaller = 3; m_NumberLarger = 3; m_NumOfShapes = 4;
+
+            if (type == 1)
+                m_Shapes = m_RegularShapes;
+            if (type == 3)
+                m_Shapes = m_ComplexShapes;
+        }
+        else
+        {
+            RLogger.Log($"ExpType {type} not valid");
         }
     }
 

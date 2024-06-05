@@ -6666,7 +6666,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Exp 1
+  m_Text: Exp 1 (Non Interact Simple)
 --- !u!222 &993699425
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9173,9 +9173,13 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: Exp 1
+    - m_Text: Exp 1 (Non Interact Simple)
       m_Image: {fileID: 0}
-    - m_Text: Exp 2
+    - m_Text: Exp 2 (Interact Simple)
+      m_Image: {fileID: 0}
+    - m_Text: Exp 3 (Non Interact Complex)
+      m_Image: {fileID: 0}
+    - m_Text: Exp 4 (Interact Complex)
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:

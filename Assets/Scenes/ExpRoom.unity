@@ -5916,11 +5916,16 @@ MonoBehaviour:
   - {fileID: 720954386}
   - {fileID: 1238595216}
   m_SaveAudio: {fileID: 687863478}
-  m_Shapes:
-  - {fileID: 3324249360952219856, guid: 522ee75623f13e5438d1f74b3de27aeb, type: 3}
+  m_RegularShapes:
+  - {fileID: 6906252785099467498, guid: 3969823beb6eab440bbe742b65355020, type: 3}
+  - {fileID: 8081281336320705225, guid: a5db500c5fc6a2247bf278880f2764b2, type: 3}
+  - {fileID: 2052806445666274366, guid: ab09aef92b40186429676981b11faa8b, type: 3}
+  - {fileID: 3324249360952219856, guid: 4d4f55e52627be34b96d9cf1b3f0b046, type: 3}
+  m_ComplexShapes:
   - {fileID: 6906252785099467498, guid: 7a73d32afe96e684fba538fa6440ac6f, type: 3}
-  - {fileID: 2052806445666274366, guid: 2a9bc28c83b8ac04fbc6d14ebe556833, type: 3}
   - {fileID: 8081281336320705225, guid: c365d0d5ed30a804981dc21fbf148b28, type: 3}
+  - {fileID: 2052806445666274366, guid: 2a9bc28c83b8ac04fbc6d14ebe556833, type: 3}
+  - {fileID: 3324249360952219856, guid: 522ee75623f13e5438d1f74b3de27aeb, type: 3}
   m_FacePlayer: 0
   m_RandomShapeLocation: 0
   m_CanGrabBox: 0
