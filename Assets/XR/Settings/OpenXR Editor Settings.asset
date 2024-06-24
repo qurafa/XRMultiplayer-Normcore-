@@ -15,9 +15,10 @@ MonoBehaviour:
   Keys: 07000000010000000e000000
   Values:
   - featureSets:
-    - com.unity.openxr.featureset.meta
+    - com.magicleap.openxr.featuregroup
   - featureSets:
-    - com.microsoft.openxr.featureset.wmr
+    - com.magicleap.openxr.featuregroup.appsim
   - featureSets:
     - com.microsoft.openxr.featureset.hololens
     - com.microsoft.openxr.featureset.appremoting
+  m_vulkanAdditionalGraphicsQueue: 0

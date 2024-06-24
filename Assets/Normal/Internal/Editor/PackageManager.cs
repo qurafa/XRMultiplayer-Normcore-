@@ -60,9 +60,9 @@ namespace Normal {
             // Load packages.json
             string packageManifestPath = Application.dataPath.Replace("/Assets", "/Packages/manifest.json");
             string packageManifestJSON = File.ReadAllText(packageManifestPath);
-            
+
             // Deserialize
-            SimpleJson.TryDeserializeObject(packageManifestJSON, out object packageManifestObject);
+            Normal.Internal.SimpleJson.SimpleJson.TryDeserializeObject(packageManifestJSON, out object packageManifestObject);
             JsonObject packageManifest = packageManifestObject as JsonObject;
             if (packageManifest == null) {
                 Debug.LogError("Normcore Package Manager: Failed to read project package manifest. Unable to add Normcore.");
@@ -96,7 +96,7 @@ namespace Normal {
             scopedRegistries.Add(normalRegistry);
 
             // Serialize and save
-            string packageManifestJSONUpdated = SimpleJson.SerializeObject(packageManifest);
+            string packageManifestJSONUpdated = Normal.Internal.SimpleJson.SimpleJson.SerializeObject(packageManifest);
             File.WriteAllText(packageManifestPath, packageManifestJSONUpdated);
             if (__debugLogging) Debug.Log("Normcore Package Manager: Added Normal registry");
 

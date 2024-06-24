@@ -141,6 +141,7 @@ public class EnvObject : MonoBehaviour
         _audioSource.Play();
         _rigidbody.drag = 0;
         _rigidbody.angularDrag = 0.05f;
+        _rigidbody.isKinematic = true;
     }
 
     public virtual void OnRelease(SelectExitEventArgs args)
@@ -148,6 +149,7 @@ public class EnvObject : MonoBehaviour
         _rigidbody.constraints = RigidbodyConstraints.None;
         _rigidbody.drag = 0;
         _rigidbody.angularDrag = 0.05f;
+        _rigidbody.isKinematic = false;
     }
 
     private void ResetToStartPos()

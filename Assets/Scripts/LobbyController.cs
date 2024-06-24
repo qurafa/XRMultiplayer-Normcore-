@@ -144,7 +144,7 @@ public class LobbyController : MonoBehaviour
 
         if (!helper)
         {
-            Debug.Log("realtimehelper not present!!");
+            Debug.Log("SceneHelper not present!!");
             LoadScene(0);
         }
         helper.JoinRoom(transform);
