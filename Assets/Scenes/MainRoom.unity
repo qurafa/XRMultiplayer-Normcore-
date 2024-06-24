@@ -8072,7 +8072,7 @@ MonoBehaviour:
   m_StopLineAtFirstRaycastHit: 1
   m_StopLineAtSelection: 1
   m_SnapEndpointIfAvailable: 1
-  m_LineBendRatio: 0.5
+  m_LineBendRatio: 1
   m_OverrideInteractorLineOrigin: 1
   m_LineOriginTransform: {fileID: 936154431}
   m_LineOriginOffset: 0
@@ -14315,7 +14315,7 @@ MonoBehaviour:
   m_StopLineAtFirstRaycastHit: 1
   m_StopLineAtSelection: 1
   m_SnapEndpointIfAvailable: 1
-  m_LineBendRatio: 0.5
+  m_LineBendRatio: 1
   m_OverrideInteractorLineOrigin: 1
   m_LineOriginTransform: {fileID: 1024132972}
   m_LineOriginOffset: 0.0375
@@ -18597,7 +18597,7 @@ MonoBehaviour:
   m_StopLineAtFirstRaycastHit: 1
   m_StopLineAtSelection: 1
   m_SnapEndpointIfAvailable: 1
-  m_LineBendRatio: 0.5
+  m_LineBendRatio: 1
   m_OverrideInteractorLineOrigin: 1
   m_LineOriginTransform: {fileID: 291560522}
   m_LineOriginOffset: 0.0375
@@ -23414,7 +23414,7 @@ MonoBehaviour:
   m_StopLineAtFirstRaycastHit: 1
   m_StopLineAtSelection: 1
   m_SnapEndpointIfAvailable: 1
-  m_LineBendRatio: 0.5
+  m_LineBendRatio: 1
   m_OverrideInteractorLineOrigin: 1
   m_LineOriginTransform: {fileID: 941409077}
   m_LineOriginOffset: 0

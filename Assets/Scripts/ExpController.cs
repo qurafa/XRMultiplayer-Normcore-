@@ -163,10 +163,13 @@ public class ExpController : MonoBehaviour
     /// </summary>
     protected DateTime _entryTime = DateTime.Now;
 
-    //important variables
+    //static variables
     protected readonly static string LARGER_RESPONSE = "1";
     protected readonly static string SMALLER_RESPONSE = "0";
     protected readonly static string NO_RESPONSE = "-1";
+    protected readonly static int DEFAULT_NO_SHAPE = 4;
+    protected readonly static int DEFAULT_NO_LARGER = 3;
+    protected readonly static int DEFAULT_NO_SMALLER = 3;
 
     //soooo many flags.........lol
     //when we're ready to start flag
@@ -441,7 +444,7 @@ public class ExpController : MonoBehaviour
             m_RandomShapeLocation = false;
             m_CanGrabBox = false; m_CanGrabShapes = false;
             m_MinBlankTimeLimit = 3; m_MaxBlankTimeLimit = 300; m_TrialTimeLimit = 2.5f;
-            m_NumberSmaller = 3; m_NumberLarger = 3; m_NumOfShapes = 4;
+            m_NumberSmaller = DEFAULT_NO_SMALLER; m_NumberLarger = DEFAULT_NO_LARGER; m_NumOfShapes = DEFAULT_NO_SHAPE;
 
             if (type == 0)
                 m_Shapes = m_RegularShapes;
@@ -454,7 +457,7 @@ public class ExpController : MonoBehaviour
             m_RandomShapeLocation = false;
             m_CanGrabBox = false; m_CanGrabShapes = true;
             m_MinBlankTimeLimit = 3; m_MaxBlankTimeLimit = 300; m_TrialTimeLimit = 10f;// 5f;
-            m_NumberSmaller = 3; m_NumberLarger = 3; m_NumOfShapes = 4;
+            m_NumberSmaller = DEFAULT_NO_SMALLER; m_NumberLarger = DEFAULT_NO_LARGER; m_NumOfShapes = DEFAULT_NO_SHAPE;
 
             if (type == 1)
                 m_Shapes = m_RegularShapes;
