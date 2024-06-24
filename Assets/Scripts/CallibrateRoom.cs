@@ -146,7 +146,7 @@ public class CallibrateRoom : MonoBehaviour
         {
             _mode = value;
 
-            ToggleModeUI();
+            //ToggleModeUI();
             ModeChanged();
         }
     }
@@ -158,7 +158,7 @@ public class CallibrateRoom : MonoBehaviour
         {
             _vision = value;
 
-            VisionChanged();
+            //VisionChanged();
         }
     }
 
@@ -365,7 +365,7 @@ public class CallibrateRoom : MonoBehaviour
                 m.color = c;
             }
             passThrough.color = UI_NOT_SELECTED;
-            _ARSession.enabled = false;
+            //_ARSession.enabled = false;
         }
         else if (vision == Vision.Passthrough)
         {
@@ -384,7 +384,7 @@ public class CallibrateRoom : MonoBehaviour
                 m.color = c;
             }
             passThrough.color = UI_SELECTED;
-            _ARSession.enabled = true;
+            //_ARSession.enabled = true;
         }
         else
         {
