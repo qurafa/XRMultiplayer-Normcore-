@@ -74,6 +74,8 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 #Project Setting specific files
-/[Aa]ssets/MagicLeapSettings.asset
-ProjectSettings\EditorBuildSettings.asset
-ProjectSettings\ProjectSettings.asset
+Assets/MagicLeapSettings.asset
+ProjectSettings/ProjectSettings.asset
+ProjectSettings/EditorBuildSettings.asset
+Assets/XR/Settings/OpenXR Editor Settings.asset
+Assets/XR/Settings/OpenXR Package Settings.asset
