@@ -15,6 +15,7 @@ TagManager:
   - Floor
   - BoxCollider
   - BoxTrigger
+  - SlotMarkers
   layers:
   - Default
   - TransparentFX

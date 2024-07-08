@@ -33,14 +33,32 @@ public class ExpController : MonoBehaviour
     /// </summary>
     [SerializeField]
     protected Transform m_ExpSetUp;
+    /// <summary>
+    /// The sorting cube in the scene
+    /// </summary>
     [SerializeField]
     protected Transform m_SortingCube;
+    /// <summary>
+    /// The spawn location for the sorting cube
+    /// </summary>
     [SerializeField]
     protected Transform m_CubeSpawn;
+    /// <summary>
+    /// The spawn locations for the shapes
+    /// </summary>
     [SerializeField]
     protected Transform[] m_ShapeSpawn = new Transform[] { };
+    /// <summary>
+    /// Used to highlight or draw attention to the hole/slot for different shapes 
+    /// </summary>
+    [SerializeField]
+    protected GameObject[] m_ShapeSlotMarkers = new GameObject[] { };
+    /// <summary>
+    /// Audio to play after player inputs their response
+    /// </summary>
     [SerializeField]
     protected AudioSource m_SaveAudio;
+
     /// <summary>
     /// The regular shapes that we can use, ensure to specify them if you plan on using them
     /// </summary>
@@ -118,10 +136,20 @@ public class ExpController : MonoBehaviour
     [SerializeField]
     protected float m_ScaleDiff = 0.025f;
     /// <summary>
-    /// Number of shapes to use, picks randon n number of shapes to use
+    /// Number of shapes to use, picks random n number of shapes to use
     /// </summary>
     [SerializeField]
     protected int m_NumOfShapes = 4;
+    /// <summary>
+    /// Player's distance from the experiment set up in meters
+    /// </summary>
+    [SerializeField]
+    protected float m_PlayerDistanceFromSetup = 0.8f;
+    /// <summary>
+    /// Max reach distance of the player using the raycast
+    /// </summary>
+    /*[SerializeField]
+    protected float m_PlayerReachDistance = 10f;*/
 
     /// <summary>
     /// Button for larger input response
@@ -137,7 +165,18 @@ public class ExpController : MonoBehaviour
     [SerializeField]
     protected InputAction resetButton;
 
-    protected int _expType;
+    public enum ExpType
+    {
+        NonInteractiveSimple,
+        InteractiveSimple,
+        NonInteractiveComplex,
+        InteractiveComplex,
+    }
+
+    /// <summary>
+    /// Experiment types
+    /// </summary>
+    protected ExpType _expType;
     /// <summary>
     /// List of order of the experiment. Contains string in format "shapeNumber|shapeName|scale|spawnLocation";
     /// </summary>
@@ -192,28 +231,12 @@ public class ExpController : MonoBehaviour
 
     protected Dictionary<string, Vector3> _shapeToBoxRotation0;
     protected Dictionary<string, Vector3[]> _shapeToBoxRotation1;
+    protected Dictionary<string, GameObject> _shapeToMarker;
 
     /// <summary>
     /// The shapes being used in this run of the experiment
     /// </summary>
     protected GameObject[] m_Shapes;
-
-    private int randomShapeLoc
-    {
-        get
-        {
-            if (m_RandomShapeLocation)
-            {
-                Debug.Log("Random Shape Location");
-                return UnityEngine.Random.Range(0, m_ShapeSpawn.Length);
-            }
-            else
-            {
-                Debug.Log("Non Random Shape Location");
-                return 0;
-            }
-        }
-    }
 
     virtual protected void OnEnable()
     {
@@ -266,7 +289,31 @@ public class ExpController : MonoBehaviour
         }
     }
 
-    protected void SetUpRotations()
+    public void Initialize()
+    {
+        if (!ToRun || _ready) return;
+        //Set the box rotation for the different shapes
+        SetBoxRotations();
+        //Shuffle the order of the shapes
+        ShuffleShapes();
+        //Set up experiment order
+        CreateExpOrder();
+        //Shuffle the order
+        ShuffleOrder();
+        //Setting up the shape markers and match them to their corresponding shapes
+        AssignSlotMarkers();
+        //Create file path to store entries 
+        CreateExpFile();
+
+        _playerTransform = m_PlayerCamera.transform;
+
+        _ready = true;
+
+        //Start exp
+        //NextTrial();
+    }
+
+    protected void SetBoxRotations()
     {
         if (m_FacePlayer)
         {
@@ -294,26 +341,26 @@ public class ExpController : MonoBehaviour
                     Debug.Log("SHAPE NAME NOT RECOGNIZED!!!");
                 }
             }
-/*            _shapeToBoxRotation1 = new Dictionary<string, Vector3[]>
-            {
-                //set from trying it out with the box in teh editor and setting it here,
-                //you'll have to do that again on your end if you want to change the values for whatever reason
-                { "Trapezoid", new[] { Vector3.up, new Vector3(0, -90, 0) } },
-                { "Oval", new[] { Vector3.up, new Vector3(0, -90, 0) } },
-                { "Diamond", new[] { Vector3.up, new Vector3(0, -90, 0) } },
+            /*            _shapeToBoxRotation1 = new Dictionary<string, Vector3[]>
+                        {
+                            //set from trying it out with the box in teh editor and setting it here,
+                            //you'll have to do that again on your end if you want to change the values for whatever reason
+                            { "Trapezoid", new[] { Vector3.up, new Vector3(0, -90, 0) } },
+                            { "Oval", new[] { Vector3.up, new Vector3(0, -90, 0) } },
+                            { "Diamond", new[] { Vector3.up, new Vector3(0, -90, 0) } },
 
-                { "Quatrefoil", new[] { Vector3.down, new Vector3(90, 0, 0) } },
-                { "Square", new[] { Vector3.down, new Vector3(90, 0, 0) } },
-                { "Triangle", new[] { Vector3.down, new Vector3(90, 0, 0) } },
+                            { "Quatrefoil", new[] { Vector3.down, new Vector3(90, 0, 0) } },
+                            { "Square", new[] { Vector3.down, new Vector3(90, 0, 0) } },
+                            { "Triangle", new[] { Vector3.down, new Vector3(90, 0, 0) } },
 
-                { "Octagon", new[] { Vector3.up, new Vector3(90, 0, 0) } },
-                { "Parallelogram", new[] { Vector3.up, new Vector3(90, 0, 0) } },
-                { "Star", new[] { Vector3.up, new Vector3(90, 0, 0) } },
+                            { "Octagon", new[] { Vector3.up, new Vector3(90, 0, 0) } },
+                            { "Parallelogram", new[] { Vector3.up, new Vector3(90, 0, 0) } },
+                            { "Star", new[] { Vector3.up, new Vector3(90, 0, 0) } },
 
-                { "Hexagon", new[] { Vector3.up, new Vector3(0, 90, 0) } },
-                { "Rectangle", new[] { Vector3.up, new Vector3(0, 90, 0) } },
-                { "Pentagon", new[] { Vector3.up, new Vector3(0, 90, 0) } }
-            };*/
+                            { "Hexagon", new[] { Vector3.up, new Vector3(0, 90, 0) } },
+                            { "Rectangle", new[] { Vector3.up, new Vector3(0, 90, 0) } },
+                            { "Pentagon", new[] { Vector3.up, new Vector3(0, 90, 0) } }
+                        };*/
         }
         else
         {
@@ -321,7 +368,7 @@ public class ExpController : MonoBehaviour
             foreach (GameObject s in m_Shapes)
             {
                 Debug.Log($"Shape Name {s.name}");
-                if(s.name.ToLower().Contains("trapezoid") || s.name.ToLower().Contains("oval") || s.name.ToLower().Contains("diamond"))
+                if (s.name.ToLower().Contains("trapezoid") || s.name.ToLower().Contains("oval") || s.name.ToLower().Contains("diamond"))
                 {
                     _shapeToBoxRotation0.Add(s.name, new Vector3(0, 180, 0));
                 }
@@ -342,52 +389,83 @@ public class ExpController : MonoBehaviour
                     Debug.Log("SHAPE NAME NOT RECOGNIZED!!!");
                 }
             }
-/*            _shapeToBoxRotation0 = new Dictionary<string, Vector3>
-            {
-                //without LookAt vector, euler angles is....new Vector3(0, 180, 0)
-                { "Trapezoid", new Vector3(0, 180, 0) },
-                { "Oval", new Vector3(0, 180, 0) },
-                { "Diamond", new Vector3(0, 180, 0) },
+            /*            _shapeToBoxRotation0 = new Dictionary<string, Vector3>
+                        {
+                            //without LookAt vector, euler angles is....new Vector3(0, 180, 0)
+                            { "Trapezoid", new Vector3(0, 180, 0) },
+                            { "Oval", new Vector3(0, 180, 0) },
+                            { "Diamond", new Vector3(0, 180, 0) },
 
-                //new Vector3 (-90, 0, 90)
-                { "Quatrefoil", new Vector3(-90, 0, 90) },
-                { "Square", new Vector3(-90, 0, 90) },
-                { "Triangle", new Vector3(-90, 0, 90) },
+                            //new Vector3 (-90, 0, 90)
+                            { "Quatrefoil", new Vector3(-90, 0, 90) },
+                            { "Square", new Vector3(-90, 0, 90) },
+                            { "Triangle", new Vector3(-90, 0, 90) },
 
-                //new Vector3 (0, -90, 0)
-                { "Octagon", new Vector3(0, -90, 0) },
-                { "Parallelogram", new Vector3(0, -90, 0) },
-                { "Star", new Vector3(0, -90, 0) },
+                            //new Vector3 (0, -90, 0)
+                            { "Octagon", new Vector3(0, -90, 0) },
+                            { "Parallelogram", new Vector3(0, -90, 0) },
+                            { "Star", new Vector3(0, -90, 0) },
 
-                //new Vector3(0, 0, 0)
-                { "Hexagon", new Vector3(0, 0, 0) },
-                { "Rectangle", new Vector3(0, 0, 0) },
-                { "Pentagon", new Vector3(0, 0, 0) }
-            };*/
+                            //new Vector3(0, 0, 0)
+                            { "Hexagon", new Vector3(0, 0, 0) },
+                            { "Rectangle", new Vector3(0, 0, 0) },
+                            { "Pentagon", new Vector3(0, 0, 0) }
+                        };*/
         }
     }
 
-    public void Initialize()
+    protected void AssignSlotMarkers()
     {
-        if (!ToRun || _ready) return;
+        _shapeToMarker = new Dictionary<string, GameObject>();
 
-        SetUpRotations();
-        //Shuffle the order of the shapes
-        ShuffleShapes();
-        //Set up experiment order
-        CreateExpOrder();
-        //Shuffle the order
-        ShuffleOrder();
+        foreach(GameObject shape in m_Shapes)
+        {
+            _shapeToMarker.Add(shape.name, GetSlotMarker(shape));
+        }
+    }
 
-        //Create file path to store entries 
-        CreateExpFile();
+    protected GameObject GetSlotMarker(GameObject s)
+    {
+        foreach(GameObject sm in m_ShapeSlotMarkers)
+        {
+            if (s.name.ToLower().Contains("trapezoid") && sm.name.ToLower().Contains("trapezoid"))
+                return sm;
+            if (s.name.ToLower().Contains("oval") && sm.name.ToLower().Contains("oval"))
+                return sm;
+            if (s.name.ToLower().Contains("diamond") && sm.name.ToLower().Contains("diamond"))
+                return sm;
+            if (s.name.ToLower().Contains("quatrefoil") && sm.name.ToLower().Contains("quatrefoil"))
+                return sm;
+            if (s.name.ToLower().Contains("square") && sm.name.ToLower().Contains("square"))
+                return sm;
+            if (s.name.ToLower().Contains("triangle") && sm.name.ToLower().Contains("triangle"))
+                return sm;
+            if (s.name.ToLower().Contains("octagon") && sm.name.ToLower().Contains("octagon"))
+                return sm;
+            if (s.name.ToLower().Contains("parallelogram") && sm.name.ToLower().Contains("parallelogram"))
+                return sm;
+            if (s.name.ToLower().Contains("star") && sm.name.ToLower().Contains("star"))
+                return sm;
+            if (s.name.ToLower().Contains("hexagon") && sm.name.ToLower().Contains("hexagon"))
+                return sm;
+            if (s.name.ToLower().Contains("rectangle") && sm.name.ToLower().Contains("rectangle"))
+                return sm;
+            if (s.name.ToLower().Contains("pentagon") && sm.name.ToLower().Contains("pentagon"))
+                return sm;
+        }
 
-        _playerTransform = m_PlayerCamera.transform;
+        return null;
+    }
 
-        _ready = true;
+    private void HideAllSlotMarkers(SelectEnterEventArgs arg0)
+    {
+        HideAllSlotMarkers();
+    }
 
-        //Start exp
-        //NextTrial();
+    protected void HideAllSlotMarkers()
+    {
+        foreach(GameObject sm in m_ShapeSlotMarkers)
+            sm.SetActive(false);
     }
 
     protected void NextSetUp()
@@ -397,7 +475,7 @@ public class ExpController : MonoBehaviour
         float xDiff = m_PlayerCamera.transform.position.x - m_ExpSetUp.transform.position.x;
         float yDiff = m_PlayerCamera.transform.position.y - m_ExpSetUp.transform.position.y;
         float zDiff = m_PlayerCamera.transform.position.z - m_ExpSetUp.transform.position.z;
-        m_ExpSetUp.Translate(new Vector3(xDiff + 0.8f, yDiff, zDiff));
+        m_ExpSetUp.Translate(new Vector3(xDiff + m_PlayerDistanceFromSetup, yDiff, zDiff));
 
         string trial = GetNextTrial();
         string shape = trial.Split('|')[1];
@@ -424,8 +502,12 @@ public class ExpController : MonoBehaviour
         {
             m_SortingCube.eulerAngles = _shapeToBoxRotation0[shape];
             //m_ShapeSpawn[loc].eulerAngles = new Vector3(90, 90, 0);
-            m_ShapeSpawn[loc].eulerAngles = new Vector3(90, -90, 0);
+            //m_ShapeSpawn[loc].eulerAngles = new Vector3(90, -90, 0);
+            m_ShapeSpawn[loc].eulerAngles = new Vector3(90, -180, -180);
         }
+
+        //activate the shape slot marker
+        _shapeToMarker[shape].SetActive(true);
     }
 
     public void SetPID(string id)
@@ -436,7 +518,7 @@ public class ExpController : MonoBehaviour
 
     public void SetExpType(int type)
     {
-        _expType = type+1;
+        _expType = (ExpType)type;
 
         if(type == 0 || type == 2)
         {
@@ -496,6 +578,23 @@ public class ExpController : MonoBehaviour
     {
         m_Condition = cond;
         Debug.Log($"set condition to {cond}");
+    }
+
+    private int randomShapeLoc
+    {
+        get
+        {
+            if (m_RandomShapeLocation)
+            {
+                Debug.Log("Random Shape Location");
+                return UnityEngine.Random.Range(0, m_ShapeSpawn.Length);
+            }
+            else
+            {
+                Debug.Log("Non Random Shape Location");
+                return 0;
+            }
+        }
     }
 
     protected bool CreateExpOrder()
@@ -597,8 +696,8 @@ public class ExpController : MonoBehaviour
     /// </summary>
     protected void CreateExpFile()
     {
-        m_DataManager.CreateExpFile($"Exp{_expType}_{m_PID}_{m_Condition}_{m_Repeats}Reps_{m_ScaleDiff}Range");
-/*        FILE_PATH = $"{Application.persistentDataPath}/ExpEntry_{System.DateTime.Now:yyyy-MM-dd-HH_mm_ss}.csv";
+        m_DataManager.CreateExpFile($"Exp{_expType.ToSafeString()}_{m_PID}_{m_Condition}_{m_Repeats}Reps_{m_ScaleDiff}Range");
+        /*FILE_PATH = $"{Application.persistentDataPath}/ExpEntry_{System.DateTime.Now:yyyy-MM-dd-HH_mm_ss}.csv";
         Debug.Log("fILE PATH IS: " + FILE_PATH);
 
         FILE_TEMP = new StringBuilder();
@@ -669,6 +768,7 @@ public class ExpController : MonoBehaviour
 
         _savedEntry = false;
 
+        HideAllSlotMarkers();
         //Set up experiment env
         NextSetUp();
 
@@ -676,6 +776,7 @@ public class ExpController : MonoBehaviour
         {
             m_DataManager.RemoveObjectTrack(spawn);
             DestroySpawnShape();
+            //deactivate the active slot markers
         }
 
         SpawnShape();
@@ -735,6 +836,9 @@ public class ExpController : MonoBehaviour
         if (spawn.TryGetComponent<XRGrabInteractable>(out XRGrabInteractable g))
         {
             g.enabled = m_CanGrabShapes;
+            //to turn of the slot marker after grabbing the shape
+            if(m_CanGrabShapes)
+                g.selectEntered.AddListener(HideAllSlotMarkers);
         }
     }
 
@@ -753,7 +857,8 @@ public class ExpController : MonoBehaviour
     /// <returns></returns>
     protected bool NextWait()
     {
-        Debug.Log("Unable to proceed to Next.......waiting");
+        Debug.Log($"Unable to proceed to Next.......waiting \n " +
+            $"ToRun: {ToRun}; _ready: {_ready}; _nextLoading: {_nextLoading}; _minBlankLoading: {_minBlankLoading}; _trialLoading: {_trialLoading};");
         return (!ToRun || !_ready || _nextLoading || _minBlankLoading || _trialLoading);
     }
 

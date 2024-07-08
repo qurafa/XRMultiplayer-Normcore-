@@ -334,3 +334,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tracking: 1
   _audioSource: {fileID: 0}
+  _ownerID: 0

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MeasureToolSettings
   m_EditorClassIdentifier: 
   mode: 0
-  unit: 0
+  unit: 2
   scale: 0
   lineColor: {r: 0, g: 0, b: 0, a: 1}
   handlesSize: 0.01
