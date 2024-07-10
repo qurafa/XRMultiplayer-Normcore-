@@ -9181,6 +9181,8 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: Exp 4 (Interact Complex)
       m_Image: {fileID: 0}
+    - m_Text: Exp 5 (Rotating Complex)
+      m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
