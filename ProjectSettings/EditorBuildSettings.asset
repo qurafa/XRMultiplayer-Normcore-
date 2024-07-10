@@ -11,7 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ML2_MainRoom.unity
     guid: 49c60e9458da0ed43adcd8a0308ac530
-  - enabled: 1
+  - enabled: 0
     path: Assets/Samples/XR Interaction Toolkit/2.5.4/Hands Interaction Demo/ML2_HandsDemoScene.unity
     guid: c98a692355d324243bc0748efed0b2b0
   m_configObjects:
