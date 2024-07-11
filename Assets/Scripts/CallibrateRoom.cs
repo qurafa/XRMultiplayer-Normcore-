@@ -111,6 +111,8 @@ public class CallibrateRoom : MonoBehaviour
     [SerializeField]
     private InputAction rightJS;
 
+    private Vector2 rightJsValTemp = new Vector2(0,0);
+
     /// <summary>
     /// What we send to the SceneLoader as we move to the next scene
     /// </summary>
@@ -253,7 +255,7 @@ public class CallibrateRoom : MonoBehaviour
     {
         if (mode == Mode.CalibratingPos) {
             Vector2 val = rightJS.ReadValue<Vector2>();
-
+            val = val - rightJsValTemp;
             _rotRef.transform.eulerAngles = new Vector3(0, _rotationReference.transform.eulerAngles.y, 0);
             _room.transform.Translate(new Vector3(val.x, 0, val.y) * posFactor, _rotRef.transform);
         }
