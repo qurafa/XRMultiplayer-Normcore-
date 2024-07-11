@@ -225,6 +225,7 @@ public class ExpController : MonoBehaviour
     protected readonly static int DEFAULT_NO_LARGER = 3;//3 sizes bigger for each shape
     protected readonly static int DEFAULT_NO_SMALLER = 3;//3 sizes smaler for each shape
     protected readonly static float MAX_SHAPE_ROTATE_TIME = 1;//shape rotates every 1 second
+    protected readonly static float SLOT_MARKER_MAX_TIME = 2;//time limit for the slot markers to show in in seconds
 
     //soooo many flags.........lol
     //when we're ready to start flag
@@ -244,8 +245,7 @@ public class ExpController : MonoBehaviour
 
     //slot marker timer
     protected float _slotMarkerTimer = 0;
-
-     
+    protected bool _slotMarked = false;
 
     //shape rotate timer
     protected float _rotateTimer = 0;
@@ -310,6 +310,16 @@ public class ExpController : MonoBehaviour
 
                 SaveEntry(NO_RESPONSE);
                 NextTrial();
+            }
+        }
+
+        if (_slotMarked)
+        {
+            _slotMarkerTimer += Time.deltaTime;
+            if(_slotMarkerTimer > SLOT_MARKER_MAX_TIME)
+            {
+                HideAllSlotMarkers();
+                _slotMarkerTimer = 0;
             }
         }
 
@@ -497,6 +507,7 @@ public class ExpController : MonoBehaviour
     {
         foreach(GameObject sm in m_ShapeSlotMarkers)
             sm.SetActive(false);
+        _slotMarked = false;
     }
 
     protected void NextSetUp()
@@ -539,6 +550,7 @@ public class ExpController : MonoBehaviour
 
         //activate the shape slot marker
         _shapeToMarker[shape].SetActive(true);
+        _slotMarked = true;
     }
 
     public void SetPID(string id)

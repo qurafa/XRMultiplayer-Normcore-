@@ -1684,6 +1684,18 @@ PrefabInstance:
       propertyPath: m_ProvidesContacts
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 146149392799739801, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 146149392799739801, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 146149392799739801, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.0075
+      objectReference: {fileID: 0}
     - target: {fileID: 198028291464212016, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
       propertyPath: m_ProvidesContacts
       value: 0
@@ -1700,9 +1712,33 @@ PrefabInstance:
       propertyPath: m_ProvidesContacts
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 336676383317074508, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 336676383317074508, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 336676383317074508, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.0075
+      objectReference: {fileID: 0}
     - target: {fileID: 380314840231205080, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
       propertyPath: m_Name
       value: Diamond Hole
+      objectReference: {fileID: 0}
+    - target: {fileID: 514154352545910650, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 514154352545910650, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 514154352545910650, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.0075
       objectReference: {fileID: 0}
     - target: {fileID: 547935186390231739, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1820,6 +1856,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3580196367946268041, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 3580196367946268041, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 3580196367946268041, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.0075
+      objectReference: {fileID: 0}
     - target: {fileID: 3641200387987686301, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
       propertyPath: m_ProvidesContacts
       value: 0
@@ -1864,6 +1912,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Pentagon Hole
       objectReference: {fileID: 0}
+    - target: {fileID: 5017374360880828008, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 5017374360880828008, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 5017374360880828008, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.0075
+      objectReference: {fileID: 0}
     - target: {fileID: 5032923871837923467, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
       propertyPath: m_ProvidesContacts
       value: 0
@@ -1872,17 +1932,85 @@ PrefabInstance:
       propertyPath: m_ProvidesContacts
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5420471159625318476, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420471159625318476, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 5420471159625318476, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.0075
+      objectReference: {fileID: 0}
     - target: {fileID: 5535638439656829896, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
       propertyPath: m_ProvidesContacts
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5569437128600390348, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 5569437128600390348, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 5569437128600390348, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.0075
       objectReference: {fileID: 0}
     - target: {fileID: 5702833128276671858, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
       propertyPath: m_ProvidesContacts
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5731113241398203227, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 5731113241398203227, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 5731113241398203227, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 5731113241398203227, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.001184996
+      objectReference: {fileID: 0}
+    - target: {fileID: 5745815568397095203, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5757629675009150116, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
       propertyPath: m_ProvidesContacts
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5948636956666289372, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 5948636956666289372, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 5948636956666289372, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 6102313103034472391, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 6102313103034472391, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 6102313103034472391, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.0075
       objectReference: {fileID: 0}
     - target: {fileID: 6113443854472061236, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
       propertyPath: m_Name
@@ -1915,6 +2043,18 @@ PrefabInstance:
     - target: {fileID: 6809684658896235009, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
       propertyPath: m_Name
       value: Square Hole
+      objectReference: {fileID: 0}
+    - target: {fileID: 6881405240330736072, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 6881405240330736072, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 6881405240330736072, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.0075
       objectReference: {fileID: 0}
     - target: {fileID: 7136378058102608695, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
       propertyPath: m_ProvidesContacts
@@ -1971,6 +2111,18 @@ PrefabInstance:
     - target: {fileID: 8280791022391240407, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
       propertyPath: m_ProvidesContacts
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8501685624820394484, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 8501685624820394484, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.0075
+      objectReference: {fileID: 0}
+    - target: {fileID: 8501685624820394484, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.0075
       objectReference: {fileID: 0}
     - target: {fileID: 8620625782410472811, guid: f7f1eff9c86c7ff489255eb4a6320822, type: 3}
       propertyPath: m_ProvidesContacts
@@ -6119,7 +6271,7 @@ MonoBehaviour:
   m_ScaleDiff: 0.025
   m_NumOfShapes: 4
   m_PlayerDistanceFromSetup: 0.65
-  m_ShapeRotSpeed: 90
+  m_ShapeRotSpeed: 45
   m_ShapeRotAxis: {x: 0, y: 1, z: 0}
   largerButton:
     m_Name: Larger Button
