@@ -26,7 +26,7 @@ public class DataManager : MonoBehaviour
     private float _timeInterval = 0.1f;
 
     //heading for csv's
-    private readonly string OBJECT_HEADING = "Object,Owner,Time,XPos,Ypos,ZPos,XRot,YRot,ZRot,XScale,YScale,ZScale,Status\n";
+    private readonly string OBJECT_HEADING = "Object,Owner,Time,XPos,Ypos,ZPos,XRot,YRot,ZRot,XScale,YScale,ZScale,Status,Trial\n";
     private readonly string PLAYER_HEADING = "Bone,Time,XPos,YPos,ZPos,XRot,YRot,ZRot\n";
     private readonly string EXP_HEADING = "Trial,Shape,Size,Response,ResponseTime,Time";
 
@@ -43,13 +43,16 @@ public class DataManager : MonoBehaviour
     //flags
     private bool EXP_FILE_READY = false;
     //private static Dictionary<int, bool> PLAYER_FILE_READY;
-    private bool OBJECT_FILE_READY = false;
+    private bool OBJECTS_FILE_READY = false;
     private bool _updatingTrackedObjects = false;
     private static readonly string SEPARATOR = ",";
+
+    private ExpController expController;
 
     // Start is called before the first frame update
     void Start()
     {
+        expController = FindObjectOfType<ExpController>();
         //create a file for the trial;
         CreateObjectsFile();
     }
@@ -84,7 +87,7 @@ public class DataManager : MonoBehaviour
     {
         if (!_canTrackObjects) return;
 
-        if (OBJECT_FILE_READY) return;
+        if (OBJECTS_FILE_READY) return;
 
         OBJECT_FILE_PATH = $"{Application.persistentDataPath}/objectsData_{System.DateTime.Now.ToString("yyyy-MM-dd-HH_mm_ss")}.csv";//something to identify the participant
 
@@ -94,7 +97,7 @@ public class DataManager : MonoBehaviour
 
         //Debug.Log($"Object File Path is: {OBJECT_FILE_PATH}");
 
-        OBJECT_FILE_READY = true;
+        OBJECTS_FILE_READY = true;
         SaveObjectsFile();
     }
 
@@ -102,13 +105,14 @@ public class DataManager : MonoBehaviour
     {
         if (!_canTrackObjects) return;
 
-        if (!OBJECT_FILE_READY) CreateObjectsFile();
+        if (!OBJECTS_FILE_READY) CreateObjectsFile();
 
         if (_toTrack.Count <= 0) return;
 
         if (_updatingTrackedObjects) return;
         int ownerID = -1;
         StatusWRTBox status = StatusWRTBox.OutsideBox;
+        int trial = -1;
 
         foreach (GameObject track in _toTrack)
         {
@@ -117,11 +121,15 @@ public class DataManager : MonoBehaviour
                 ownerID = eO.GetOwnerID();
                 status = eO.GetStatus();
             }
+            if (expController)
+            {
+                trial = expController.GetCurrTrialNumber();
+            }
             string update = $"{track.name},{ownerID},{DateTime.Now.TimeOfDay}," +
         $"{track.transform.position.x},{track.transform.position.y},{track.transform.position.z}," +
         $"{track.transform.eulerAngles.x},{track.transform.eulerAngles.y},{track.transform.eulerAngles.z}," +
         $"{track.transform.lossyScale.x},{track.transform.lossyScale.y},{track.transform.lossyScale.z}," +
-        $"{status}";
+        $"{status},{trial}";
             OBJECT_FILE_TEMP.AppendLine(string.Join(SEPARATOR, update));
             //Debug.Log($"Appending {update}");
         }
@@ -145,7 +153,7 @@ public class DataManager : MonoBehaviour
     {
         if (!_canTrackObjects) return;
 
-        if (!OBJECT_FILE_READY) return;
+        if (!OBJECTS_FILE_READY) return;
 
         if (_toTrack.Count <= 0) return;
 

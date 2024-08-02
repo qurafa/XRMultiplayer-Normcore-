@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 using static UnityEngine.ParticleSystem;
+using static UnityEngine.XR.Interaction.Toolkit.Inputs.Simulation.XRDeviceSimulator;
 
 public class ExpController : MonoBehaviour
 {
@@ -48,11 +49,6 @@ public class ExpController : MonoBehaviour
     /// </summary>
     [SerializeField]
     protected Transform[] m_ShapeSpawn = new Transform[] { };
-    /// <summary>
-    /// Used to highlight or draw attention to the hole/slot for different shapes 
-    /// </summary>
-    [SerializeField]
-    protected GameObject[] m_ShapeSlotMarkers = new GameObject[] { };
     /// <summary>
     /// Audio to play after player inputs their response
     /// </summary>
@@ -101,10 +97,15 @@ public class ExpController : MonoBehaviour
     [SerializeField]
     protected float m_MaxBlankTimeLimit = 300.0f;
     /// <summary>
-    /// Time limit for each trial
+    /// Minimum time limit for each trial
     /// </summary>
     [SerializeField]
-    protected float m_TrialTimeLimit = 5.0f;
+    protected float m_MinTrialTimeLimit = 5.0f;
+    /// <summary>
+    /// Maximum time limit for each trial
+    /// </summary>
+    [SerializeField]
+    protected float m_MaxTrialTimeLimit = 10.0f;
     /// <summary>
     /// Number of sizes smaller from the original size for each shape
     /// </summary>
@@ -155,20 +156,25 @@ public class ExpController : MonoBehaviour
     /// </summary>
     [SerializeField]
     protected Vector3 m_ShapeRotAxis = new(0, 1, 0);
+    [SerializeField]
+    protected Vector3 m_OscilateAmpl = new(0, 90, 0); 
 
     /// <summary>
     /// Button for larger input response
     /// </summary>
     [Header("INPUT ACTIONS")]
     [SerializeField]
-    protected InputAction largerButton;
+    protected InputAction m_LargerButton;
     /// <summary>
     /// Button for smaller input response
     /// </summary>
     [SerializeField]
-    protected InputAction smallerButton;
+    protected InputAction m_SmallerButton;
+    /// <summary>
+    /// Button to pause rotation if it's rotating
+    /// </summary>
     [SerializeField]
-    protected InputAction resetButton;
+    protected InputAction m_PauseRotationButton;
 
     public enum ExpType
     {
@@ -225,7 +231,7 @@ public class ExpController : MonoBehaviour
     protected readonly static int DEFAULT_NO_LARGER = 3;//3 sizes bigger for each shape
     protected readonly static int DEFAULT_NO_SMALLER = 3;//3 sizes smaler for each shape
     protected readonly static float MAX_SHAPE_ROTATE_TIME = 1;//shape rotates every 1 second
-    protected readonly static float SLOT_MARKER_MAX_TIME = 2;//time limit for the slot markers to show in in seconds
+    protected readonly static bool DEFAULT_PAUSE_ROTATION = false;//default value o
 
     //soooo many flags.........lol
     //when we're ready to start flag
@@ -241,14 +247,16 @@ public class ExpController : MonoBehaviour
 
     //trial timer and flags
     protected float _trialTimer = 0;
-    protected bool _trialLoading = true;
+    protected bool _minTrialLoading = true;
+    protected bool _maxTrialLoading = true;
 
-    //slot marker timer
-    protected float _slotMarkerTimer = 0;
-    protected bool _slotMarked = false;
-
-    //shape rotate timer
+    //shape rotate timer, flags and variables
     protected float _rotateTimer = 0;
+    protected bool _pauseRotation = DEFAULT_PAUSE_ROTATION;
+    protected Vector3 _rotateDir = new(0, 1, 0);
+    protected Vector3 _spawnParentStartRot;
+    protected Vector3 _spawnParentCurrRot = Vector3.zero;
+    protected Vector3 _shapeStartRotation = new Vector3(90, -180, -90);
 
     //saving flags
     protected bool _savingEntry = false;
@@ -256,7 +264,6 @@ public class ExpController : MonoBehaviour
 
     protected Dictionary<string, Vector3> _shapeToBoxRotation0;
     protected Dictionary<string, Vector3[]> _shapeToBoxRotation1;
-    protected Dictionary<string, GameObject> _shapeToMarker;
 
     /// <summary>
     /// The shapes being used in this run of the experiment
@@ -265,8 +272,9 @@ public class ExpController : MonoBehaviour
 
     virtual protected void OnEnable()
     {
-        largerButton.Enable(); largerButton.performed += SaveLargerResponse;
-        smallerButton.Enable(); smallerButton.performed += SaveSmallerResponse;
+        m_LargerButton.Enable(); m_LargerButton.performed += SaveLargerResponse;
+        m_SmallerButton.Enable(); m_SmallerButton.performed += SaveSmallerResponse;
+        m_PauseRotationButton.Enable(); m_PauseRotationButton.performed += PauseRotationToggle;
     }
 
     // Start is called before the first frame update
@@ -277,14 +285,32 @@ public class ExpController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (_trialLoading)
+        if (_minTrialLoading || _maxTrialLoading)
         {
             _trialTimer += Time.deltaTime;
-            if (_trialTimer > m_TrialTimeLimit)
+            if (_trialTimer > m_MinTrialTimeLimit)
             {
-                _trialTimer = 0;
-                _trialLoading = false;
+                Debug.Log("Min Trial Time Complete");
+                _minTrialLoading = false;
+                if (_savedEntry)
+                {
+                    Debug.Log("Min Trial Time Complete...saved entry..moving to blank");
+                    _maxTrialLoading = false;
+                    _trialTimer = 0;
+                    //see blank/nothing
+                    m_PlayerCamera.cullingMask = 0;
+                    _blankTimer = 0;
+                    _minBlankLoading = true;
+                    _maxBlankLoading = true;
+                }
+            }
 
+            if(_trialTimer > m_MaxTrialTimeLimit)
+            {
+                Debug.Log("Max Trial Time Complete");
+                _minTrialLoading = false;
+                _maxTrialLoading = false;
+                _trialTimer = 0;
                 //see blank/nothing
                 m_PlayerCamera.cullingMask = 0;
                 _blankTimer = 0;
@@ -298,12 +324,14 @@ public class ExpController : MonoBehaviour
             _blankTimer += Time.deltaTime;
             if (_blankTimer > m_MinBlankTimeLimit)
             {
+                Debug.Log("Min Blank Time Complete");
                 _minBlankLoading = false;
                 if (_savedEntry) NextTrial();
             }
 
             if (_blankTimer > m_MaxBlankTimeLimit)
             {
+                Debug.Log("Max Blank Time Complete");
                 _blankTimer = 0;
                 _minBlankLoading = false;
                 _maxBlankLoading = false;
@@ -313,21 +341,21 @@ public class ExpController : MonoBehaviour
             }
         }
 
-        if (_slotMarked)
+        if(spawn != null && expType == ExpType.RotatingComplex && !_pauseRotation)
         {
-            _slotMarkerTimer += Time.deltaTime;
-            if(_slotMarkerTimer > SLOT_MARKER_MAX_TIME)
-            {
-                HideAllSlotMarkers();
-                _slotMarkerTimer = 0;
-            }
-        }
-
-        if(spawn != null && expType == ExpType.RotatingComplex)
-        {
-            spawn.transform.parent.Rotate(m_ShapeRotAxis * m_ShapeRotSpeed * Time.deltaTime);
+            Vector3 r = Product(m_ShapeRotAxis, _rotateDir) * m_ShapeRotSpeed * Time.deltaTime;
+            spawn.transform.parent.Rotate(r);
             _rotateTimer = 0;
+
+            _spawnParentCurrRot += r;
+            if (Math.Abs(_spawnParentCurrRot.y) > m_OscilateAmpl.y)
+                _rotateDir *= -1;
         }
+    }
+
+    private Vector3 Product(Vector3 a, Vector3 b)
+    {
+        return new Vector3(a.x*b.x, a.y*b.y, a.z*b.z);
     }
 
     public void Initialize()
@@ -341,8 +369,6 @@ public class ExpController : MonoBehaviour
         CreateExpOrder();
         //Shuffle the order
         ShuffleOrder();
-        //Setting up the shape markers and match them to their corresponding shapes
-        AssignSlotMarkers();
         //Create file path to store entries 
         CreateExpFile();
 
@@ -455,61 +481,6 @@ public class ExpController : MonoBehaviour
         }
     }
 
-    protected void AssignSlotMarkers()
-    {
-        _shapeToMarker = new Dictionary<string, GameObject>();
-
-        foreach(GameObject shape in m_Shapes)
-        {
-            _shapeToMarker.Add(shape.name, GetSlotMarker(shape));
-        }
-    }
-
-    protected GameObject GetSlotMarker(GameObject s)
-    {
-        foreach(GameObject sm in m_ShapeSlotMarkers)
-        {
-            if (s.name.ToLower().Contains("trapezoid") && sm.name.ToLower().Contains("trapezoid"))
-                return sm;
-            if (s.name.ToLower().Contains("oval") && sm.name.ToLower().Contains("oval"))
-                return sm;
-            if (s.name.ToLower().Contains("diamond") && sm.name.ToLower().Contains("diamond"))
-                return sm;
-            if (s.name.ToLower().Contains("quatrefoil") && sm.name.ToLower().Contains("quatrefoil"))
-                return sm;
-            if (s.name.ToLower().Contains("square") && sm.name.ToLower().Contains("square"))
-                return sm;
-            if (s.name.ToLower().Contains("triangle") && sm.name.ToLower().Contains("triangle"))
-                return sm;
-            if (s.name.ToLower().Contains("octagon") && sm.name.ToLower().Contains("octagon"))
-                return sm;
-            if (s.name.ToLower().Contains("parallelogram") && sm.name.ToLower().Contains("parallelogram"))
-                return sm;
-            if (s.name.ToLower().Contains("star") && sm.name.ToLower().Contains("star"))
-                return sm;
-            if (s.name.ToLower().Contains("hexagon") && sm.name.ToLower().Contains("hexagon"))
-                return sm;
-            if (s.name.ToLower().Contains("rectangle") && sm.name.ToLower().Contains("rectangle"))
-                return sm;
-            if (s.name.ToLower().Contains("pentagon") && sm.name.ToLower().Contains("pentagon"))
-                return sm;
-        }
-
-        return null;
-    }
-
-    private void HideAllSlotMarkers(SelectEnterEventArgs arg0)
-    {
-        HideAllSlotMarkers();
-    }
-
-    protected void HideAllSlotMarkers()
-    {
-        foreach(GameObject sm in m_ShapeSlotMarkers)
-            sm.SetActive(false);
-        _slotMarked = false;
-    }
-
     protected void NextSetUp()
     {
         //if (NextWait()) return;
@@ -547,10 +518,6 @@ public class ExpController : MonoBehaviour
             //m_ShapeSpawn[loc].eulerAngles = new Vector3(90, -90, 0);
             //m_ShapeSpawn[loc].eulerAngles = new Vector3(90, -180, -180);
         }
-
-        //activate the shape slot marker
-        _shapeToMarker[shape].SetActive(true);
-        _slotMarked = true;
     }
 
     public void SetPID(string id)
@@ -572,13 +539,16 @@ public class ExpController : MonoBehaviour
             m_FacePlayer = false;
             m_RandomShapeLocation = false;
             m_CanGrabBox = false; m_CanGrabShapes = false;
-            m_MinBlankTimeLimit = 3; m_MaxBlankTimeLimit = 300; m_TrialTimeLimit = 2.5f;
+            m_MinBlankTimeLimit = 2;//3; 
+            m_MaxBlankTimeLimit = 300; m_MinTrialTimeLimit = 2.5f; m_MaxTrialTimeLimit = 2.5f;
             m_NumberSmaller = DEFAULT_NO_SMALLER; m_NumberLarger = DEFAULT_NO_LARGER; m_NumOfShapes = DEFAULT_NO_SHAPE;
 
             if (expType == ExpType.NonInteractiveSimple)
                 m_Shapes = m_RegularShapes;
             if (expType == ExpType.NonInteractiveComplex)
                 m_Shapes = m_ComplexShapes;
+
+            _shapeStartRotation = new Vector3(90, -180, -90);
         }
         //Interact Simple, Interact Complex
         else if (expType == ExpType.InteractiveSimple || expType == ExpType.InteractiveComplex)
@@ -586,13 +556,16 @@ public class ExpController : MonoBehaviour
             m_FacePlayer = false;
             m_RandomShapeLocation = false;
             m_CanGrabBox = false; m_CanGrabShapes = true;
-            m_MinBlankTimeLimit = 3; m_MaxBlankTimeLimit = 300; m_TrialTimeLimit = 10f;// 5f;
+            m_MinBlankTimeLimit = 2;//3;
+            m_MaxBlankTimeLimit = 300;m_MinTrialTimeLimit = 10f; m_MaxTrialTimeLimit = 10f;
             m_NumberSmaller = DEFAULT_NO_SMALLER; m_NumberLarger = DEFAULT_NO_LARGER; m_NumOfShapes = DEFAULT_NO_SHAPE;
 
             if (expType == ExpType.InteractiveSimple)
                 m_Shapes = m_RegularShapes;
             if (expType == ExpType.InteractiveComplex)
                 m_Shapes = m_ComplexShapes;
+
+            _shapeStartRotation = new Vector3(90, -180, -180);
         }
         //Rotating Complex
         else if (expType == ExpType.RotatingComplex)
@@ -600,10 +573,13 @@ public class ExpController : MonoBehaviour
             m_FacePlayer = false;
             m_RandomShapeLocation = false;
             m_CanGrabBox = false; m_CanGrabShapes = false;
-            m_MinBlankTimeLimit = 3; m_MaxBlankTimeLimit = 300; m_TrialTimeLimit = 10f;// 5f;
+            m_MinBlankTimeLimit = 2;//3;
+            m_MaxBlankTimeLimit = 300; m_MinTrialTimeLimit = 5f; m_MaxTrialTimeLimit = 10f;
             m_NumberSmaller = DEFAULT_NO_SMALLER; m_NumberLarger = DEFAULT_NO_LARGER; m_NumOfShapes = DEFAULT_NO_SHAPE;
 
             m_Shapes = m_ComplexShapes;
+
+            _shapeStartRotation = new Vector3(90, -180, -180);
         }
         else
         {
@@ -741,13 +717,23 @@ public class ExpController : MonoBehaviour
     protected void SaveLargerResponse(InputAction.CallbackContext obj)
     {
         if (spawn != null) SaveEntry(LARGER_RESPONSE);
+        //jump ahead so we can move to the next trial
+        //_trialTimer = m_MinTrialTimeLimit;
         NextTrial();
     }
 
     protected void SaveSmallerResponse(InputAction.CallbackContext obj)
     {
         if (spawn != null) SaveEntry(SMALLER_RESPONSE);
+        //jump ahead so we can move to the next trial
+        //_trialTimer = m_MinTrialTimeLimit;
         NextTrial();
+    }
+
+    protected void PauseRotationToggle(InputAction.CallbackContext obj)
+    {
+        if (spawn != null)
+            _pauseRotation = !_pauseRotation;
     }
 
     /// <summary>
@@ -823,11 +809,13 @@ public class ExpController : MonoBehaviour
         _minBlankLoading = false;
         _maxBlankLoading = false;
 
-        _trialLoading = false;
+        _minTrialLoading = false;
+        _maxTrialLoading = false;
 
         _savedEntry = false;
 
-        HideAllSlotMarkers();
+        _pauseRotation = DEFAULT_PAUSE_ROTATION;
+
         //Set up experiment env
         NextSetUp();
 
@@ -835,7 +823,6 @@ public class ExpController : MonoBehaviour
         {
             m_DataManager.RemoveObjectTrack(spawn);
             DestroySpawnShape();
-            //deactivate the active slot markers
         }
 
         SpawnShape();
@@ -849,7 +836,8 @@ public class ExpController : MonoBehaviour
         //reset trial timer to go up to the set limit
         _trialTimer = 0;
         //start counting trial loading
-        _trialLoading = true;
+        _minTrialLoading = true;
+        _maxTrialLoading = true;
 
         //next trial done loading
         _nextLoading = false;
@@ -867,7 +855,8 @@ public class ExpController : MonoBehaviour
         int loc = int.Parse(trial.Split('|')[3]);
 
         spawn = Instantiate(m_Shapes[index], m_ShapeSpawn[loc].transform);
-        spawn.name = $"{m_Shapes[index].name}_Trial{_nTrialNumber}";
+        //spawn.name = $"{m_Shapes[index].name}_Trial{_nTrialNumber+1}";
+        spawn.name = $"{m_Shapes[index].name}";
         InitShapeSpawn();
     }
 
@@ -879,6 +868,9 @@ public class ExpController : MonoBehaviour
         string trial = GetNextTrial();
         float size = float.Parse(trial.Split('|')[2]);
 
+        spawn.transform.parent.eulerAngles = Vector3.zero;
+        _spawnParentCurrRot = Vector3.zero;
+
         spawn.transform.localScale = new Vector3(spawn.transform.localScale.x * size,
             spawn.transform.localScale.y * 1,
             spawn.transform.localScale.z * size);
@@ -889,7 +881,7 @@ public class ExpController : MonoBehaviour
         }
         else
         {
-            spawn.transform.eulerAngles = new Vector3(90, -180, -180);
+            spawn.transform.eulerAngles = _shapeStartRotation;
         }
         if (spawn.TryGetComponent<Rigidbody>(out Rigidbody r))
         {
@@ -902,9 +894,6 @@ public class ExpController : MonoBehaviour
         if (spawn.TryGetComponent<XRGrabInteractable>(out XRGrabInteractable g))
         {
             g.enabled = m_CanGrabShapes;
-            //to turn of the slot marker after grabbing the shape
-            if(m_CanGrabShapes)
-                g.selectEntered.AddListener(HideAllSlotMarkers);
         }
     }
 
@@ -924,8 +913,8 @@ public class ExpController : MonoBehaviour
     protected bool NextWait()
     {
         Debug.Log($"Unable to proceed to Next.......waiting \n " +
-            $"ToRun: {ToRun}; _ready: {_ready}; _nextLoading: {_nextLoading}; _minBlankLoading: {_minBlankLoading}; _trialLoading: {_trialLoading};");
-        return (!ToRun || !_ready || _nextLoading || _minBlankLoading || _trialLoading);
+            $"ToRun: {ToRun}; _ready: {_ready}; _nextLoading: {_nextLoading}; _minBlankLoading: {_minBlankLoading}; _minTrialLoading: {_minTrialLoading}; _maxTrialLoading: {_maxTrialLoading};");
+        return (!ToRun || !_ready || _nextLoading || _minBlankLoading || _minTrialLoading || _maxTrialLoading);
     }
 
     /// <summary>
@@ -936,6 +925,11 @@ public class ExpController : MonoBehaviour
     {
         Debug.Log("Unable to proceed to Save.......waiting");
         return (!_ready || _savedEntry || _savingEntry || !ToRun || _nextLoading /*|| _trialLoading*/);
+    }
+
+    public int GetCurrTrialNumber()
+    {
+        return _nTrialNumber;
     }
 
     /// <summary>
@@ -968,7 +962,8 @@ public class ExpController : MonoBehaviour
 
     protected void OnDisable()
     {
-        largerButton.performed -= SaveLargerResponse; largerButton.Disable();
-        smallerButton.performed -= SaveSmallerResponse; smallerButton.Disable();
+        m_LargerButton.performed -= SaveLargerResponse; m_LargerButton.Disable();
+        m_SmallerButton.performed -= SaveSmallerResponse; m_SmallerButton.Disable();
+        m_PauseRotationButton.performed -= PauseRotationToggle; m_PauseRotationButton.Disable();
     }
 }
