@@ -16224,10 +16224,12 @@ MonoBehaviour:
   m_Script: {fileID: -1424795628, guid: ebae63e7edba59945a994528ada1f7a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _autoInitialized: 1
   _obsoleteAppKey: 
   _normcoreAppSettings: {fileID: 11400000, guid: 63121f715bd5a6544bc8d111ed84045d, type: 2}
-  _roomToJoinOnStart: Main Room
   _joinRoomOnStart: 0
+  _roomToJoinOnStart: Main Room
+  _roomServerConfigurationToJoinOnStart: 
 --- !u!1 &541238334710213055
 GameObject:
   m_ObjectHideFlags: 0
@@ -16277,6 +16279,9 @@ MonoBehaviour:
   m_LocalPlayer: {fileID: 2001921950}
   m_Room: {fileID: 205605689}
   m_DataManager: {fileID: 1580161444}
+  m_AutoSubToAvatarInfoPub: 0
+  m_AvatarInfo: {fileID: 0}
+  m_AvatarSubTo: 
   m_RoomName: Main Room
   m_RealtimePlayerPrefab: VR Avatar Quest
   m_ConnectionStatus: {fileID: 1587690695}

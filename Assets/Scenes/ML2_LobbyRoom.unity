@@ -2639,6 +2639,23 @@ MonoBehaviour:
       m_Action: Right JS
       m_Flags: 0
     m_Flags: 0
+  trigger:
+    m_Name: Trigger
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 437f3151-170e-45d1-8461-3c86141d1a31
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 98609c6c-7462-4535-b212-e2eac501892f
+      m_Path: <XRController>{RightHand}/triggerPressed
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Trigger
+      m_Flags: 0
+    m_Flags: 0
   direction: 0
 --- !u!54 &195320455
 Rigidbody:
@@ -7620,6 +7637,15 @@ MonoBehaviour:
       m_Groups: 
       m_Action: Right JS
       m_Flags: 0
+    m_Flags: 0
+  trigger:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 6e50fdea-0bb3-485d-83e1-053415ab5f73
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
     m_Flags: 0
   direction: 0
 --- !u!54 &782628378
@@ -14369,7 +14395,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentSceneIndex: 0
   nextSceneIndex: 1
-  m_RunExp: 0
+  m_RunExp: 1
   m_ExpCanvas: {fileID: 4025449299479621227}
   m_pID: {fileID: 1953658321}
   m_ExpType: {fileID: 1395842658}
@@ -17998,6 +18024,15 @@ MonoBehaviour:
       m_Groups: 
       m_Action: Right JS
       m_Flags: 0
+    m_Flags: 0
+  trigger:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: a52685ba-1366-4355-b068-e500c4e5d216
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
     m_Flags: 0
   direction: 0
 --- !u!54 &1640097511

@@ -110,8 +110,11 @@ public class CallibrateRoom : MonoBehaviour
     private InputAction rightHandSB;
     [SerializeField]
     private InputAction rightJS;
+    [SerializeField]
+    private InputAction trigger;
 
-    private Vector2 rightJsValTemp = new Vector2(0,0);
+    private Vector2 _rightJsValTemp = new Vector2(0,0);
+    private bool _triggerPressed = false;
 
     /// <summary>
     /// What we send to the SceneLoader as we move to the next scene
@@ -169,10 +172,11 @@ public class CallibrateRoom : MonoBehaviour
         menuButton.Enable(); menuButton.performed += DoneAction;
         //leftHandPB.Enable(); leftHandPB.performed += VisionToggleAction;
         //leftHandSB.Enable(); leftHandSB.performed += LeftRotateAction;
-        leftJS.Enable(); leftJS.performed += VPositioningAction;
+        //leftJS.Enable(); leftJS.performed += VPositioningAction;
         rightHandPB.Enable(); rightHandPB.performed += TeleportAction;
         //rightHandSB.Enable(); rightHandSB.performed += RightRotateAction;
-        rightJS.Enable(); rightJS.performed += HPositioningAction;
+        rightJS.Enable(); rightJS.performed += HPositioningAction; rightJS.performed += VPositioningAction;
+        trigger.Enable(); trigger.performed += TriggerPressed; trigger.canceled += TriggerReleased;
     }
 
     void Start()
@@ -243,9 +247,9 @@ public class CallibrateRoom : MonoBehaviour
     
     private void VPositioningAction(InputAction.CallbackContext obj)
     {
-        if(mode == Mode.CalibratingPos) {
-            Vector2 val = leftJS.ReadValue<Vector2>();
-
+        if(mode == Mode.CalibratingPos && _triggerPressed) {
+            Vector2 val = rightJS.ReadValue<Vector2>();
+            val -= _rightJsValTemp;
             _rotRef.transform.eulerAngles = new Vector3(0, _rotationReference.transform.eulerAngles.y, 0);
             _room.transform.Translate(new Vector3(0, val.y, 0) * posFactor, _rotRef.transform);
         }
@@ -253,12 +257,22 @@ public class CallibrateRoom : MonoBehaviour
 
     private void HPositioningAction(InputAction.CallbackContext obj)
     {
-        if (mode == Mode.CalibratingPos) {
+        if (mode == Mode.CalibratingPos && !_triggerPressed) {
             Vector2 val = rightJS.ReadValue<Vector2>();
-            val = val - rightJsValTemp;
+            val -= _rightJsValTemp;
             _rotRef.transform.eulerAngles = new Vector3(0, _rotationReference.transform.eulerAngles.y, 0);
             _room.transform.Translate(new Vector3(val.x, 0, val.y) * posFactor, _rotRef.transform);
         }
+    }
+
+    private void TriggerPressed(InputAction.CallbackContext obj)
+    {
+        _triggerPressed = true;
+    }
+
+    private void TriggerReleased(InputAction.CallbackContext obj)
+    {
+        _triggerPressed = false;
     }
 
     private void LeftRotateAction(InputAction.CallbackContext obj)
@@ -464,8 +478,8 @@ public class CallibrateRoom : MonoBehaviour
         leftJS.performed -= VPositioningAction; leftJS.Disable();
         rightHandPB.performed -= PositionToggleAction; rightHandPB.Disable();
         rightHandSB.performed -= RightRotateAction; rightHandSB.Disable();
-        rightJS.performed -= HPositioningAction; rightJS.Disable();
-
+        rightJS.performed -= HPositioningAction; rightJS.performed -= VPositioningAction; rightJS.Disable();
+        trigger.performed -= TriggerPressed; trigger.canceled -= TriggerReleased; trigger.Disable();
         Debug.Log("OnDisable");
     }
 
