@@ -1,4 +1,4 @@
-# VRMultiplayer-Normcore-
+# XRMultiplayer-Normcore-
 
 You may view a demo here: https://youtu.be/tkgfB3GHwtk
 
