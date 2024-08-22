@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Changes the color of a gameobject on collision
+/// </summary>
 public class CollisionTrigger : MonoBehaviour
 {
     [SerializeField]
@@ -35,25 +38,21 @@ public class CollisionTrigger : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        //Debug.Log("collision");
         setColor(touching);
     }
 
     private void OnCollisionExit(Collision collision)
     {
-        //Debug.Log("collision end");
         setColor(original);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        //Debug.Log("collision");
         setColor(touching);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        //Debug.Log("collision end");
         setColor(original);
     }
 }

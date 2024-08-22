@@ -13,9 +13,13 @@ using UnityEngine.XR;
 using UnityEngine.XR.Hands;
 using Handedness = UnityEngine.XR.Hands.Handedness;
 using com.perceptlab.armultiplayer;
+using Unity.VisualScripting;
 
 /// <summary>
-/// Used to publish player "avatar" information for the relevant parties to subscribe to
+///  AvatarInfoPub: Used to publish player "avatar" information for the relevant parties to subscribe to <br/>
+///  Also saves the information to the DataManager in the process. <br/>
+///  Note: This can later be changed to make it so DataManager subscribes to AvatarInfoPub and saves the data from that input for better implementation <br/>
+///  Used to publish player "avatar" information for the relevant parties to subscribe to
 /// </summary>
 public class AvatarInfoPub : MonoBehaviour
 {
