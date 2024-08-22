@@ -80,6 +80,7 @@ public class LobbyController : MonoBehaviour
     /// </summary>
     /// <param name="player_and_room_name">The name of the player GameObject and room GameObject separated by '#'</param>
     /// <param name=""></param>
+    /// Romina added this and doesn't know why
     public void LoadScene(string player_and_room_name = "Player#Room")
     {
         if (isLoading) return;
@@ -139,9 +140,12 @@ public class LobbyController : MonoBehaviour
 
         while (!loadAsync.isDone) yield return null;
 
+        //we're in the next scene
         if (m_RunExp)
         {
             ExpController expCont = FindObjectOfType<ExpController>();
+
+            //probably add error log and return -- 
 
             expCont.SetPID(m_pID.text);
 
@@ -170,7 +174,7 @@ public class LobbyController : MonoBehaviour
         }
 
 
-        Debug.Log("getting realtime helper");
+        Debug.Log("getting scene helper");
         var helper = FindObjectOfType<SceneHelper>();
 
         if (!helper)

@@ -1,10 +1,6 @@
 using MixedReality.Toolkit;
-using MixedReality.Toolkit.Subsystems;
 using Normal.Realtime;
-using System.Collections.Generic;
-using Unity.XR.CoreUtils;
 using UnityEngine;
-using UnityEngine.XR;
 using UnityEngine.XR.Hands;
 using Types = AvatarInfoPub.Types;
 
@@ -22,14 +18,14 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
     [SerializeField] private Types m_Type;
 
     //Devices and Subsystems
-    
+
     //Bool checks
     private bool _jointsInit = false;
 
     //Transforms
     private Transform[] _joints = new Transform[26];
 
-    //Other
+    //Responsible for saving all information 
     private DataManager _dataManager;
 
     //Enums
@@ -122,7 +118,7 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
 
     private void InitHandJoints(Transform root)
     {
-        if(_jointsInit) return;
+        if (_jointsInit) return;
 
         if (m_Device == Device.MetaQuest && (m_Type == Types.LeftHand || m_Type == Types.RightHand))
         {
@@ -135,7 +131,7 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
                 }
             }
         }
-        else if(m_Device == Device.HoloLens && (m_Type == Types.LeftHand || m_Type == Types.RightHand))
+        else if (m_Device == Device.HoloLens && (m_Type == Types.LeftHand || m_Type == Types.RightHand))
         {
             /*if (!_holoHandSubsystem.TryGetEntireHand(_xrNode, out IReadOnlyList<HandJointPose> jp))
             {
@@ -189,12 +185,12 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
             m_RemoteRoot.gameObject.SetActive(false);
             return;
         }
-/*
-        if (netData == null || netData == "")
-        {
-            //Debug.Log("Empty netData");
-            return;
-        }*/
+        /*
+                if (netData == null || netData == "")
+                {
+                    //Debug.Log("Empty netData");
+                    return;
+                }*/
 
         //Debug.Log($"{this.gameObject.name}...receiving....{netData}....userID...{m_RealtimeView.ownerIDSelf}");
 
@@ -223,12 +219,12 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
                 float.Parse(netDataArr[5]),
                 float.Parse(netDataArr[6]));
 
-/*            if (_dataManager)
-                _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, m_RemoteRoot.transform);*/
+            /*            if (_dataManager)
+                            _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, m_RemoteRoot.transform);*/
         }
         else if (netDataArr[0] == "2")
         {
-            
+
             if (m_Type == Types.LeftHand || m_Type == Types.RightHand)
             {
                 m_RemoteRoot.gameObject.SetActive(true);
@@ -236,10 +232,10 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
                 m_RemoteController.gameObject.SetActive(false);
             }
             else return;
-            
+
             for (int j = 0; j < _joints.Length; j++)
             {
-                if(_joints[j] == null)
+                if (_joints[j] == null)
                 {
                     //Debug.Log($"joint {j} null? {_joints[j] == null}");
                     continue;
@@ -255,8 +251,8 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
                         float.Parse(netDataArr[jTmp + 4]),
                         float.Parse(netDataArr[jTmp + 5]),
                         float.Parse(netDataArr[jTmp + 6]));
-/*                if(_dataManager)
-                    _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, _joints[j].GetWorldPose(), string.Concat((XRHandJointID)(j + 1)));*/
+                /*                if(_dataManager)
+                                    _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, _joints[j].GetWorldPose(), string.Concat((XRHandJointID)(j + 1)));*/
             }
         }
         else if (netDataArr[0] == "3")
@@ -280,8 +276,8 @@ public class RealtimeAvatarSyncImpl : MonoBehaviour
             float grip = float.Parse(netDataArr[8]);
             //you can manipulate things like animator values using grip and trigger above
 
-/*            if (_dataManager)
-                _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, m_RemoteController.transform);*/
+            /*            if (_dataManager)
+                            _dataManager.UpdatePlayerFile(m_RealtimeView.ownerIDSelf, m_RemoteController.transform);*/
         }
         else if (netDataArr[0] == "4")
         {

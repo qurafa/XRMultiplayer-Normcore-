@@ -29,6 +29,7 @@ public class RealtimeExpController : ExpController
 
     protected override void SpawnShape()
     {
+        //The dad calls this (ExpController)
         string trial = GetNextTrial();
 
         string shape = trial.Split('|')[1];
@@ -44,18 +45,18 @@ public class RealtimeExpController : ExpController
             useInstance = m_Realtime,
         });
         InitShapeSpawn();
-/*        spawn.transform.localScale = new Vector3(spawn.transform.localScale.x * size,
-            spawn.transform.localScale.y * 1,
-            spawn.transform.localScale.z * size);
-        if (m_FacePlayer)
-            spawn.transform.Rotate(new Vector3(90, 0, 0));
-        if (spawn.TryGetComponent<Rigidbody>(out Rigidbody r))
-        {
-            r.mass = 1e+09f;
-            r.constraints = RigidbodyConstraints.FreezeRotation;
-            r.drag = 1000;
-            r.angularDrag = 0;
-        }*/
+        /*        spawn.transform.localScale = new Vector3(spawn.transform.localScale.x * size,
+                    spawn.transform.localScale.y * 1,
+                    spawn.transform.localScale.z * size);
+                if (m_FacePlayer)
+                    spawn.transform.Rotate(new Vector3(90, 0, 0));
+                if (spawn.TryGetComponent<Rigidbody>(out Rigidbody r))
+                {
+                    r.mass = 1e+09f;
+                    r.constraints = RigidbodyConstraints.FreezeRotation;
+                    r.drag = 1000;
+                    r.angularDrag = 0;
+                }*/
     }
 
     protected override void DestroySpawnShape()

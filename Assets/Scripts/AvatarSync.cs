@@ -1,6 +1,4 @@
 using Normal.Realtime;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(RealtimeAvatarSyncImpl))]
@@ -18,14 +16,15 @@ public class AvatarSync : RealtimeComponent<AvatarSyncModel>
 
     protected override void OnRealtimeModelReplaced(AvatarSyncModel previousModel, AvatarSyncModel currentModel)
     {
+        //Normcore said do it this way, so Faruq did it this way!
         if (previousModel != null)
         {
             previousModel.avatarDataDidChange -= AvatarDataChanged;
         }
 
-        if(currentModel != null)
+        if (currentModel != null)
         {
-            if(model.isFreshModel)
+            if (model.isFreshModel)
                 SetAvatarData("0|");//show nothing
 
             //then get what to show from Normcore

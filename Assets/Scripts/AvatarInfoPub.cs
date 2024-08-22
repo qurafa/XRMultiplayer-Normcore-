@@ -9,6 +9,10 @@ using Handedness = UnityEngine.XR.Hands.Handedness;
 
 public class AvatarInfoPub : MonoBehaviour
 {
+    //This script publishes head, hands, controllers, and eye tacking information on each frame. If something is not detected or tracked, it publishes DEFAULTSEND 
+
+
+
     [SerializeField] private int m_PlayerID = -1;
     [SerializeField] private bool m_SaveToDataManager;
     [SerializeField] private DataManager m_DataManager;
@@ -425,6 +429,7 @@ public class AvatarInfoPub : MonoBehaviour
             var cameraOffsetPose = new Pose(m_CameraOffset.position, m_CameraOffset.rotation);
             if (m_Device == Devices.MetaQuest)
             {
+                //Technically you could change this to get the pose of hand joints from the objects in the scene (we're not sure)
                 //because there are 26 joints
                 for (int j = 0; j < 26; j++)
                 {
