@@ -1,9 +1,3 @@
-/*
- AvatarInfoPub: Used to publish player "avatar" information for the relevant parties to subscribe to
- Also saves the information to the DataManager in the process.
- Note: This can later be changed to make it so DataManager subscribes to AvatarInfoPub and saves the data from that input for better implementation
-*/
-
 using MixedReality.Toolkit;
 using MixedReality.Toolkit.Subsystems;
 using System;

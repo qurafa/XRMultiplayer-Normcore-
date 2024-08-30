@@ -1,14 +1,10 @@
-
 using System;
-using System.Collections.Generic;
 using TMPro;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 using UnityEngine.XR.ARFoundation;
-using UnityEngine.XR.Hands;
 
 /// <summary>
 ///  CalibrateRoom: Contains functionality to calibrate the virtual room to match the real room <br/>
